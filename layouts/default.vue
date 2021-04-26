@@ -1,21 +1,9 @@
 <template>
   <v-app light>
     <!-- Navigator in the left side!! -->
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
+    <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
       <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
+        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -53,7 +41,7 @@
       <v-list>
         <v-list-item @click.native="right = !right">
           <v-list-item-action>
-            <v-icon light> mdi-repeat </v-icon>
+            <v-icon light>mdi-repeat</v-icon>
           </v-list-item-action>
           <v-list-item-title>Switch drawer (click me)</v-list-item-title>
         </v-list-item>
@@ -92,3 +80,8 @@ export default {
   },
 }
 </script>
+<style>
+.v-application {
+  font-family: 'Open Sans';
+}
+</style>

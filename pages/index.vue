@@ -1,14 +1,14 @@
 <template>
   <v-container grid-list-md text-xs-center>
     <v-layout justify-center>
-      <v-flex class="teal lighten-3" xs4 height="1000">
+      <v-flex class="teal lighten-3" xs4 min-height="1000">
         <v-card class="transparent">
           <!-- 文字横にプラスボタン作る、モーダルが出る -->
-          <v-card-title class="brown--text"
-            >Work
+          <v-card-title class="brown--text">
+            Work
             <v-spacer />
             <!-- どこからmodalをopenしたのかのデータを載せる？ -->
-            <AddButton @click="showAddModal = !showAddModal"></AddButton>
+            <AddButton @click.stop="toggleModal"></AddButton>
           </v-card-title>
           <v-list class="transparent">
             <v-list-item v-for="(item, i) in work" :key="i" class="black--text">
@@ -20,8 +20,8 @@
       </v-flex>
       <v-flex class="yellow lighten-4 ml-5" xs4>
         <v-card class="transparent">
-          <v-card-title class="brown--text"
-            >Private
+          <v-card-title class="brown--text">
+            Private
             <v-spacer />
             <AddButton />
           </v-card-title>
@@ -35,8 +35,8 @@
       </v-flex>
       <v-flex class="red lighten-3 ml-5" xs4>
         <v-card class="transparent">
-          <v-card-title class="brown--text"
-            >Ramdom Ideas
+          <v-card-title class="brown--text">
+            Ramdom Ideas
             <v-spacer />
             <AddButton />
           </v-card-title>
@@ -49,11 +49,16 @@
         </v-card>
       </v-flex>
     </v-layout>
+    <Modal :dialog="isShowAddModal" @closeModal="toggleModal">
+      <template v-slot:title>{{ selectedCategory }} にtodoを追加</template>
+      <form>
+        <input type="text" />
+        <input type="submit" />
+      </form>
+    </Modal>
   </v-container>
 </template>
 <script>
-// import VModal from 'vue-js-modal'
-// Vue.use(VModal)
 export default {
   data() {
     return {
@@ -71,7 +76,15 @@ export default {
           rodo: 'PCをふく',
         },
       ],
+      isShowAddModal: false,
+      selectedCategory: 'ここにカテゴリー名を入れたい',
     }
+  },
+  methods: {
+    toggleModal() {
+      this.isShowAddModal = !this.isShowAddModal
+      // console.log(this.isShowAddModal)
+    },
   },
 }
 </script>
