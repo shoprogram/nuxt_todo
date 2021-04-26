@@ -3,12 +3,10 @@
     <v-layout justify-center>
       <v-flex class="teal lighten-3" xs4 min-height="1000">
         <v-card class="transparent">
-          <!-- 文字横にプラスボタン作る、モーダルが出る -->
           <v-card-title class="brown--text">
             Work
             <v-spacer />
-            <!-- どこからmodalをopenしたのかのデータを載せる？ -->
-            <AddButton @click.stop="toggleModal"></AddButton>
+            <AddButton @click="toggleModal('work')"></AddButton>
           </v-card-title>
           <v-list class="transparent">
             <v-list-item v-for="(item, i) in work" :key="i" class="black--text">
@@ -23,7 +21,7 @@
           <v-card-title class="brown--text">
             Private
             <v-spacer />
-            <AddButton />
+            <AddButton @click="toggleModal('private')"></AddButton>
           </v-card-title>
           <v-list class="transparent">
             <v-list-item v-for="(item, i) in work" :key="i" class="black--text">
@@ -36,9 +34,9 @@
       <v-flex class="red lighten-3 ml-5" xs4>
         <v-card class="transparent">
           <v-card-title class="brown--text">
-            Ramdom Ideas
+            Random Ideas
             <v-spacer />
-            <AddButton />
+            <AddButton @click="toggleModal('random')"></AddButton>
           </v-card-title>
           <v-list class="transparent">
             <v-list-item v-for="(item, i) in work" :key="i" class="black--text">
@@ -49,12 +47,13 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <Modal :dialog="isShowAddModal" @closeModal="toggleModal">
-      <template v-slot:title>{{ selectedCategory }} にtodoを追加</template>
-      <form>
-        <input type="text" />
-        <input type="submit" />
-      </form>
+    <Modal
+      :dialog="isShowAddModal"
+      @closeModal="toggleModal"
+      @addTodo="addTodo"
+      @input="updateAddTodoTitle"
+    >
+      <template #title>{{ selectedCategory }} にtodoを追加</template>
     </Modal>
   </v-container>
 </template>
@@ -62,6 +61,7 @@
 export default {
   data() {
     return {
+      addTodoTitle: '',
       work: [
         {
           id: '1',
@@ -73,17 +73,36 @@ export default {
         },
         {
           id: '3',
-          rodo: 'PCをふく',
+          todo: 'PCをふく',
         },
       ],
       isShowAddModal: false,
-      selectedCategory: 'ここにカテゴリー名を入れたい',
+      categoryList: {
+        work: 'Work',
+        private: 'Private',
+        random: 'Random Ideas',
+      },
+      selectedCategory: '',
     }
   },
   methods: {
-    toggleModal() {
+    selectCategory(value) {
+      this.selectedCategory = this.categoryList[value]
+    },
+    toggleModal(value) {
+      this.selectCategory(value)
       this.isShowAddModal = !this.isShowAddModal
       // console.log(this.isShowAddModal)
+    },
+    addTodo() {
+      this.isShowAddModal = !this.isShowAddModal
+      this.work.push({
+        id: this.work.length + 1,
+        todo: this.addTodoTitle,
+      })
+    },
+    updateAddTodoTitle(value) {
+      this.addTodoTitle = value
     },
   },
 }
