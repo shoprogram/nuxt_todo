@@ -15,6 +15,8 @@
             required
             label="title"
             class="px-5"
+            :value="inputValue"
+            @change="$emit('passValue', $event)"
             @input="$emit('input', $event)"
           ></v-text-field>
           <v-card-actions>
@@ -36,6 +38,9 @@ export default {
   props: {
     dialog: {
       type: Boolean,
+    },
+    inputValue: {
+      type: String,
     },
     addTodoTitle: {
       type: String,

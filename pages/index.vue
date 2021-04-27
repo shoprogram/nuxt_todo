@@ -9,7 +9,11 @@
             <AddButton @click="toggleModal('work')"></AddButton>
           </v-card-title>
           <v-list class="transparent">
-            <v-list-item v-for="(item, i) in work" :key="i" class="black--text">
+            <v-list-item
+              v-for="(item, i) in todoList.work"
+              :key="i"
+              class="black--text"
+            >
               <v-icon>mdi-radiobox-blank</v-icon>
               {{ item.todo }}
             </v-list-item>
@@ -24,7 +28,11 @@
             <AddButton @click="toggleModal('private')"></AddButton>
           </v-card-title>
           <v-list class="transparent">
-            <v-list-item v-for="(item, i) in work" :key="i" class="black--text">
+            <v-list-item
+              v-for="(item, i) in todoList.private"
+              :key="i"
+              class="black--text"
+            >
               <v-icon>mdi-radiobox-blank</v-icon>
               {{ item.todo }}
             </v-list-item>
@@ -39,7 +47,11 @@
             <AddButton @click="toggleModal('random')"></AddButton>
           </v-card-title>
           <v-list class="transparent">
-            <v-list-item v-for="(item, i) in work" :key="i" class="black--text">
+            <v-list-item
+              v-for="(item, i) in todoList.random"
+              :key="i"
+              class="black--text"
+            >
               <v-icon>mdi-radiobox-blank</v-icon>
               {{ item.todo }}
             </v-list-item>
@@ -49,33 +61,30 @@
     </v-layout>
     <Modal
       :dialog="isShowAddModal"
+      :input-value="inputValue"
       @closeModal="toggleModal"
       @addTodo="addTodo"
       @input="updateAddTodoTitle"
+      @passValue="updateInputValue"
     >
-      <template #title>{{ selectedCategory }} にtodoを追加</template>
+      <template #title
+        >{{ categoryList[selectedCategory] }} にtodoを追加</template
+      >
     </Modal>
   </v-container>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {
       addTodoTitle: '',
-      work: [
-        {
-          id: '1',
-          todo: 'PCを立ち上げる',
-        },
-        {
-          id: '2',
-          todo: 'PCにお茶をこぼす',
-        },
-        {
-          id: '3',
-          todo: 'PCをふく',
-        },
-      ],
+      inputValue: '',
+      // todos: {
+      //   work: [],
+      //   private: [],
+      //   random: [],
+      // },
       isShowAddModal: false,
       categoryList: {
         work: 'Work',
@@ -85,9 +94,14 @@ export default {
       selectedCategory: '',
     }
   },
+  computed: {
+    todoList() {
+      return this.$store.state.todo.todoList
+    },
+  },
   methods: {
     selectCategory(value) {
-      this.selectedCategory = this.categoryList[value]
+      this.selectedCategory = value
     },
     toggleModal(value) {
       this.selectCategory(value)
@@ -96,13 +110,21 @@ export default {
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      this.work.push({
-        id: this.work.length + 1,
+      this.$store.dispatch('todo/addTodo', {
+        category: this.selectedCategory,
         todo: this.addTodoTitle,
       })
+      // this.todos[this.selectedCategory].push({
+      //   id: this.todos[this.selectedCategory].length + 1,
+      //   todo: this.addTodoTitle,
+      // })
+      this.inputValue = ''
     },
     updateAddTodoTitle(value) {
       this.addTodoTitle = value
+    },
+    updateInputValue(value) {
+      this.inputValue = value
     },
   },
 }
