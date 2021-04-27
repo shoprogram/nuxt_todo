@@ -1,5 +1,5 @@
 export const state = () => ({
-  todos: {
+  todoList: {
     work: [],
     private: [],
     random: [],
@@ -9,18 +9,22 @@ export const state = () => ({
 export const mutations = {
   addTodo(state, payload) {
     console.log(payload)
-    state.todos[payload.category].push({
+    state.todoList[payload.category].push({
       payload.todo
     })
   }
 }
 
 export const actions = {
-  addTodo({ commit }, payload) {
+  addTodo({ commit }, newTodo) {
+    const payload = {
+      category: newTodo.category,
+      todo: newTodo.todo
+    }
     commit({
       type: 'addTodo',
       payload,
-      // 非同期の処理なども書いてみたい
+      // 非同期の処理も書いてみたい
     })
   },
 }
