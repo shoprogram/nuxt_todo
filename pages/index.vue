@@ -15,7 +15,7 @@
               class="black--text"
             >
               <v-icon>mdi-radiobox-blank</v-icon>
-              {{ item.todo }}
+              {{ item }}
             </v-list-item>
           </v-list>
         </v-card>
@@ -34,7 +34,7 @@
               class="black--text"
             >
               <v-icon>mdi-radiobox-blank</v-icon>
-              {{ item.todo }}
+              {{ item }}
             </v-list-item>
           </v-list>
         </v-card>
@@ -53,7 +53,7 @@
               class="black--text"
             >
               <v-icon>mdi-radiobox-blank</v-icon>
-              {{ item.todo }}
+              {{ item }}
             </v-list-item>
           </v-list>
         </v-card>
@@ -80,11 +80,6 @@ export default {
     return {
       addTodoTitle: '',
       inputValue: '',
-      // todos: {
-      //   work: [],
-      //   private: [],
-      //   random: [],
-      // },
       isShowAddModal: false,
       categoryList: {
         work: 'Work',
@@ -96,6 +91,7 @@ export default {
   },
   computed: {
     todoList() {
+      console.log('識別', this.$store.state.todo.todoList)
       return this.$store.state.todo.todoList
     },
   },
@@ -106,7 +102,6 @@ export default {
     toggleModal(value) {
       this.selectCategory(value)
       this.isShowAddModal = !this.isShowAddModal
-      // console.log(this.isShowAddModal)
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
