@@ -15,7 +15,7 @@ export const mutations = {
 }
 
 export const actions = {
-  addTodo({ commit }, newTodo) {
+  actionAddTodo({ commit }, newTodo) {
     commit('addTodo', newTodo)
     // 非同期の処理も書いてみたい
   },

@@ -91,11 +91,11 @@ export default {
   },
   computed: {
     todoList() {
-      console.log('識別', this.$store.state.todo.todoList)
       return this.$store.state.todo.todoList
     },
   },
   methods: {
+    // ...mapActions('actionAddTodo'),
     selectCategory(value) {
       this.selectedCategory = value
     },
@@ -105,14 +105,14 @@ export default {
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      this.$store.dispatch('todo/addTodo', {
+      // this.actionAddTodo({
+      //   category: this.selectedCategory,
+      //   todo: this.addTodoTitle,
+      // })MapActionが呼べない？？
+      this.$store.dispatch('todo/actionAddTodo', {
         category: this.selectedCategory,
         todo: this.addTodoTitle,
       })
-      // this.todos[this.selectedCategory].push({
-      //   id: this.todos[this.selectedCategory].length + 1,
-      //   todo: this.addTodoTitle,
-      // })
       this.inputValue = ''
     },
     updateAddTodoTitle(value) {
