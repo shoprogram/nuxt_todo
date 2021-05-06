@@ -13,13 +13,19 @@
           </v-card-title>
           <v-text-field
             required
-            label="title"
+            label="タイトル"
             class="px-5"
             :value="inputValue"
             @change="$emit('passValue', $event)"
             @input="$emit('input', $event)"
           ></v-text-field>
-          <v-card-actions>
+          <v-textarea
+            class="px-5 mt-10"
+            height="50px"
+            label="説明"
+            no-resize
+          ></v-textarea>
+          <v-card-actions class="mt-8">
             <v-spacer></v-spacer>
             <v-btn color="blue lighten-3" text @click="emittedToggleModal"
               >Close
