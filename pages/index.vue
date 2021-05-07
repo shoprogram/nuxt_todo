@@ -61,12 +61,14 @@
     </v-layout>
     <Modal
       :dialog="isShowAddModal"
-      :input-value="inputValue"
+      :title.sync="inputValues.title"
+      :detail.sync="inputValues.detail"
       @closeModal="toggleModal"
       @addTodo="addTodo"
-      @input="updateAddTodoTitle"
-      @passValue="updateInputValue"
     >
+      <!-- @input="updateAddTodoTitle" -->
+      <!-- @passTitle="updateInputTitle" -->
+      <!-- v-bind.sync="inputValues" -->
       <template #title
         >{{ categoryList[selectedCategory] }} にtodoを追加</template
       >
@@ -78,9 +80,12 @@
 export default {
   data() {
     return {
-      addTodoTitle: '',
-      inputValue: '',
+      // addTodoTitle: '',
       isShowAddModal: false,
+      inputValues: {
+        title: '',
+        detail: '',
+      },
       categoryList: {
         work: 'Work',
         private: 'Private',
@@ -111,16 +116,19 @@ export default {
       // })MapActionが呼べない？？
       this.$store.dispatch('todo/actionAddTodo', {
         category: this.selectedCategory,
-        todo: this.addTodoTitle,
+        title: this.inputValues.title,
+        detail: this.inputValues.detail,
       })
-      this.inputValue = ''
+      // console.log(this.inputValues)
+      this.inputValues.title = ''
+      this.inputValues.detail = ''
     },
-    updateAddTodoTitle(value) {
-      this.addTodoTitle = value
-    },
-    updateInputValue(value) {
-      this.inputValue = value
-    },
+    // updateAddTodoTitle(value) {
+    //   this.addTodoTitle = value
+    // },
+    // updateInputTitle(value) {
+    //   this.inputTitle = value
+    // },
   },
 }
 </script>

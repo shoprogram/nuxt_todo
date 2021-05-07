@@ -12,18 +12,21 @@
             <slot name="title"></slot>
           </v-card-title>
           <v-text-field
+            :value="title"
             required
             label="タイトル"
             class="px-5"
-            :value="inputValue"
-            @change="$emit('passValue', $event)"
-            @input="$emit('input', $event)"
-          ></v-text-field>
+            @input="$emit('update:title', $event)"
+          >
+            <!-- @change="$emit('passTitle', $event)" -->
+          </v-text-field>
           <v-textarea
+            :value="detail"
             class="px-5 mt-10"
             height="50px"
             label="説明"
             no-resize
+            @input="$emit('update:detail', $event)"
           ></v-textarea>
           <v-card-actions class="mt-8">
             <v-spacer></v-spacer>
@@ -45,11 +48,13 @@ export default {
     dialog: {
       type: Boolean,
     },
-    inputValue: {
+    title: {
       type: String,
+      default: '',
     },
-    addTodoTitle: {
+    detail: {
       type: String,
+      default: '',
     },
   },
   methods: {
