@@ -61,14 +61,12 @@
     </v-layout>
     <Modal
       :dialog="isShowAddModal"
-      :title.sync="inputValues.title"
-      :detail.sync="inputValues.detail"
+      v-bind.sync="inputValues"
       @closeModal="toggleModal"
       @addTodo="addTodo"
     >
-      <!-- @input="updateAddTodoTitle" -->
-      <!-- @passTitle="updateInputTitle" -->
-      <!-- v-bind.sync="inputValues" -->
+      <!-- :title.sync="inputValues.title"
+      :detail.sync="inputValues.detail" -->
       <template #title
         >{{ categoryList[selectedCategory] }} にtodoを追加</template
       >
