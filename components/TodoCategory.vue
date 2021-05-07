@@ -7,7 +7,7 @@
     <div class="category_todos">
       <ul>
         <li
-          v-for="(item, i) in target[target.type]"
+          v-for="(item, i) in todoList[target.type]"
           :key="i"
           class="todo"
           @mouseover="

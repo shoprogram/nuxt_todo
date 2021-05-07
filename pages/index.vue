@@ -29,9 +29,7 @@
       >
         <!-- :title.sync="inputValues.title"
       :detail.sync="inputValues.detail" -->
-        <template #title
-          >{{ categoryList[selectedCategory] }} にtodoを追加</template
-        >
+        <template #title>{{ selectedCategory }} にtodoを追加</template>
       </ModalVuetify>
     </main>
   </v-app>
@@ -65,6 +63,7 @@ export default {
         random: {
           type: 'random',
           displayName: 'Random',
+        },
       },
       selectedCategory: '',
     }
