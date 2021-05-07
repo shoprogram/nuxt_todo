@@ -3,103 +3,22 @@
     <main>
       <ol class="categories">
         <li class="category category__work">
-          <div class="category_title">
-            <label>Work</label>
-            <AddButton @click="toggleModal('work')"></AddButton>
-          </div>
-          <div class="category_todos">
-            <ul>
-              <li
-                v-for="(item, i) in todoList.work"
-                :key="i"
-                class="todo"
-                @mouseover="
-                  isShowEditIcon.work = true
-                  currentIndex = i
-                "
-                @mouseleave="
-                  isShowEditIcon.work = false
-                  currentIndex = -1
-                "
-              >
-                <div class="todo__title">
-                  <v-icon>mdi-radiobox-blank</v-icon>
-                  {{ item }}
-                </div>
-                <v-icon
-                  v-show="isShowEditIcon.work && currentIndex === i"
-                  class="todo__edit-button"
-                  >mdi-lead-pencil</v-icon
-                >
-              </li>
-            </ul>
-          </div>
+          <TodoCategory
+            :target="categoryList.work"
+            @toggle-modal="toggleModal"
+          ></TodoCategory>
         </li>
         <li class="category category__private">
-          <div class="category_title">
-            <label>Private</label>
-            <AddButton @click="toggleModal('private')"></AddButton>
-          </div>
-          <div class="category_todos">
-            <ul>
-              <li
-                v-for="(item, i) in todoList.private"
-                :key="i"
-                class="todo"
-                @mouseover="
-                  isShowEditIcon.private = true
-                  currentIndex = i
-                "
-                @mouseleave="
-                  isShowEditIcon.private = false
-                  currentIndex = -1
-                "
-              >
-                <div class="todo__title">
-                  <v-icon>mdi-radiobox-blank</v-icon>
-                  {{ item }}
-                </div>
-                <v-icon
-                  v-show="isShowEditIcon.private && currentIndex === i"
-                  class="todo__edit-button"
-                  >mdi-lead-pencil</v-icon
-                >
-              </li>
-            </ul>
-          </div>
+          <TodoCategory
+            :target="categoryList.private"
+            @toggle-modal="toggleModal"
+          ></TodoCategory>
         </li>
         <li class="category category__random">
-          <div class="category_title">
-            <label>Random Ideas</label>
-            <AddButton @click="toggleModal('random')"></AddButton>
-          </div>
-          <div class="category_todos">
-            <ul>
-              <li
-                v-for="(item, i) in todoList.random"
-                :key="i"
-                class="todo"
-                @mouseover="
-                  isShowEditIcon.random = true
-                  currentIndex = i
-                "
-                @mouseleave="
-                  isShowEditIcon.random = false
-                  currentIndex = -1
-                "
-              >
-                <div class="todo__title">
-                  <v-icon>mdi-radiobox-blank</v-icon>
-                  {{ item }}
-                </div>
-                <v-icon
-                  v-show="isShowEditIcon.random && currentIndex === i"
-                  class="todo__edit-button"
-                  >mdi-lead-pencil</v-icon
-                >
-              </li>
-            </ul>
-          </div>
+          <TodoCategory
+            :target="categoryList.random"
+            @toggle-modal="toggleModal"
+          ></TodoCategory>
         </li>
       </ol>
       <ModalVuetify
@@ -135,9 +54,17 @@ export default {
         detail: '',
       },
       categoryList: {
-        work: 'Work',
-        private: 'Private',
-        random: 'Random Ideas',
+        work: {
+          type: 'work',
+          displayName: 'Work',
+        },
+        private: {
+          type: 'private',
+          displayName: 'Private',
+        },
+        random: {
+          type: 'random',
+          displayName: 'Random',
       },
       selectedCategory: '',
     }
