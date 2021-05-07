@@ -41,12 +41,12 @@ export default {
     return {
       // addTodoTitle: '',
       isShowAddModal: false,
-      currentIndex: -1,
-      isShowEditIcon: {
-        work: false,
-        private: false,
-        random: false,
-      },
+      // currentIndex: -1,
+      // isShowEditIcon: {
+      //   work: false,
+      //   private: false,
+      //   random: false,
+      // },
       inputValues: {
         title: '',
         detail: '',

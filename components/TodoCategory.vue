@@ -45,6 +45,16 @@ export default {
       type: Object,
     },
   },
+  data() {
+    return {
+      currentIndex: -1,
+      isShowEditIcon: {
+        work: false,
+        private: false,
+        random: false,
+      },
+    }
+  },
   computed: {
     todoList() {
       return this.$store.state.todo.todoList
