@@ -18,11 +18,13 @@
           <v-icon>mdi-radiobox-blank</v-icon>
           {{ item.title }}
         </div>
-        <v-icon
-          v-show="isShowEditIcon[target.type] && currentIndex === i"
-          class="todo__edit-button"
-          >mdi-lead-pencil</v-icon
-        >
+        <div @click="$emit('showEditModal')">
+          <v-icon
+            v-show="isShowEditIcon[target.type] && currentIndex === i"
+            class="todo__edit-button"
+            >mdi-lead-pencil</v-icon
+          >
+        </div>
         <v-icon
           v-show="isShowEditIcon[target.type] && currentIndex === i"
           class="todo__edit-button"
@@ -57,3 +59,19 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.todo {
+  display: flex;
+  width: 100%;
+  padding: 15px 10px;
+  justify-content: space-between;
+  &__title {
+  }
+  &__edit-button {
+    padding-right: 10px;
+  }
+  &:hover {
+  }
+}
+</style>

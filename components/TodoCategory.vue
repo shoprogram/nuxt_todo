@@ -4,7 +4,10 @@
       <label>{{ target.displayName }}</label>
       <AddButton @click="$emit('toggle-modal', target.type)"></AddButton>
     </div>
-    <TodoList :target="target"></TodoList>
+    <TodoList
+      :target="target"
+      @showEditModal="$emit('showEditModal')"
+    ></TodoList>
   </div>
 </template>
 <script>

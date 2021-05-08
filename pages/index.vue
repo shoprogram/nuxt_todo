@@ -6,18 +6,21 @@
           <TodoCategory
             :target="categoryList.work"
             @toggle-modal="toggleModal"
+            @showEditModal="showEditModal"
           ></TodoCategory>
         </li>
         <li class="category category__private">
           <TodoCategory
             :target="categoryList.private"
             @toggle-modal="toggleModal"
+            @showEditModal="showEditModal"
           ></TodoCategory>
         </li>
         <li class="category category__random">
           <TodoCategory
             :target="categoryList.random"
             @toggle-modal="toggleModal"
+            @showEditModal="showEditModal"
           ></TodoCategory>
         </li>
       </ol>
@@ -29,6 +32,7 @@
       >
         <template #title>{{ selectedCategory }} にtodoを追加</template>
       </ModalVuetify>
+      <EditModal :dialog="isShowEditModal"></EditModal>
     </main>
   </v-app>
 </template>
@@ -38,6 +42,7 @@ export default {
   data() {
     return {
       isShowAddModal: false,
+      isShowEditModal: false,
       inputValues: {
         title: '',
         detail: '',
@@ -85,6 +90,9 @@ export default {
       this.inputValues.detail = ''
       this.selectedCategories = ''
     },
+    showEditModal() {
+      this.isShowEditModal = !this.isShowEditModal
+    },
   },
 }
 </script>
@@ -109,21 +117,6 @@ ol {
   }
   &__random {
     background-color: #d6cea2;
-  }
-}
-.edit-button {
-}
-.todo {
-  display: flex;
-  width: 100%;
-  padding: 15px 10px;
-  justify-content: space-between;
-  &__title {
-  }
-  &__edit-button {
-    padding-right: 10px;
-  }
-  &:hover {
   }
 }
 </style>
