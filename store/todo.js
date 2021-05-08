@@ -8,7 +8,11 @@ export const state = () => ({
 
 export const mutations = {
   addTodo(state, payload) {
-    state.todoList[payload.category].push(payload.title)
+    const todoData = {
+      title: payload.title,
+      detail: payload.detail,
+    }
+    state.todoList[payload.category].push(todoData)
   },
 }
 

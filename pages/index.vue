@@ -27,8 +27,6 @@
         @closeModal="toggleModal"
         @addTodo="addTodo"
       >
-        <!-- :title.sync="inputValues.title"
-      :detail.sync="inputValues.detail" -->
         <template #title>{{ selectedCategory }} にtodoを追加</template>
       </ModalVuetify>
     </main>
@@ -39,14 +37,7 @@
 export default {
   data() {
     return {
-      // addTodoTitle: '',
       isShowAddModal: false,
-      // currentIndex: -1,
-      // isShowEditIcon: {
-      //   work: false,
-      //   private: false,
-      //   random: false,
-      // },
       inputValues: {
         title: '',
         detail: '',
@@ -84,31 +75,16 @@ export default {
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      // this.actionAddTodo({
-      //   category: this.selectedCategory,
-      //   todo: this.addTodoTitle,
-      // })MapActionが呼べない？？
+      // こういうところでMapActionsって呼べるの？？
       this.$store.dispatch('todo/actionAddTodo', {
         category: this.selectedCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
       })
-      // console.log(this.inputValues)
       this.inputValues.title = ''
       this.inputValues.detail = ''
+      this.selectedCategories = ''
     },
-    // showEditIcon() {
-    //   this.isShowEditIcon = true
-    // },
-    // hideEditIcon() {
-    //   this.isShowEditIcon = false
-    // },
-    // updateAddTodoTitle(value) {
-    //   this.addTodoTitle = value
-    // },
-    // updateInputTitle(value) {
-    //   this.inputTitle = value
-    // },
   },
 }
 </script>

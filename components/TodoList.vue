@@ -16,7 +16,7 @@
       >
         <div class="todo__title">
           <v-icon>mdi-radiobox-blank</v-icon>
-          {{ item }}
+          {{ item.title }}
         </div>
         <v-icon
           v-show="isShowEditIcon[target.type] && currentIndex === i"
