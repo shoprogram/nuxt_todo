@@ -18,7 +18,11 @@
           <v-icon>mdi-radiobox-blank</v-icon>
           {{ item.title }}
         </div>
-        <div @click="$emit('showEditModal')">
+        <div
+          @click="
+            $emit('showEditModal', { index: i, type: todoList[target.type] })
+          "
+        >
           <v-icon
             v-show="isShowEditIcon[target.type] && currentIndex === i"
             class="todo__edit-button"

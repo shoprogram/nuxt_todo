@@ -32,7 +32,10 @@
       >
         <template #title>{{ selectedCategory }} にtodoを追加</template>
       </ModalVuetify>
-      <EditModal :dialog="isShowEditModal"></EditModal>
+      <EditModal
+        :dialog="isShowEditModal"
+        :selected-edit-todo="selectedEditTodo"
+      ></EditModal>
     </main>
   </v-app>
 </template>
@@ -62,6 +65,10 @@ export default {
         },
       },
       selectedCategory: '',
+      selectedEditTodo: {
+        index: '',
+        type: '',
+      },
     }
   },
   computed: {
@@ -90,7 +97,11 @@ export default {
       this.inputValues.detail = ''
       this.selectedCategories = ''
     },
-    showEditModal() {
+    showEditModal(index, type) {
+      console.log(index)//undifined
+      console.log(type)//undifined
+      this.selectedEditTodo.index = index
+      this.selectedEditTodo.type = type
       this.isShowEditModal = !this.isShowEditModal
     },
   },

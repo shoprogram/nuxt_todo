@@ -10,10 +10,10 @@
         <div class="edit-modal__title">
           <v-icon>mdi-clipboard-edit-outline</v-icon>
           <v-text-field
-            :value="title"
             required
             placeholder="title"
             class="ml-5"
+            :value="editedTitle"
           >
           </v-text-field>
         </div>
@@ -45,16 +45,28 @@ export default {
     dialog: {
       type: Boolean,
     },
-    // title: {
-    //   type: String,
-    //   default: '',
-    // },
-    // detail: {
-    //   type: String,
-    //   default: '',
+    selectedEditTodo: {
+      type: Object,
+      // indexとtype(workなどが入ってる)
+    },
+  },
+  data() {
+    return {
+      editedTitle: this.getTodoTitle,
+    }
+  },
+  computed: {
+    // storeからtodoListとってtypeで絞る
+    selectedTodoList() {
+      console.log(this.selectedEditTodo)
+      return this.$store.state.todo.todoList
+      // return this.$store.state.todo.todoList[this.selectedEditTodo.type]
+    },
+    // typeの中からinde番号のtodoを取得
+    // getTodoTitle() {
+    //   return this.selectedTodoList[this.seletedEditTodo.index]
     // },
   },
-  methods: {},
 }
 </script>
 

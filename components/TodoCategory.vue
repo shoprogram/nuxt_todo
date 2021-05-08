@@ -6,7 +6,7 @@
     </div>
     <TodoList
       :target="target"
-      @showEditModal="$emit('showEditModal')"
+      @showEditModal="$emit('showEditModal', selectedTodo)"
     ></TodoList>
   </div>
 </template>
