@@ -30,12 +30,13 @@
         @closeModal="toggleModal"
         @addTodo="addTodo"
       >
-        <template #title>{{ selectedCategory }} にtodoを追加</template>
+        <template #title>{{ selectedAddCategory }} にtodoを追加</template>
       </AddModal>
       <EditModal
         :dialog="isShowEditModal"
-        :v-bind.sync="selectedEditTodo"
+        v-bind.sync="selectedEditTodo"
         @closeEditModal="closeEditModal"
+        @updateTodo="updateTodo"
       ></EditModal>
     </main>
   </v-app>
@@ -65,9 +66,11 @@ export default {
           displayName: 'Random',
         },
       },
-      selectedCategory: '',
+      selectedAddCategory: '',
       selectedEditTodo: {
         index: null,
+        title: '',
+        detail: '',
         category: '',
       },
     }
@@ -79,18 +82,18 @@ export default {
   },
   methods: {
     // ...mapActions('actionAddTodo'),
-    selectCategory(value) {
-      this.selectedCategory = value
+    selectAddCategory(value) {
+      this.selectedAddCategory = value
     },
     toggleModal(value) {
-      this.selectCategory(value)
+      this.selectAddCategory(value)
       this.isShowAddModal = !this.isShowAddModal
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
       // こういうところでMapActionsって呼べるの？？
       this.$store.dispatch('todo/actionAddTodo', {
-        category: this.selectedCategory,
+        category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
       })
@@ -100,11 +103,22 @@ export default {
     },
     showEditModal({ index, category }) {
       this.selectedEditTodo.index = index
+      const editCategory = this.todoList[category]
       this.selectedEditTodo.category = category
+      this.selectedEditTodo.title = editCategory[index].title
+      this.selectedEditTodo.detail = editCategory[index].detail
       this.isShowEditModal = !this.isShowEditModal
     },
     closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
+    },
+    updateTodo() {
+      console.log(this.selectedEditTodo.title)
+      this.isShowEditModal = !this.isShowEditModal
+      this.$store.dispatch('todo/actionUpdateTodo', this.selectedEditTodo)
+      this.selectedEditTodo.title = ''
+      this.selectedEditTodo.detail = ''
+      this.selectedEditTodo.category = ''
     },
   },
 }
