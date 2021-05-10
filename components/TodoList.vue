@@ -15,28 +15,32 @@
         "
       >
         <div class="todo__title">
-          <v-icon>mdi-radiobox-blank</v-icon>
-          {{ item.title }}
+          <v-checkbox
+            :off-icon="'mdi-checkbox-blank-circle-outline'"
+            :on-icon="'mdi-check-circle-outline'"
+            :label="item.title"
+          ></v-checkbox>
         </div>
+
         <div
-          @click="
-            $emit('showEditModal', {
-              index: i,
-              category: target.category,
-            })
-          "
-        >
-          <v-icon
-            v-show="isShowEditIcon[target.category] && currentIndex === i"
-            class="todo__edit-button"
-            >mdi-lead-pencil</v-icon
-          >
-        </div>
-        <v-icon
           v-show="isShowEditIcon[target.category] && currentIndex === i"
-          class="todo__edit-button"
-          >mdi-delete</v-icon
+          class="todo-menu"
         >
+          <div
+            class="edit-button"
+            @click="
+              $emit('showEditModal', {
+                index: i,
+                category: target.category,
+              })
+            "
+          >
+            <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
+          </div>
+          <div class="delete-button">
+            <v-icon class="todo__edit-button">mdi-delete</v-icon>
+          </div>
+        </div>
       </li>
     </ul>
   </div>
@@ -73,6 +77,8 @@ export default {
   width: 100%;
   padding: 15px 10px;
   justify-content: space-between;
+  align-items: center;
+  // text-align: center;
   &__title {
   }
   &__edit-button {
@@ -80,5 +86,9 @@ export default {
   }
   &:hover {
   }
+}
+.edit-button,
+.delete-button {
+  display: inline-block;
 }
 </style>

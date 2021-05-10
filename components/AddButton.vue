@@ -16,7 +16,8 @@
 .button__add {
   font-weight: 500;
   // align-items: flex-end;
-  padding-bottom: 0;
+  padding-bottom: 7px;
+  //↑なんで入らないの？
   &:hover {
     background-color: rgba(255, 255, 255, 0.3) !important;
   }
