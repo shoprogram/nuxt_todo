@@ -1,6 +1,11 @@
 export const state = () => ({
   todoList: {
-    work: [],
+    work: [
+      {
+        title: 'todo1',
+        detail: 'todo example',
+      },
+    ],
     private: [],
     random: [],
   },

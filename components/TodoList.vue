@@ -2,15 +2,15 @@
   <div class="category_todos">
     <ul>
       <li
-        v-for="(item, i) in todoList[target.type]"
+        v-for="(item, i) in todoList[target.category]"
         :key="i"
         class="todo"
         @mouseover="
-          isShowEditIcon[target.type] = true
+          isShowEditIcon[target.category] = true
           currentIndex = i
         "
         @mouseleave="
-          isShowEditIcon[target.type] = false
+          isShowEditIcon[target.category] = false
           currentIndex = -1
         "
       >
@@ -20,17 +20,20 @@
         </div>
         <div
           @click="
-            $emit('showEditModal', { index: i, type: todoList[target.type] })
+            $emit('showEditModal', {
+              index: i,
+              category: target.category,
+            })
           "
         >
           <v-icon
-            v-show="isShowEditIcon[target.type] && currentIndex === i"
+            v-show="isShowEditIcon[target.category] && currentIndex === i"
             class="todo__edit-button"
             >mdi-lead-pencil</v-icon
           >
         </div>
         <v-icon
-          v-show="isShowEditIcon[target.type] && currentIndex === i"
+          v-show="isShowEditIcon[target.category] && currentIndex === i"
           class="todo__edit-button"
           >mdi-delete</v-icon
         >

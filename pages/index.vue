@@ -24,17 +24,18 @@
           ></TodoCategory>
         </li>
       </ol>
-      <ModalVuetify
+      <AddModal
         :dialog="isShowAddModal"
         v-bind.sync="inputValues"
         @closeModal="toggleModal"
         @addTodo="addTodo"
       >
         <template #title>{{ selectedCategory }} にtodoを追加</template>
-      </ModalVuetify>
+      </AddModal>
       <EditModal
         :dialog="isShowEditModal"
-        :selected-edit-todo="selectedEditTodo"
+        :v-bind.sync="selectedEditTodo"
+        @closeEditModal="closeEditModal"
       ></EditModal>
     </main>
   </v-app>
@@ -52,22 +53,22 @@ export default {
       },
       categoryList: {
         work: {
-          type: 'work',
+          category: 'work',
           displayName: 'Work',
         },
         private: {
-          type: 'private',
+          category: 'private',
           displayName: 'Private',
         },
         random: {
-          type: 'random',
+          category: 'random',
           displayName: 'Random',
         },
       },
       selectedCategory: '',
       selectedEditTodo: {
-        index: '',
-        type: '',
+        index: null,
+        category: '',
       },
     }
   },
@@ -97,11 +98,12 @@ export default {
       this.inputValues.detail = ''
       this.selectedCategories = ''
     },
-    showEditModal(index, type) {
-      console.log(index)//undifined
-      console.log(type)//undifined
+    showEditModal({ index, category }) {
       this.selectedEditTodo.index = index
-      this.selectedEditTodo.type = type
+      this.selectedEditTodo.category = category
+      this.isShowEditModal = !this.isShowEditModal
+    },
+    closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
     },
   },

@@ -4,17 +4,12 @@
       :value="dialog"
       width="700px"
       height="800px"
-      @click:outside="emittedToggleModal"
+      @click:outside="$emit('closeEditModal')"
     >
       <v-card class="edit-modal__wrapper">
         <div class="edit-modal__title">
           <v-icon>mdi-clipboard-edit-outline</v-icon>
-          <v-text-field
-            required
-            placeholder="title"
-            class="ml-5"
-            :value="editedTitle"
-          >
+          <v-text-field :value="editedTitle" required class="ml-5">
           </v-text-field>
         </div>
         <div class="edit-modal__editor">
@@ -23,10 +18,9 @@
             <p>説明</p>
           </div>
           <v-textarea
-            :value="detail"
+            :value="editedDetail"
             class="pl-10 mt-12"
             height="50px"
-            placeholder="detail"
             no-resize
           ></v-textarea>
         </div>
@@ -45,27 +39,42 @@ export default {
     dialog: {
       type: Boolean,
     },
-    selectedEditTodo: {
-      type: Object,
-      // indexとtype(workなどが入ってる)
+    index: {
+      type: Number,
+      default: 0,
     },
+    category: {
+      type: String,
+      default: 'todo111',
+    },
+    // selectedEditTodo: {
+    //   type: Object,
+    // },
   },
   data() {
     return {
-      editedTitle: this.getTodoTitle,
+      editedTitle: this.getTodoTitle || '',
+      editedDetail: this.getTodoDetail || '',
     }
   },
   computed: {
     // storeからtodoListとってtypeで絞る
     selectedTodoList() {
-      console.log(this.selectedEditTodo)
-      return this.$store.state.todo.todoList
-      // return this.$store.state.todo.todoList[this.selectedEditTodo.type]
+      // return this.$store.state.todo.todoList
+      console.log('List')
+      return this.$store.state.todo.todoList[this.category]
     },
-    // typeの中からinde番号のtodoを取得
-    // getTodoTitle() {
-    //   return this.selectedTodoList[this.seletedEditTodo.index]
-    // },
+    // categoryに当てはまるtodolistの中からindex番号のtodoを取得
+    getTodoTitle() {
+      console.log('before')
+      if (!this.index) return
+      console.log(this.selectedTodoList[this.index].title)
+      return this.selectedTodoList[this.index].title
+    },
+    getTodoDetail() {
+      if (!this.index) return
+      return this.selectedTodoList[this.index].detail
+    },
   },
 }
 </script>
