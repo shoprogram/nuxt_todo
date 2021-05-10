@@ -1,5 +1,27 @@
 <template>
-  <v-btn color="accent" elevation="1" x-small fab @click="$emit('click')"
-    >+
+  <v-btn
+    class="button__add"
+    color="transparent"
+    elevation="0"
+    block
+    depressed
+    elevation-0
+    @click="$emit('click')"
+  >
+    <v-icon>mdi-plus</v-icon>
+    <span>Todoを追加する</span>
   </v-btn>
 </template>
+<style lang="scss">
+.button__add {
+  font-weight: 500;
+  // align-items: flex-end;
+  padding-bottom: 0;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+  }
+  & span {
+    margin-left: 4px;
+  }
+}
+</style>

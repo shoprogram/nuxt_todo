@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="category_title">
+    <div class="category-title">
       <label>{{ target.displayName }}</label>
-      <AddButton @click="$emit('toggle-modal', target.category)"></AddButton>
     </div>
     <TodoList :target="target" @showEditModal="showEditModal"></TodoList>
+    <AddButton @click="$emit('toggle-modal', target.category)"></AddButton>
   </div>
 </template>
 <script>
@@ -21,3 +21,14 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.category-title {
+  font-weight: 600;
+  & label {
+    padding: 15px 20px 0 20px;
+    display: block;
+    font-size: 20px;
+    letter-spacing: 3px;
+  }
+}
+</style>

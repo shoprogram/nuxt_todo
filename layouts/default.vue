@@ -1,6 +1,5 @@
 <template>
   <v-app light>
-    <!-- Navigator in the left side!! -->
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -37,7 +36,7 @@
       <v-btn icon @click.stop="fixed = !fixed">
         <v-icon>mdi-minus</v-icon>
       </v-btn>
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title class="tool-bar__title" v-text="title" />
       <v-spacer />
       <v-btn icon @click.stop="rightDrawer = !rightDrawer">
         <v-icon>mdi-menu</v-icon>
@@ -94,6 +93,11 @@ export default {
 </script>
 <style>
 .v-application {
-  font-family: 'Open Sans';
+  font-family: arial, helvetica, sans-serif;
+}
+.tool-bar__title {
+  font-weight: 400;
+  letter-spacing: 2px;
+  font-size: 24px;
 }
 </style>
