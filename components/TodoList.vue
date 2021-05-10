@@ -16,10 +16,12 @@
       >
         <div class="todo__title">
           <v-checkbox
+            class="checkbox"
             :off-icon="'mdi-checkbox-blank-circle-outline'"
             :on-icon="'mdi-check-circle-outline'"
-            :label="item.title"
+            @click="isFinished = !isFinished"
           ></v-checkbox>
+          <label :class="{ finished: isFinished }">{{ item.title }}</label>
         </div>
 
         <div
@@ -61,12 +63,19 @@ export default {
         private: false,
         random: false,
       },
+      isFinished: false,
     }
   },
   computed: {
     todoList() {
       return this.$store.state.todo.todoList
     },
+    // finishedTodo: function() {
+    //   return() {
+    //     finished: this.isFinished,
+    //     notyet: !this.isFinished,
+    //   }
+    // },
   },
 }
 </script>
@@ -75,11 +84,12 @@ export default {
 .todo {
   display: flex;
   width: 100%;
-  padding: 15px 10px;
+  padding: 6px 10px;
   justify-content: space-between;
   align-items: center;
   // text-align: center;
   &__title {
+    margin-top: 0;
   }
   &__edit-button {
     padding-right: 10px;
@@ -90,5 +100,15 @@ export default {
 .edit-button,
 .delete-button {
   display: inline-block;
+}
+.finished {
+  text-decoration: line-through gray;
+}
+.notyet {
+  text-decoration: none;
+}
+.checkbox {
+  display: inline-block;
+  height: 20px;
 }
 </style>
