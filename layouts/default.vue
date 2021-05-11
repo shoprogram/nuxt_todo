@@ -1,5 +1,5 @@
 <template>
-  <v-app light>
+  <v-app>
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -42,7 +42,7 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <!-- メインです！！ -->
+    <!-- メイン！！ -->
     <v-main>
       <v-container>
         <nuxt />
@@ -87,13 +87,21 @@ export default {
       right: true,
       rightDrawer: false,
       title: 'My List',
+      defaultColors: {
+        lightShades: '#f6f8f4',
+        lightAccent: '#96a298',
+        mainColor: '#e3aa94',
+        darkAccent: '#749899',
+        darkShades: '#7a6056',
+      },
     }
   },
 }
 </script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Noto+Sans+JP&display=swap');
 .v-application {
-  font-family: arial, helvetica, sans-serif;
+  font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
 }
 .tool-bar__title {
   font-weight: 400;

@@ -48,6 +48,7 @@
         :dialog="isShowDeleteModal"
         v-bind.sync="selectedTodo"
         @closeDeleteModal="closeDeleteModal"
+        @deleteTodo="deleteTodo"
       ></DeleteModal>
     </main>
   </v-app>
@@ -140,8 +141,8 @@ export default {
     },
     showDeleteModal({ index, category }) {
       this.isShowDeleteModal = !this.isShowDeleteModal
-      this.selectedTodo.index = index
       const deleteCategory = this.todoList[category]
+      this.selectedTodo.index = index
       this.selectedTodo.category = category
       this.selectedTodo.title = deleteCategory[index].title
       this.selectedTodo.detail = deleteCategory[index].detail
@@ -152,6 +153,15 @@ export default {
       this.selectedTodo.title = ''
       this.selectedTodo.detail = ''
       this.selectedTodo.category = ''
+    },
+    deleteTodo() {
+      const targetId = this.selectedTodo.index
+      const targetCategory = this.selectedTodo.category
+      this.$store.dispatch('todo/actionDeleteTodo', {
+        index: targetId,
+        category: targetCategory,
+      })
+      this.closeDeleteModal()
     },
   },
 }
@@ -171,14 +181,15 @@ ol {
 .category {
   width: 31%;
   padding: 50px, 10px;
+  border-radius: 4px;
   &__work {
-    background-color: #c9b966;
+    background-color: #72b3b5;
   }
   &__private {
-    background-color: #d3ad97;
+    background-color: #edb39e;
   }
   &__random {
-    background-color: #d6cea2;
+    background-color: #e2a7b0;
   }
 }
 </style>

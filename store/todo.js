@@ -29,6 +29,10 @@ export const mutations = {
     const target = state.todoList[payload.category]
     target[payload.index].isFinished = !target[payload.index].isFinished
   },
+  deleteTodo(state, payload) {
+    const target = state.todoList[payload.category]
+    target.splice(payload.index, 1)
+  },
 }
 
 export const actions = {
@@ -41,5 +45,8 @@ export const actions = {
   },
   actionFinishedTodo({ commit }, payload) {
     commit('finishedTodo', payload)
+  },
+  actionDeleteTodo({ commit }, payload) {
+    commit('deleteTodo', payload)
   },
 }

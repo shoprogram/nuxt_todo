@@ -23,8 +23,13 @@
           </div>
         </v-row>
         <v-card-actions class="buttons">
-          <v-btn>キャンセル</v-btn>
-          <v-btn class="delete-button white--text" color="#C62828">削除</v-btn>
+          <v-btn @click="$emit('closeDeleteModal')">キャンセル</v-btn>
+          <v-btn
+            class="delete-button white--text"
+            color="#C62828"
+            @click="$emit('deleteTodo')"
+            >削除
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -33,11 +38,13 @@
 
 <script>
 export default {
+  props: {
+    dialog: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
-      dialog: {
-        type: Boolean,
-      },
       index: {
         type: Number,
       },

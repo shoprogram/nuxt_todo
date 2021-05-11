@@ -107,7 +107,7 @@ export default {
     margin-top: 0;
   }
   &__edit-button {
-    padding-right: 10px;
+    // padding-right: 10px;
   }
   &:hover {
   }
@@ -115,9 +115,19 @@ export default {
 .edit-button,
 .delete-button {
   display: inline-block;
+  margin-left: 0;
 }
 .finished {
-  text-decoration: line-through #ad343e;
+  position: relative;
+  &::before {
+    position: absolute;
+    top: 0.5em;
+    left: -0.3em;
+    content: '';
+    border: 2px solid #ad343e;
+    width: 120%;
+  }
+  // text-decoration: line-through #ad343e;
 }
 .notyet {
   text-decoration: none;
