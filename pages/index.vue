@@ -8,6 +8,7 @@
             @toggle-modal="toggleModal"
             @showEditModal="showEditModal"
             @finishedTodo="finishedTodo"
+            @showDeleteModal="showDeleteModal"
           ></TodoCategory>
         </li>
         <li class="category category__private">
@@ -16,6 +17,7 @@
             @toggle-modal="toggleModal"
             @showEditModal="showEditModal"
             @finishedTodo="finishedTodo"
+            @showDeleteModal="showDeleteModal"
           ></TodoCategory>
         </li>
         <li class="category category__random">
@@ -24,6 +26,7 @@
             @toggle-modal="toggleModal"
             @showEditModal="showEditModal"
             @finishedTodo="finishedTodo"
+            @showDeleteModal="showDeleteModal"
           ></TodoCategory>
         </li>
       </ol>
@@ -37,10 +40,15 @@
       </AddModal>
       <EditModal
         :dialog="isShowEditModal"
-        v-bind.sync="selectedEditTodo"
+        v-bind.sync="selectedTodo"
         @closeEditModal="closeEditModal"
         @updateTodo="updateTodo"
       ></EditModal>
+      <DeleteModal
+        :dialog="isShowDeleteModal"
+        v-bind.sync="selectedTodo"
+        @closeDeleteModal="closeDeleteModal"
+      ></DeleteModal>
     </main>
   </v-app>
 </template>
@@ -51,6 +59,7 @@ export default {
     return {
       isShowAddModal: false,
       isShowEditModal: false,
+      isShowDeleteModal: false,
       inputValues: {
         title: '',
         detail: '',
@@ -70,7 +79,7 @@ export default {
         },
       },
       selectedAddCategory: '',
-      selectedEditTodo: {
+      selectedTodo: {
         index: null,
         title: '',
         detail: '',
@@ -105,30 +114,49 @@ export default {
       this.selectedCategories = ''
     },
     showEditModal({ index, category }) {
-      this.selectedEditTodo.index = index
+      this.selectedTodo.index = index
       const editCategory = this.todoList[category]
-      this.selectedEditTodo.category = category
-      this.selectedEditTodo.title = editCategory[index].title
-      this.selectedEditTodo.detail = editCategory[index].detail
+      this.selectedTodo.category = category
+      this.selectedTodo.title = editCategory[index].title
+      this.selectedTodo.detail = editCategory[index].detail
       this.isShowEditModal = !this.isShowEditModal
     },
     closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
+      this.selectedTodo.title = ''
+      this.selectedTodo.detail = ''
+      this.selectedTodo.category = ''
     },
     updateTodo() {
-      console.log(this.selectedEditTodo.title)
+      console.log(this.selectedTodo.title)
       this.isShowEditModal = !this.isShowEditModal
-      this.$store.dispatch('todo/actionUpdateTodo', this.selectedEditTodo)
-      this.selectedEditTodo.title = ''
-      this.selectedEditTodo.detail = ''
-      this.selectedEditTodo.category = ''
+      this.$store.dispatch('todo/actionUpdateTodo', this.selectedTodo)
+      this.selectedTodo.title = ''
+      this.selectedTodo.detail = ''
+      this.selectedTodo.category = ''
     },
     finishedTodo(payload) {
       this.$store.dispatch('todo/actionFinishedTodo', payload)
     },
+    showDeleteModal({ index, category }) {
+      this.isShowDeleteModal = !this.isShowDeleteModal
+      this.selectedTodo.index = index
+      const deleteCategory = this.todoList[category]
+      this.selectedTodo.category = category
+      this.selectedTodo.title = deleteCategory[index].title
+      this.selectedTodo.detail = deleteCategory[index].detail
+      // data baseもらうまで待っとく？
+    },
+    closeDeleteModal() {
+      this.isShowDeleteModal = !this.isShowDeleteModal
+      this.selectedTodo.title = ''
+      this.selectedTodo.detail = ''
+      this.selectedTodo.category = ''
+    },
   },
 }
 </script>
+
 <style lang="scss">
 ul,
 ol {

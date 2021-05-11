@@ -7,6 +7,7 @@
       :target="target"
       @showEditModal="showEditModal"
       @finishedTodo="finishedTodo"
+      @showDeleteModal="showDeleteModal"
     ></TodoList>
     <AddButton @click="$emit('toggle-modal', target.category)"></AddButton>
   </div>
@@ -24,6 +25,9 @@ export default {
     },
     finishedTodo(payload) {
       this.$emit('finishedTodo', payload)
+    },
+    showDeleteModal(payload) {
+      this.$emit('showDeleteModal', payload)
     },
   },
 }

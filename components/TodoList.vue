@@ -47,7 +47,15 @@
           >
             <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
           </div>
-          <div class="delete-button">
+          <div
+            class="delete-button"
+            @click="
+              $emit('showDeleteModal', {
+                index: i,
+                category: target.category,
+              })
+            "
+          >
             <v-icon class="todo__edit-button">mdi-delete</v-icon>
           </div>
         </div>
