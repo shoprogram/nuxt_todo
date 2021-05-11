@@ -138,6 +138,7 @@ ol {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  align-items: start;
 }
 .category {
   width: 31%;
