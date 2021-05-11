@@ -3,7 +3,11 @@
     <div class="category-title">
       <label>{{ target.displayName }}</label>
     </div>
-    <TodoList :target="target" @showEditModal="showEditModal"></TodoList>
+    <TodoList
+      :target="target"
+      @showEditModal="showEditModal"
+      @finishedTodo="finishedTodo"
+    ></TodoList>
     <AddButton @click="$emit('toggle-modal', target.category)"></AddButton>
   </div>
 </template>
@@ -17,6 +21,9 @@ export default {
   methods: {
     showEditModal(payload) {
       this.$emit('showEditModal', payload)
+    },
+    finishedTodo(payload) {
+      this.$emit('finishedTodo', payload)
     },
   },
 }

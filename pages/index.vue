@@ -7,6 +7,7 @@
             :target="categoryList.work"
             @toggle-modal="toggleModal"
             @showEditModal="showEditModal"
+            @finishedTodo="finishedTodo"
           ></TodoCategory>
         </li>
         <li class="category category__private">
@@ -14,6 +15,7 @@
             :target="categoryList.private"
             @toggle-modal="toggleModal"
             @showEditModal="showEditModal"
+            @finishedTodo="finishedTodo"
           ></TodoCategory>
         </li>
         <li class="category category__random">
@@ -21,6 +23,7 @@
             :target="categoryList.random"
             @toggle-modal="toggleModal"
             @showEditModal="showEditModal"
+            @finishedTodo="finishedTodo"
           ></TodoCategory>
         </li>
       </ol>
@@ -119,6 +122,9 @@ export default {
       this.selectedEditTodo.title = ''
       this.selectedEditTodo.detail = ''
       this.selectedEditTodo.category = ''
+    },
+    finishedTodo(payload) {
+      this.$store.dispatch('todo/actionFinishedTodo', payload)
     },
   },
 }

@@ -19,9 +19,17 @@
             class="checkbox"
             :off-icon="'mdi-checkbox-blank-circle-outline'"
             :on-icon="'mdi-check-circle-outline'"
-            @click="isFinished = !isFinished"
+            color="red darken-3"
+            @click="
+              $emit('finishedTodo', {
+                index: i,
+                category: target.category,
+              })
+            "
           ></v-checkbox>
-          <label :class="{ finished: isFinished }">{{ item.title }}</label>
+          <label :class="{ finished: checkFinished(item) }">{{
+            item.title
+          }}</label>
         </div>
 
         <div
@@ -63,19 +71,18 @@ export default {
         private: false,
         random: false,
       },
-      isFinished: false,
+      targetTodo: '',
     }
   },
   computed: {
     todoList() {
       return this.$store.state.todo.todoList
     },
-    // finishedTodo: function() {
-    //   return() {
-    //     finished: this.isFinished,
-    //     notyet: !this.isFinished,
-    //   }
-    // },
+  },
+  methods: {
+    checkFinished(target) {
+      return target.isFinished
+    },
   },
 }
 </script>
@@ -86,7 +93,7 @@ export default {
   width: 100%;
   padding: 6px 10px;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   // text-align: center;
   &__title {
     margin-top: 0;
@@ -102,7 +109,7 @@ export default {
   display: inline-block;
 }
 .finished {
-  text-decoration: line-through gray;
+  text-decoration: line-through #ad343e;
 }
 .notyet {
   text-decoration: none;

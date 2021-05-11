@@ -11,6 +11,7 @@ export const mutations = {
     const todoData = {
       title: payload.title,
       detail: payload.detail,
+      isFinished: false,
     }
     state.todoList[payload.category].push(todoData)
   },
@@ -24,6 +25,10 @@ export const mutations = {
     target[payload.index] = updatedData
     console.log(target[payload.index])
   },
+  finishedTodo(state, payload) {
+    const target = state.todoList[payload.category]
+    target[payload.index].isFinished = !target[payload.index].isFinished
+  },
 }
 
 export const actions = {
@@ -33,5 +38,8 @@ export const actions = {
   },
   actionUpdateTodo({ commit }, updatedTodo) {
     commit('updateTodo', updatedTodo)
+  },
+  actionFinishedTodo({ commit }, payload) {
+    commit('finishedTodo', payload)
   },
 }
