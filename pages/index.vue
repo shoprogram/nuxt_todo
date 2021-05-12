@@ -79,7 +79,7 @@
       <li class="category category__private">
         <div>
           <div class="category-title">
-            <label>Private}</label>
+            <label>Private</label>
           </div>
           <draggable
             v-model="draggableListPrivate"
@@ -301,8 +301,11 @@ export default {
         return this.todoList.work
       },
       set(value) {
-        console.log(value)
-        this.$store.commit('todo/updateDraggableList', value)
+        console.log('indexワーク', value)
+        this.$store.commit('todo/updateDraggableList', {
+          value,
+          targetCategory: 'work',
+        })
       },
     },
     draggableListPrivate: {
@@ -310,8 +313,11 @@ export default {
         return this.todoList.private
       },
       set(value) {
-        console.log(value)
-        this.$store.commit('todo/updateDraggableList', value)
+        console.log('indexプライベート', value)
+        this.$store.commit('todo/updateDraggableList', {
+          value,
+          targetCategory: 'private',
+        })
       },
     },
     draggableListRandom: {
@@ -319,8 +325,11 @@ export default {
         return this.todoList.random
       },
       set(value) {
-        console.log(value)
-        this.$store.commit('todo/updateDraggableList', value)
+        console.log('indexらんだむ', value)
+        this.$store.commit('todo/updateDraggableList', {
+          value,
+          targetCategory: 'random',
+        })
       },
     },
   },

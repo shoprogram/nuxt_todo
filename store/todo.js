@@ -51,21 +51,22 @@ export const mutations = {
     target.splice(payload.index, 1)
   },
   updateDraggableList(state, payload) {
-    console.log(payload)
-    state.todoList[payload.targetCategory] = payload.value
+    console.log(payload.value)
+    const targetTodoList = []
+    for (let i = 0; i < payload.value.length; i++) {
+      console.log('確認')
+      if (payload.value[i].category === payload.targetCategory) {
+        targetTodoList.push(payload.value[i])
+      } else {
+        payload.value[i].category = payload.targetCategory
+        targetTodoList.push(payload.value[i])
+      }
+    }
+    state.todoList[payload.targetCategory] = targetTodoList
     // const target = state.todoList[payload.targetCategory]
     // const workList = state.todoList.work
     // const privateList = state.todoList.private
     // const randomList = state.todoList.random
-    // for (let i = 0; payload.length < i; i++) {
-    //   if (payload[i].category === 'work') {
-    //     workList.push(payload[i])
-    //   } else if (payload[i].category === 'private') {
-    //     privateList.push(payload[i])
-    //   } else {
-    //     randomList.push(payload[i])
-    //   }
-    // }
   },
 }
 
