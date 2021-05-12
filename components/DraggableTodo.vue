@@ -1,6 +1,6 @@
 <template>
-  <draggable v-model="draggableTodoList" draggable=".todo">
-    <div
+  <draggable v-model="draggableTodoList" element="ul" draggable=".todo">
+    <li
       v-for="(item, i) in draggableTodoList"
       :key="i"
       class="todo"
@@ -15,10 +15,11 @@
     >
       <div class="todo__title">
         <v-checkbox
-          class="checkbox"
+          class="checkbox mt-0 pt-0"
           :off-icon="'mdi-checkbox-blank-circle-outline'"
           :on-icon="'mdi-check-circle-outline'"
           color="red darken-3"
+          dense
           @click="
             $emit('finishedTodo', {
               index: i,
@@ -58,7 +59,7 @@
           <v-icon class="todo__edit-button">mdi-delete</v-icon>
         </div>
       </div>
-    </div>
+    </li>
   </draggable>
 </template>
 
@@ -84,9 +85,16 @@ export default {
     todoList() {
       return this.$store.state.todo.todoList
     },
+
     draggableTodoList: {
       get() {
         return this.todoList[this.target.category]
+        // return [this.todoList.work, this.todoList.private, this.todoList.random]
+        // const workList = this.todoList.work
+        // const privateList = this.todoList.private
+        // const randomList = this.todoList.random
+        // const wholeList = workList.concat(privateList, randomList)
+        // return wholeList
       },
       set(value) {
         console.log(value)
@@ -98,6 +106,7 @@ export default {
           }
           // { root: true }
         )
+        // this.$store.commit('todo/updateDraggableList', value)
       },
     },
   },
@@ -125,6 +134,8 @@ export default {
   // text-align: center;
   &__title {
     margin-top: 0;
+    display: flex;
+    align-items: center;
   }
   &__edit-button {
     // padding-right: 10px;
@@ -152,12 +163,18 @@ export default {
   }
   // text-decoration: line-through #ad343e;
 }
-.notyet {
-  text-decoration: none;
-}
+// .notyet {
+//   text-decoration: none;
+// }
 .checkbox {
   display: inline-block;
   margin-top: 0;
   // height: 20px;
+}
+.v-messages {
+  display: none;
+}
+.input-slot {
+  margin-bottom: 0;
 }
 </style>

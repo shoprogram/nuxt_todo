@@ -1,57 +1,55 @@
 <template>
-  <v-app>
-    <main>
-      <ol class="categories">
-        <li class="category category__work">
-          <TodoCategory
-            :target="categoryList.work"
-            @toggle-modal="toggleModal"
-            @showEditModal="showEditModal"
-            @finishedTodo="finishedTodo"
-            @showDeleteModal="showDeleteModal"
-          ></TodoCategory>
-        </li>
-        <li class="category category__private">
-          <TodoCategory
-            :target="categoryList.private"
-            @toggle-modal="toggleModal"
-            @showEditModal="showEditModal"
-            @finishedTodo="finishedTodo"
-            @showDeleteModal="showDeleteModal"
-          ></TodoCategory>
-        </li>
-        <li class="category category__random">
-          <TodoCategory
-            :target="categoryList.random"
-            @toggle-modal="toggleModal"
-            @showEditModal="showEditModal"
-            @finishedTodo="finishedTodo"
-            @showDeleteModal="showDeleteModal"
-          ></TodoCategory>
-        </li>
-      </ol>
-      <AddModal
-        :dialog="isShowAddModal"
-        v-bind.sync="inputValues"
-        @closeModal="toggleModal"
-        @addTodo="addTodo"
-      >
-        <template #title>{{ selectedAddCategory }} にtodoを追加</template>
-      </AddModal>
-      <EditModal
-        :dialog="isShowEditModal"
-        v-bind.sync="selectedTodo"
-        @closeEditModal="closeEditModal"
-        @updateTodo="updateTodo"
-      ></EditModal>
-      <DeleteModal
-        :dialog="isShowDeleteModal"
-        v-bind.sync="selectedTodo"
-        @closeDeleteModal="closeDeleteModal"
-        @deleteTodo="deleteTodo"
-      ></DeleteModal>
-    </main>
-  </v-app>
+  <main>
+    <ol class="categories">
+      <li class="category category__work">
+        <TodoCategory
+          :target="categoryList.work"
+          @toggle-modal="toggleModal"
+          @showEditModal="showEditModal"
+          @finishedTodo="finishedTodo"
+          @showDeleteModal="showDeleteModal"
+        ></TodoCategory>
+      </li>
+      <li class="category category__private">
+        <TodoCategory
+          :target="categoryList.private"
+          @toggle-modal="toggleModal"
+          @showEditModal="showEditModal"
+          @finishedTodo="finishedTodo"
+          @showDeleteModal="showDeleteModal"
+        ></TodoCategory>
+      </li>
+      <li class="category category__random">
+        <TodoCategory
+          :target="categoryList.random"
+          @toggle-modal="toggleModal"
+          @showEditModal="showEditModal"
+          @finishedTodo="finishedTodo"
+          @showDeleteModal="showDeleteModal"
+        ></TodoCategory>
+      </li>
+    </ol>
+    <AddModal
+      :dialog="isShowAddModal"
+      v-bind.sync="inputValues"
+      @closeModal="toggleModal"
+      @addTodo="addTodo"
+    >
+      <template #title>{{ selectedAddCategory }} にtodoを追加</template>
+    </AddModal>
+    <EditModal
+      :dialog="isShowEditModal"
+      v-bind.sync="selectedTodo"
+      @closeEditModal="closeEditModal"
+      @updateTodo="updateTodo"
+    ></EditModal>
+    <DeleteModal
+      :dialog="isShowDeleteModal"
+      v-bind.sync="selectedTodo"
+      @closeDeleteModal="closeDeleteModal"
+      @deleteTodo="deleteTodo"
+    ></DeleteModal>
+  </main>
 </template>
 <script>
 // import { mapActions } from 'vuex'
@@ -183,10 +181,10 @@ ol {
   padding: 50px, 10px;
   border-radius: 4px;
   &__work {
-    background-color: hsl(182, 37%, 71%);
+    background-color: hsl(182, 31%, 73%);
   }
   &__private {
-    background-color: hsl(16, 69%, 77%);
+    background-color: hsl(16, 39%, 77%);
   }
   &__random {
     background-color: hsl(351, 50%, 77%);

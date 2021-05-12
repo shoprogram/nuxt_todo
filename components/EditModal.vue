@@ -1,46 +1,44 @@
 <template>
-  <v-app id="modal">
-    <v-dialog
-      :value="dialog"
-      width="700px"
-      height="800px"
-      @click:outside="$emit('closeEditModal')"
-    >
-      <v-card class="edit-modal__wrapper">
-        <div class="edit-modal__title">
-          <v-icon>mdi-clipboard-edit-outline</v-icon>
-          <v-text-field
-            :value="title"
-            required
-            class="ml-5"
-            @input="$emit('update:title', $event)"
-          ></v-text-field>
+  <v-dialog
+    :value="dialog"
+    width="700px"
+    height="800px"
+    @click:outside="$emit('closeEditModal')"
+  >
+    <v-card class="edit-modal__wrapper">
+      <div class="edit-modal__title">
+        <v-icon>mdi-clipboard-edit-outline</v-icon>
+        <v-text-field
+          :value="title"
+          required
+          class="ml-5"
+          @input="$emit('update:title', $event)"
+        ></v-text-field>
+      </div>
+      <div class="edit-modal__editor">
+        <div class="edit-modal__editor--title">
+          <v-icon>mdi-text</v-icon>
+          <p>説明</p>
         </div>
-        <div class="edit-modal__editor">
-          <div class="edit-modal__editor--title">
-            <v-icon>mdi-text</v-icon>
-            <p>説明</p>
-          </div>
-          <v-textarea
-            :value="detail"
-            class="pl-10 mt-12"
-            height="50px"
-            no-resize
-            @input="$emit('update:detail', $event)"
-          ></v-textarea>
-        </div>
-        <v-card-actions class="mt-8">
-          <v-spacer></v-spacer>
-          <v-btn color="blue lighten-3" text @click="$emit('closeEditModal')"
-            >Close
-          </v-btn>
-          <v-btn color="blue lighten-3" text @click="$emit('updateTodo')"
-            >Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-app>
+        <v-textarea
+          :value="detail"
+          class="pl-10 mt-12"
+          height="50px"
+          no-resize
+          @input="$emit('update:detail', $event)"
+        ></v-textarea>
+      </div>
+      <v-card-actions class="mt-8">
+        <v-spacer></v-spacer>
+        <v-btn color="blue lighten-3" text @click="$emit('closeEditModal')"
+          >Close
+        </v-btn>
+        <v-btn color="blue lighten-3" text @click="$emit('updateTodo')"
+          >Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 <script>
 export default {
