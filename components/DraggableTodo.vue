@@ -33,7 +33,7 @@
 
       <div
         v-show="isShowEditIcon[target.category] && currentIndex === i"
-        class="todo-menu"
+        class="todo__menu"
       >
         <div
           class="edit-button"
@@ -111,11 +111,17 @@ export default {
 
 <style lang="scss">
 .todo {
+  background-color: white;
+  // opacity: 0.7;
+  text-align: center;
+  border-radius: 4px;
+  width: 90%;
   display: flex;
-  width: 100%;
-  padding: 6px 10px;
+  // width: 100%;
+  margin: 6px auto 0;
+  padding: 5px 0 3px 5px;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: baseline;
   // text-align: center;
   &__title {
     margin-top: 0;
@@ -124,6 +130,9 @@ export default {
     // padding-right: 10px;
   }
   &:hover {
+  }
+  &__menu {
+    margin-right: 8px;
   }
 }
 .edit-button,
@@ -139,7 +148,7 @@ export default {
     left: -0.3em;
     content: '';
     border: 2px solid #ad343e;
-    width: 120%;
+    width: 200%;
   }
   // text-decoration: line-through #ad343e;
 }

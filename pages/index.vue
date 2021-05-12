@@ -183,13 +183,13 @@ ol {
   padding: 50px, 10px;
   border-radius: 4px;
   &__work {
-    background-color: #72b3b5;
+    background-color: hsl(182, 37%, 71%);
   }
   &__private {
-    background-color: #edb39e;
+    background-color: hsl(16, 69%, 77%);
   }
   &__random {
-    background-color: #e2a7b0;
+    background-color: hsl(351, 50%, 77%);
   }
 }
 </style>
