@@ -33,6 +33,10 @@ export const mutations = {
     const target = state.todoList[payload.category]
     target.splice(payload.index, 1)
   },
+  updateDraggableList(state, payload) {
+    // const target = state.todoList[payload.targetCategory]
+    state.todoList[payload.targetCategory] = payload.value
+  },
 }
 
 export const actions = {

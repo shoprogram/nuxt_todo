@@ -3,12 +3,12 @@
     <div class="category-title">
       <label>{{ target.displayName }}</label>
     </div>
-    <TodoList
+    <DraggableTodo
       :target="target"
       @showEditModal="showEditModal"
       @finishedTodo="finishedTodo"
       @showDeleteModal="showDeleteModal"
-    ></TodoList>
+    ></DraggableTodo>
     <AddButton @click="$emit('toggle-modal', target.category)"></AddButton>
   </div>
 </template>
