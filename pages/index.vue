@@ -1,9 +1,17 @@
 <template>
   <main>
-    <div class="sort">
-      <v-checkbox color="#ea9c8a" label="全てのTodoを表示"></v-checkbox>
-      <v-checkbox color="#ea9c8a" label="未完了のTodoのみ表示"></v-checkbox>
-      <div class="search-box">
+    <div class="filter-bar">
+      <v-checkbox
+        class="filter"
+        color="#ea9c8a"
+        label="全てのTodoを表示"
+      ></v-checkbox>
+      <v-checkbox
+        class="filter"
+        color="#ea9c8a"
+        label="未完了のTodoのみ表示"
+      ></v-checkbox>
+      <div class="search-box filter">
         <input placeholder="検索でTodoを絞り込む" />
         <button>検索</button>
       </div>
@@ -516,8 +524,21 @@ ol {
 }
 
 //上部絞り込み
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+  align-items: flex-start;
+}
+.filter {
+  padding-top: 0;
+  margin-top: 0;
+  &:not(:first-of-type) {
+    margin-left: 30px;
+  }
+}
 .search-box {
   display: flex;
-  margin-top: 20px;
+  // margin-left: 60px;
 }
 </style>
