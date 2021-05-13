@@ -55,10 +55,10 @@ export default {
       dark: false,
       themes: {
         light: {
-          primary: '#bc8089',
-          secondary: '#e3aa94',
+          primary: '#bc8089', // ローズ
+          secondary: '#e3aa94', // オレンジっぽい
           lightShades: '#f6f8f4',
-          accent: '#749899',
+          accent: '#749899', // グレーグリーン
           error: '#979492',
         },
       },

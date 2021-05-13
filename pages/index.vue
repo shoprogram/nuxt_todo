@@ -1,5 +1,13 @@
 <template>
   <main>
+    <div class="sort">
+      <v-checkbox color="#ea9c8a" label="全てのTodoを表示"></v-checkbox>
+      <v-checkbox color="#ea9c8a" label="未完了のTodoのみ表示"></v-checkbox>
+      <div class="search-box">
+        <input placeholder="検索でTodoを絞り込む" />
+        <button>検索</button>
+      </div>
+    </div>
     <ol class="categories">
       <li class="category category__work">
         <div>
@@ -414,12 +422,14 @@ export default {
 ul,
 ol {
   list-style: none;
+  padding-left: 0 !important;
 }
 .categories {
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: start;
+  margin-top: 30px;
 }
 .category {
   width: 31%;
@@ -503,5 +513,11 @@ ol {
 }
 .input-slot {
   margin-bottom: 0;
+}
+
+//上部絞り込み
+.search-box {
+  display: flex;
+  margin-top: 20px;
 }
 </style>
