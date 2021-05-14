@@ -45,11 +45,11 @@
               class="todo"
               @mouseover="
                 isShowEditIcon.work = true
-                currentIndex = i
+                currentid = i
               "
               @mouseleave="
                 isShowEditIcon.work = false
-                currentIndex = -1
+                currentid = -1
               "
             >
               <div class="todo__title">
@@ -61,7 +61,7 @@
                   dense
                   @click="
                     finishedTodo({
-                      index: i,
+                      id: i,
                       category: 'work',
                     })
                   "
@@ -72,14 +72,14 @@
               </div>
 
               <div
-                v-show="isShowEditIcon[item.category] && currentIndex === i"
+                v-show="isShowEditIcon[item.category] && currentid === i"
                 class="todo__menu"
               >
                 <div
                   class="edit-button"
                   @click="
                     showEditModal({
-                      index: i,
+                      id: i,
                       category: item.category,
                     })
                   "
@@ -90,7 +90,7 @@
                   class="delete-button"
                   @click="
                     showDeleteModal({
-                      index: i,
+                      id: i,
                       category: item.category,
                     })
                   "
@@ -120,11 +120,11 @@
               class="todo"
               @mouseover="
                 isShowEditIcon[item.category] = true
-                currentIndex = i
+                currentid = i
               "
               @mouseleave="
                 isShowEditIcon[item.category] = false
-                currentIndex = -1
+                currentid = -1
               "
             >
               <div class="todo__title">
@@ -136,7 +136,7 @@
                   dense
                   @click="
                     finishedTodo({
-                      index: i,
+                      id: i,
                       category: item.category,
                     })
                   "
@@ -147,14 +147,14 @@
               </div>
 
               <div
-                v-show="isShowEditIcon[item.category] && currentIndex === i"
+                v-show="isShowEditIcon[item.category] && currentid === i"
                 class="todo__menu"
               >
                 <div
                   class="edit-button"
                   @click="
                     showEditModal({
-                      index: i,
+                      id: i,
                       category: item.category,
                     })
                   "
@@ -165,7 +165,7 @@
                   class="delete-button"
                   @click="
                     showDeleteModal({
-                      index: i,
+                      id: i,
                       category: item.category,
                     })
                   "
@@ -195,11 +195,11 @@
               class="todo"
               @mouseover="
                 isShowEditIcon[item.category] = true
-                currentIndex = i
+                currentid = i
               "
               @mouseleave="
                 isShowEditIcon[item.category] = false
-                currentIndex = -1
+                currentid = -1
               "
             >
               <div class="todo__title">
@@ -211,7 +211,7 @@
                   dense
                   @click="
                     $emit('finishedTodo', {
-                      index: i,
+                      id: i,
                       category: item.category,
                     })
                   "
@@ -222,14 +222,14 @@
               </div>
 
               <div
-                v-show="isShowEditIcon[item.category] && currentIndex === i"
+                v-show="isShowEditIcon[item.category] && currentid === i"
                 class="todo__menu"
               >
                 <div
                   class="edit-button"
                   @click="
                     showEditModal({
-                      index: i,
+                      id: i,
                       category: item.category,
                     })
                   "
@@ -240,7 +240,7 @@
                   class="delete-button"
                   @click="
                     showDeleteModal({
-                      index: i,
+                      id: i,
                       category: item.category,
                     })
                   "
@@ -279,10 +279,14 @@
 <script>
 // import { mapActions } from 'vuex'
 export default {
+  async asyncData({ app }) {
+    const response = await app.$axios.$get('http://localhost:4000/api/v1/todo')
+    return { host: response }
+  },
   data() {
     return {
       // DraggableTodoより
-      currentIndex: -1,
+      currentid: -1,
       isShowEditIcon: {
         work: false,
         private: false,
@@ -312,7 +316,7 @@ export default {
       },
       selectedAddCategory: '',
       selectedTodo: {
-        index: null,
+        id: null,
         title: '',
         detail: '',
         category: '',
@@ -328,7 +332,7 @@ export default {
         return this.todoList.work
       },
       set(value) {
-        console.log('indexワーク', value)
+        console.log('idワーク', value)
         this.$store.commit('todo/updateDraggableList', {
           value,
           targetCategory: 'work',
@@ -340,7 +344,7 @@ export default {
         return this.todoList.private
       },
       set(value) {
-        console.log('indexプライベート', value)
+        console.log('idプライベート', value)
         this.$store.commit('todo/updateDraggableList', {
           value,
           targetCategory: 'private',
@@ -352,13 +356,16 @@ export default {
         return this.todoList.random
       },
       set(value) {
-        console.log('indexらんだむ', value)
+        console.log('idらんだむ', value)
         this.$store.commit('todo/updateDraggableList', {
           value,
           targetCategory: 'random',
         })
       },
     },
+  },
+  created() {
+    this.$store.dispatch('todo/actionGetAllTodo')
   },
   methods: {
     selectAddCategory(value) {
@@ -380,12 +387,12 @@ export default {
       this.inputValues.detail = ''
       this.selectedCategories = ''
     },
-    showEditModal({ index, category }) {
-      this.selectedTodo.index = index
+    showEditModal({ id, category }) {
+      this.selectedTodo.id = id
       const editCategory = this.todoList[category]
       this.selectedTodo.category = category
-      this.selectedTodo.title = editCategory[index].title
-      this.selectedTodo.detail = editCategory[index].detail
+      this.selectedTodo.title = editCategory[id].title
+      this.selectedTodo.detail = editCategory[id].detail
       this.isShowEditModal = !this.isShowEditModal
     },
     closeEditModal() {
@@ -409,13 +416,13 @@ export default {
     finishedTodo(payload) {
       this.$store.dispatch('todo/actionFinishedTodo', payload)
     },
-    showDeleteModal({ index, category }) {
+    showDeleteModal({ id, category }) {
       this.isShowDeleteModal = !this.isShowDeleteModal
       const deleteCategory = this.todoList[category]
-      this.selectedTodo.index = index
+      this.selectedTodo.id = id
       this.selectedTodo.category = category
-      this.selectedTodo.title = deleteCategory[index].title
-      this.selectedTodo.detail = deleteCategory[index].detail
+      this.selectedTodo.title = deleteCategory[id].title
+      this.selectedTodo.detail = deleteCategory[id].detail
       // data baseもらうまで待っとく？
     },
     closeDeleteModal() {
@@ -425,10 +432,10 @@ export default {
       this.selectedTodo.category = ''
     },
     deleteTodo() {
-      const targetId = this.selectedTodo.index
+      const targetId = this.selectedTodo.id
       const targetCategory = this.selectedTodo.category
       this.$store.dispatch('todo/actionDeleteTodo', {
-        index: targetId,
+        id: targetId,
         category: targetCategory,
       })
       this.closeDeleteModal()

@@ -44,10 +44,18 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     'nuxt-fontawesome',
+    '@nuxtjs/proxy',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
+
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:4000',
+      changeOrigin: true,
+    },
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -69,9 +77,9 @@ export default {
     imports: [
       {
         set: '@fortawesome/free-solid-svg-icons',
-        icons: ['fas']
-      }
-    ]
+        icons: ['fas'],
+      },
+    ],
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

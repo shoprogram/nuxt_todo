@@ -1,29 +1,13 @@
+import axios from 'axios'
+
 export const state = () => ({
-  todoList: {
-    work: [
-      {
-        title: 'todo1',
-        detail: 'detail!',
-        category: 'work',
-      },
-      {
-        title: 'TODO2',
-        detail: '!!!',
-        category: 'work',
-      },
-    ],
-    private: [
-      {
-        title: 'TODO!!!',
-        detail: '!!!',
-        category: 'private',
-      },
-    ],
-    random: [],
-  },
+  todoList: {},
 })
 
 export const mutations = {
+  getAllTodo(state, payload) {
+    state.todoList = payload
+  },
   addTodo(state, payload) {
     const todoData = {
       title: payload.title,
@@ -71,9 +55,28 @@ export const mutations = {
 }
 
 export const actions = {
+  async actionGetAllTodo({ commit }) {
+    await axios.get('http://localhost:3000/api/v1/todo').then((res) => {
+      const work = []
+      const privateTodo = []
+      const random = []
+      for (let i = 0; i >= res.data.length; i++) {
+        if (res.data[i].category === 'work') {
+          work.push(res.data[i])
+        } else if (res.data[i].category === 'private') {
+          privateTodo.push(res.data[i])
+        } else if (res.data[i].category === 'random') {
+          random.push(res.data[i])
+        } else {
+          continue
+        }
+      }
+      const payload = { work, private, random }
+      commit('getAllTodo', payload)
+    })
+  },
   actionAddTodo({ commit }, newTodo) {
     commit('addTodo', newTodo)
-    // 非同期の処理も書いてみたい
   },
   actionUpdateTodo({ commit }, updatedTodo) {
     commit('updateTodo', updatedTodo)
