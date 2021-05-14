@@ -1,19 +1,30 @@
 <template>
   <main>
     <div class="filter-bar">
-      <v-checkbox
-        class="filter"
-        color="#ea9c8a"
-        label="全てのTodoを表示"
-      ></v-checkbox>
-      <v-checkbox
-        class="filter"
-        color="#ea9c8a"
-        label="未完了のTodoのみ表示"
-      ></v-checkbox>
-      <div class="search-box filter">
-        <input placeholder="検索でTodoを絞り込む" />
-        <button>検索</button>
+      <div class="filter-bar__checkbox">
+        <v-checkbox
+          class="filter"
+          color="#ea9c8a"
+          label="全てのTodoを表示"
+        ></v-checkbox>
+        <v-checkbox
+          class="filter"
+          color="#ea9c8a"
+          label="未完了のTodoのみ表示"
+        ></v-checkbox>
+      </div>
+      <div class="search__bar filter">
+        <div class="search__bar--box">
+          <font-awesome-icon
+            icon="search"
+            class="search__bar--icon"
+          ></font-awesome-icon>
+          <input placeholder="検索でTodoを絞り込む" />
+          <font-awesome-icon
+            icon="times"
+            class="search__bar--icon"
+          ></font-awesome-icon>
+        </div>
       </div>
     </div>
     <ol class="categories">
@@ -523,12 +534,15 @@ ol {
   margin-bottom: 0;
 }
 
-//上部絞り込み
+//上部絞り込み部分
 .filter-bar {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: 25px;
-  align-items: flex-start;
+  align-items: center;
+  &__checkbox {
+    display: flex;
+  }
 }
 .filter {
   padding-top: 0;
@@ -537,8 +551,31 @@ ol {
     margin-left: 30px;
   }
 }
-.search-box {
+.search__bar {
   display: flex;
-  // margin-left: 60px;
+  &--box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    width: 100%;
+    background-color: #ddd;
+    margin-bottom: 8px;
+    margin-left: 90px;
+    & input {
+      border: none;
+      outline: none;
+      box-sizing: border-box;
+      background-color: #ddd;
+      &::placeholder {
+        font-size: 0.5em;
+      }
+    }
+  }
+  &--icon {
+    height: 13px;
+    width: 13px;
+    margin: 8px 8px;
+  }
 }
 </style>
