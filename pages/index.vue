@@ -279,10 +279,10 @@
 <script>
 // import { mapActions } from 'vuex'
 export default {
-  async asyncData({ app }) {
-    const response = await app.$axios.$get('http://localhost:4000/api/v1/todo')
-    return { host: response }
-  },
+  // async asyncData({ app }) {
+  //   const response = await app.$axios.$get('http://localhost:4000/api/v1/todo')
+  //   return { host: response }
+  // },
   data() {
     return {
       // DraggableTodoより
@@ -329,10 +329,9 @@ export default {
     },
     draggableListWork: {
       get() {
-        return this.todoList.work
+        return this.todoList.workTodo
       },
       set(value) {
-        console.log('idワーク', value)
         this.$store.commit('todo/updateDraggableList', {
           value,
           targetCategory: 'work',
@@ -341,10 +340,9 @@ export default {
     },
     draggableListPrivate: {
       get() {
-        return this.todoList.private
+        return this.todoList.privateTodo
       },
       set(value) {
-        console.log('idプライベート', value)
         this.$store.commit('todo/updateDraggableList', {
           value,
           targetCategory: 'private',
@@ -353,10 +351,9 @@ export default {
     },
     draggableListRandom: {
       get() {
-        return this.todoList.random
+        return this.todoList.randomTodo
       },
       set(value) {
-        console.log('idらんだむ', value)
         this.$store.commit('todo/updateDraggableList', {
           value,
           targetCategory: 'random',
@@ -368,11 +365,11 @@ export default {
     this.$store.dispatch('todo/actionGetAllTodo')
   },
   methods: {
-    selectAddCategory(value) {
-      this.selectedAddCategory = value
-    },
+    // selectAddCategory(value) {
+    //   this.selectedAddCategory = value
+    // },
     toggleModal(value) {
-      this.selectAddCategory(value)
+      this.selectedAddCategory = value
       this.isShowAddModal = !this.isShowAddModal
     },
     addTodo() {
@@ -382,6 +379,7 @@ export default {
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
+        isFinished: false,
       })
       this.inputValues.title = ''
       this.inputValues.detail = ''

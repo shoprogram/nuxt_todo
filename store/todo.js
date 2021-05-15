@@ -6,13 +6,14 @@ export const state = () => ({
 
 export const mutations = {
   getAllTodo(state, payload) {
+    state.todoList = {}
     state.todoList = payload
   },
   addTodo(state, payload) {
     const todoData = {
       title: payload.title,
       detail: payload.detail,
-      isFinished: false,
+      Finished: true,
       category: payload.category,
     }
     state.todoList[payload.category].push(todoData)
@@ -57,26 +58,38 @@ export const mutations = {
 export const actions = {
   async actionGetAllTodo({ commit }) {
     await axios.get('http://localhost:3000/api/v1/todo').then((res) => {
-      const work = []
+      const workTodo = []
       const privateTodo = []
-      const random = []
-      for (let i = 0; i >= res.data.length; i++) {
+      const randomTodo = []
+      for (let i = 0; i < res.data.length; i++) {
         if (res.data[i].category === 'work') {
-          work.push(res.data[i])
+          workTodo.push(res.data[i])
         } else if (res.data[i].category === 'private') {
           privateTodo.push(res.data[i])
         } else if (res.data[i].category === 'random') {
-          random.push(res.data[i])
+          randomTodo.push(res.data[i])
         } else {
           continue
         }
       }
-      const payload = { work, private, random }
+      const payload = { workTodo, privateTodo, randomTodo }
       commit('getAllTodo', payload)
     })
   },
-  actionAddTodo({ commit }, newTodo) {
-    commit('addTodo', newTodo)
+  async actionAddTodo({ dispatch }, newTodo) {
+    // ここではcategoryもdetailもちゃんと入ってる。↑
+    const formedTodo = new URLSearchParams()
+    formedTodo.append('title', newTodo.title)
+    formedTodo.append('detail', newTodo.detail)
+    formedTodo.append('category', newTodo.category)
+    formedTodo.append('isFinished', newTodo.isFinished)
+    console.log(newTodo.detail)
+    // これでもcategoryとdetail、nullになってるなんで！
+    await axios
+      .post('http://localhost:3000/api/v1/todo', formedTodo)
+      .then(dispatch('actionGetAllTodo'))
+    // .then(commit('addTodo', newTodo))
+    // .then(commit('getAllTodo'))
   },
   actionUpdateTodo({ commit }, updatedTodo) {
     commit('updateTodo', updatedTodo)
