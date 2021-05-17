@@ -83,8 +83,8 @@ export const actions = {
     formedTodo.append('detail', newTodo.detail)
     formedTodo.append('category', newTodo.category)
     formedTodo.append('isFinished', newTodo.isFinished)
-    console.log(newTodo.detail)
-    // これでもcategoryとdetail、nullになってるなんで！
+    console.log(newTodo)
+    // これでもcategoryとdetail、nullになってる！
     await axios
       .post('http://localhost:3000/api/v1/todo', formedTodo)
       .then(dispatch('actionGetAllTodo'))

@@ -75,15 +75,7 @@
                 v-show="isShowEditIcon[item.category] && currentid === i"
                 class="todo__menu"
               >
-                <div
-                  class="edit-button"
-                  @click="
-                    showEditModal({
-                      id: i,
-                      category: item.category,
-                    })
-                  "
-                >
+                <div class="edit-button" @click="showEditModal(item)">
                   <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
                 </div>
                 <div
@@ -150,15 +142,7 @@
                 v-show="isShowEditIcon[item.category] && currentid === i"
                 class="todo__menu"
               >
-                <div
-                  class="edit-button"
-                  @click="
-                    showEditModal({
-                      id: i,
-                      category: item.category,
-                    })
-                  "
-                >
+                <div class="edit-button" @click="showEditModal(item)">
                   <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
                 </div>
                 <div
@@ -386,12 +370,18 @@ export default {
       this.selectedCategories = ''
     },
     showEditModal({ id, category }) {
-      this.selectedTodo.id = id
-      const editCategory = this.todoList[category]
-      this.selectedTodo.category = category
-      this.selectedTodo.title = editCategory[id].title
-      this.selectedTodo.detail = editCategory[id].detail
       this.isShowEditModal = !this.isShowEditModal
+      const editCategory = this.todoList[category + 'Todo'][id]
+      this.selectedTodo.id = id
+      this.selectedTodo.category = category
+      this.selectedTodo.title = editCategory.title
+      this.selectedTodo.detail = editCategory.detail
+      // this.selectedTodo.id = id
+      // const editCategory = this.todoList[category]
+      // this.selectedTodo.category = category
+      // this.selectedTodo.title = editCategory[id].title
+      // this.selectedTodo.detail = editCategory[id].detail
+      // this.isShowEditModal = !this.isShowEditModal
     },
     closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
