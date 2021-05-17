@@ -3,14 +3,22 @@
     <div class="filter-bar">
       <div class="filter-bar__checkbox">
         <v-checkbox
+          v-model="isFilterAllChecked"
+          :false-value="false"
+          :true-value="true"
           class="filter"
           color="#ea9c8a"
           label="全てのTodoを表示"
+          @click="getAllByFilter"
         ></v-checkbox>
         <v-checkbox
+          v-model="isFilterUnfinishedChecked"
+          :false-value="false"
+          :true-value="true"
           class="filter"
           color="#ea9c8a"
           label="未完了のTodoのみ表示"
+          @click="getUnfinished"
         ></v-checkbox>
       </div>
       <div class="search__bar filter">
@@ -54,6 +62,7 @@
             >
               <div class="todo__title">
                 <v-checkbox
+                  :input-value="item.isFinished"
                   class="checkbox mt-0 pt-0"
                   :off-icon="'mdi-checkbox-blank-circle-outline'"
                   :on-icon="'mdi-check-circle-outline'"
@@ -61,6 +70,8 @@
                   dense
                   @click="finishedTodo(item)"
                 ></v-checkbox>
+                <!-- :false-value="!item.isFinished"
+                  :true-value="item.isFinished" -->
                 <label :class="{ finished: checkFinished(item) }">{{
                   item.title
                 }}</label>
@@ -214,7 +225,6 @@
   </main>
 </template>
 <script>
-// import { mapActions } from 'vuex'
 export default {
   // async asyncData({ app }) {
   //   const response = await app.$axios.$get('http://localhost:4000/api/v1/todo')
@@ -258,17 +268,23 @@ export default {
         detail: '',
         category: '',
       },
+      isFilterAllChecked: true,
+      isFilterUnfinishedChecked: false,
+      // finished: false,
     }
   },
   computed: {
     todoList() {
+      console.log('computed確認', this.$store.state.todo.todoList)
       return this.$store.state.todo.todoList
     },
     draggableListWork: {
       get() {
+        console.log('draggableリストのget', this.todoList.workTodo)
         return this.todoList.workTodo
       },
       set(value) {
+        console.log('draggableリストのSET')
         this.$store.commit('todo/updateDraggableList', {
           value,
           targetCategory: 'work',
@@ -297,14 +313,38 @@ export default {
         })
       },
     },
+    // finishedIconCheck({ id, category }) {
+    //   const todoCategory = category + 'Todo'
+    //   const target = this.todoList.todoCategory
+    //   // for文で扱ってるitemのisFinishedの値を調べる
+    //   if (target[id].isFinished === true) {
+    //     this.finished === true
+    //   } else {
+    //     this.finished === false
+    //   }
+    //   return this.finished
+    // },
   },
   created() {
     this.$store.dispatch('todo/actionGetAllTodo')
   },
   methods: {
-    // selectAddCategory(value) {
-    //   this.selectedAddCategory = value
-    // },
+    getAllByFilter() {
+      // 操作してない方のチェックボックスがtrue(チェックされてた時のみ）falseに
+      if (this.isFilterUnfinishedChecked) {
+        this.isFilterUnfinishedChecked = false
+      }
+      // もし他のチェックボックスがチェック（or検索barが使用）されていたら
+      // その他のチェックボックス(or検索bar）をチェック(or検索）されていない状態にする
+      this.$store.dispatch('todo/actionGetAllTodo')
+    },
+    getUnfinished() {
+      console.log('メソッド確認')
+      if (this.isFilterAllChecked) {
+        this.isFilterAllChecked = !this.isFilterAllChecked
+      }
+      this.$store.dispatch('todo/actionGetUnfinished')
+    },
     toggleModal(value) {
       this.selectedAddCategory = value
       this.isShowAddModal = !this.isShowAddModal

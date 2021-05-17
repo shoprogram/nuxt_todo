@@ -6,8 +6,36 @@ export const state = () => ({
 
 export const mutations = {
   getAllTodo(state, payload) {
-    state.todoList = {}
     state.todoList = payload
+  },
+  getUnfinished(state) {
+    console.log('ミューテーション確認')
+    const targetWork = state.todoList.workTodo
+    const targetPrivate = state.todoList.privateTodo
+    const targetRandom = state.todoList.randomTodo
+    console.log(targetWork)
+    for (let i = 0; i < targetWork.length; i++) {
+      if (targetWork[i].isFinished === true) {
+        state.todoList.workTodo.splice(targetWork[i].index, 1)
+      }
+    }
+    for (let i = 0; i < targetPrivate.length; i++) {
+      if (targetPrivate[i].isFinished === true) {
+        state.todoList.privateTodo.splice(targetPrivate[i].index, 1)
+      }
+    }
+    for (let i = 0; i < targetRandom.length; i++) {
+      if (targetRandom[i].isFinished === true) {
+        state.todoList.randomTodo.splice(targetRandom[i].index, 1)
+      }
+    }
+    const newTodoList = state.todoList
+    state.todoList = { ...newTodoList }
+    console.log(state.todoList)
+    // for (let i = 0; i < target.length; i++) {
+    //   const targetCategory = target[i]
+    // 入れこのfor文は処理めちゃ遅くなるからやらないほうがbetter
+    // }
   },
   // addTodo(state, payload) {
   //   const todoData = {
@@ -31,10 +59,10 @@ export const mutations = {
   //   const target = state.todoList[payload.category]
   //   target[payload.index].isFinished = !target[payload.index].isFinished
   // },
-  deleteTodo(state, payload) {
-    const target = state.todoList[payload.category]
-    target.splice(payload.index, 1)
-  },
+  // deleteTodo(state, payload) {
+  //   const target = state.todoList[payload.category]
+  //   target.splice(payload.index, 1)
+  // },
   updateDraggableList(state, payload) {
     console.log(payload.value)
     const targetTodoList = []
@@ -75,6 +103,10 @@ export const actions = {
       const payload = { workTodo, privateTodo, randomTodo }
       commit('getAllTodo', payload)
     })
+  },
+  actionGetUnfinished({ commit }) {
+    console.log('ディスパッチ確認')
+    commit('getUnfinished')
   },
   async actionAddTodo({ dispatch }, newTodo) {
     // ここではcategoryもdetailもちゃんと入ってる。↑
