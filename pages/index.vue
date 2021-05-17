@@ -73,15 +73,7 @@
                 <div class="edit-button" @click="showEditModal(item)">
                   <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
                 </div>
-                <div
-                  class="delete-button"
-                  @click="
-                    showDeleteModal({
-                      id: i,
-                      category: item.category,
-                    })
-                  "
-                >
+                <div class="delete-button" @click="showDeleteModal(item)">
                   <v-icon class="todo__edit-button">mdi-delete</v-icon>
                 </div>
               </div>
@@ -135,15 +127,7 @@
                 <div class="edit-button" @click="showEditModal(item)">
                   <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
                 </div>
-                <div
-                  class="delete-button"
-                  @click="
-                    showDeleteModal({
-                      id: i,
-                      category: item.category,
-                    })
-                  "
-                >
+                <div class="delete-button" @click="showDeleteModal(item)">
                   <v-icon class="todo__edit-button">mdi-delete</v-icon>
                 </div>
               </div>
@@ -194,26 +178,10 @@
                 v-show="isShowEditIcon[item.category] && currentid === i"
                 class="todo__menu"
               >
-                <div
-                  class="edit-button"
-                  @click="
-                    showEditModal({
-                      id: i,
-                      category: item.category,
-                    })
-                  "
-                >
+                <div class="edit-button" @click="showEditModal(item)">
                   <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
                 </div>
-                <div
-                  class="delete-button"
-                  @click="
-                    showDeleteModal({
-                      id: i,
-                      category: item.category,
-                    })
-                  "
-                >
+                <div class="delete-button" @click="showDeleteModal(item)">
                   <v-icon class="todo__edit-button">mdi-delete</v-icon>
                 </div>
               </div>
@@ -390,17 +358,16 @@ export default {
     finishedTodo(payload) {
       this.$store.dispatch('todo/actionFinishedTodo', payload)
     },
-    showDeleteModal({ id, category }) {
+    showDeleteModal({ id, category, title, detail }) {
       this.isShowDeleteModal = !this.isShowDeleteModal
-      const deleteCategory = this.todoList[category]
       this.selectedTodo.id = id
       this.selectedTodo.category = category
-      this.selectedTodo.title = deleteCategory[id].title
-      this.selectedTodo.detail = deleteCategory[id].detail
-      // data baseもらうまで待っとく？
+      this.selectedTodo.title = title
+      this.selectedTodo.detail = detail
     },
     closeDeleteModal() {
       this.isShowDeleteModal = !this.isShowDeleteModal
+      this.selectedTodo.id = null
       this.selectedTodo.title = ''
       this.selectedTodo.detail = ''
       this.selectedTodo.category = ''

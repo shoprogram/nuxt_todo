@@ -112,7 +112,9 @@ export const actions = {
       .put('http://localhost:3000/api/v1/todo/' + payload.id, formedTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
-  actionDeleteTodo({ commit }, payload) {
-    commit('deleteTodo', payload)
+  async actionDeleteTodo({ dispatch }, payload) {
+    await axios
+      .delete('http://localhost:3000/api/v1/todo/' + payload.id)
+      .then(() => dispatch('actionGetAllTodo'))
   },
 }
