@@ -209,15 +209,7 @@
                 v-show="isShowEditIcon[item.category] && currentid === i"
                 class="todo__menu"
               >
-                <div
-                  class="edit-button"
-                  @click="
-                    showEditModal({
-                      id: i,
-                      category: item.category,
-                    })
-                  "
-                >
+                <div class="edit-button" @click="showEditModal(item)">
                   <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
                 </div>
                 <div
@@ -369,13 +361,13 @@ export default {
       this.inputValues.detail = ''
       this.selectedCategories = ''
     },
-    showEditModal({ id, category }) {
+    showEditModal({ id, title, detail, category }) {
       this.isShowEditModal = !this.isShowEditModal
-      const editCategory = this.todoList[category + 'Todo'][id]
+      // const editCategory = this.todoList[category + 'Todo'][id]
       this.selectedTodo.id = id
       this.selectedTodo.category = category
-      this.selectedTodo.title = editCategory.title
-      this.selectedTodo.detail = editCategory.detail
+      this.selectedTodo.title = title
+      this.selectedTodo.detail = detail
       // this.selectedTodo.id = id
       // const editCategory = this.todoList[category]
       // this.selectedTodo.category = category
@@ -385,14 +377,15 @@ export default {
     },
     closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
+      this.selectedTodo.id = null
       this.selectedTodo.title = ''
       this.selectedTodo.detail = ''
       this.selectedTodo.category = ''
     },
     updateTodo() {
-      console.log(this.selectedTodo.title)
       this.isShowEditModal = !this.isShowEditModal
       this.$store.dispatch('todo/actionUpdateTodo', this.selectedTodo)
+      this.selectedTodo.id = null
       this.selectedTodo.title = ''
       this.selectedTodo.detail = ''
       this.selectedTodo.category = ''

@@ -8,6 +8,7 @@ export const mutations = {
   getAllTodo(state, payload) {
     state.todoList = {}
     state.todoList = payload
+    console.log(state.todoList)
   },
   addTodo(state, payload) {
     const todoData = {
@@ -87,12 +88,20 @@ export const actions = {
     // これでもcategoryとdetail、nullになってる！
     await axios
       .post('http://localhost:3000/api/v1/todo', formedTodo)
-      .then(dispatch('actionGetAllTodo'))
+      .then(() => dispatch('actionGetAllTodo'))
     // .then(commit('addTodo', newTodo))
     // .then(commit('getAllTodo'))
   },
-  actionUpdateTodo({ commit }, updatedTodo) {
-    commit('updateTodo', updatedTodo)
+  async actionUpdateTodo({ dispatch }, updatedTodo) {
+    const formedTodo = new URLSearchParams()
+    formedTodo.append('id', updatedTodo.id)
+    formedTodo.append('title', updatedTodo.title)
+    formedTodo.append('detail', updatedTodo.detail)
+    formedTodo.append('category', updatedTodo.category)
+    await axios
+      .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, formedTodo)
+      .then(() => dispatch('actionGetAllTodo'))
+    // commit('updateTodo', updatedTodo)
   },
   actionFinishedTodo({ commit }, payload) {
     commit('finishedTodo', payload)
