@@ -8,30 +8,29 @@ export const mutations = {
   getAllTodo(state, payload) {
     state.todoList = {}
     state.todoList = payload
-    console.log(state.todoList)
   },
-  addTodo(state, payload) {
-    const todoData = {
-      title: payload.title,
-      detail: payload.detail,
-      Finished: true,
-      category: payload.category,
-    }
-    state.todoList[payload.category].push(todoData)
-  },
-  updateTodo(state, payload) {
-    const updatedData = {
-      // index: payload.index,
-      title: payload.title,
-      detail: payload.detail,
-    }
-    const target = state.todoList[payload.category]
-    target[payload.index] = updatedData
-  },
-  finishedTodo(state, payload) {
-    const target = state.todoList[payload.category]
-    target[payload.index].isFinished = !target[payload.index].isFinished
-  },
+  // addTodo(state, payload) {
+  //   const todoData = {
+  //     title: payload.title,
+  //     detail: payload.detail,
+  //     Finished: true,
+  //     category: payload.category,
+  //   }
+  //   state.todoList[payload.category].push(todoData)
+  // },
+  // updateTodo(state, payload) {
+  //   const updatedData = {
+  //     // index: payload.index,
+  //     title: payload.title,
+  //     detail: payload.detail,
+  //   }
+  //   const target = state.todoList[payload.category]
+  //   target[payload.index] = updatedData
+  // },
+  // finishedTodo(state, payload) {
+  //   const target = state.todoList[payload.category]
+  //   target[payload.index].isFinished = !target[payload.index].isFinished
+  // },
   deleteTodo(state, payload) {
     const target = state.todoList[payload.category]
     target.splice(payload.index, 1)
@@ -101,10 +100,17 @@ export const actions = {
     await axios
       .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, formedTodo)
       .then(() => dispatch('actionGetAllTodo'))
-    // commit('updateTodo', updatedTodo)
   },
-  actionFinishedTodo({ commit }, payload) {
-    commit('finishedTodo', payload)
+  async actionFinishedTodo({ dispatch }, payload) {
+    const formedTodo = new URLSearchParams()
+    formedTodo.append('id', payload.id)
+    formedTodo.append('title', payload.title)
+    formedTodo.append('detail', payload.detail)
+    formedTodo.append('category', payload.category)
+    formedTodo.append('isFinished', !payload.isFinished)
+    await axios
+      .put('http://localhost:3000/api/v1/todo/' + payload.id, formedTodo)
+      .then(() => dispatch('actionGetAllTodo'))
   },
   actionDeleteTodo({ commit }, payload) {
     commit('deleteTodo', payload)

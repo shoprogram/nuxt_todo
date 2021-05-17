@@ -59,12 +59,7 @@
                   :on-icon="'mdi-check-circle-outline'"
                   color="red darken-3"
                   dense
-                  @click="
-                    finishedTodo({
-                      id: i,
-                      category: 'work',
-                    })
-                  "
+                  @click="finishedTodo(item)"
                 ></v-checkbox>
                 <label :class="{ finished: checkFinished(item) }">{{
                   item.title
@@ -126,12 +121,7 @@
                   :on-icon="'mdi-check-circle-outline'"
                   color="red darken-3"
                   dense
-                  @click="
-                    finishedTodo({
-                      id: i,
-                      category: item.category,
-                    })
-                  "
+                  @click="finishedTodo(item)"
                 ></v-checkbox>
                 <label :class="{ finished: checkFinished(item) }">{{
                   item.title
@@ -193,12 +183,7 @@
                   :on-icon="'mdi-check-circle-outline'"
                   color="red darken-3"
                   dense
-                  @click="
-                    $emit('finishedTodo', {
-                      id: i,
-                      category: item.category,
-                    })
-                  "
+                  @click="finishedTodo(item)"
                 ></v-checkbox>
                 <label :class="{ finished: checkFinished(item) }">{{
                   item.title
@@ -209,7 +194,15 @@
                 v-show="isShowEditIcon[item.category] && currentid === i"
                 class="todo__menu"
               >
-                <div class="edit-button" @click="showEditModal(item)">
+                <div
+                  class="edit-button"
+                  @click="
+                    showEditModal({
+                      id: i,
+                      category: item.category,
+                    })
+                  "
+                >
                   <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
                 </div>
                 <div
