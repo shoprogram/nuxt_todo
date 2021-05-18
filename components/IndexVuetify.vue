@@ -65,8 +65,6 @@
       @closeModal="toggleModal"
       @addTodo="addTodo"
     >
-      <!-- :title.sync="inputValues.title"
-      :detail.sync="inputValues.detail" -->
       <template #title
         >{{ categoryList[selectedCategory] }} にtodoを追加</template
       >
@@ -74,11 +72,9 @@
   </v-container>
 </template>
 <script>
-// import { mapActions } from 'vuex'
 export default {
   data() {
     return {
-      // addTodoTitle: '',
       isShowAddModal: false,
       inputValues: {
         title: '',
@@ -98,7 +94,6 @@ export default {
     },
   },
   methods: {
-    // ...mapActions('actionAddTodo'),
     selectCategory(value) {
       this.selectedCategory = value
     },
@@ -108,25 +103,14 @@ export default {
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      // this.actionAddTodo({
-      //   category: this.selectedCategory,
-      //   todo: this.addTodoTitle,
-      // })MapActionが呼べない？？
       this.$store.dispatch('todo/actionAddTodo', {
         category: this.selectedCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
       })
-      // console.log(this.inputValues)
       this.inputValues.title = ''
       this.inputValues.detail = ''
     },
-    // updateAddTodoTitle(value) {
-    //   this.addTodoTitle = value
-    // },
-    // updateInputTitle(value) {
-    //   this.inputTitle = value
-    // },
   },
 }
 </script>

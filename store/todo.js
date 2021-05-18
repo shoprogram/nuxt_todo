@@ -3,78 +3,32 @@ import axios from 'axios'
 export const state = () => ({
   todoList: {},
 })
-
+export const getters = {
+  todoList: (state) => state.todoList,
+}
 export const mutations = {
   getAllTodo(state, payload) {
     state.todoList = payload
   },
   getUnfinished(state) {
-    console.log('ミューテーション確認')
-    const targetWork = state.todoList.workTodo
-    const targetPrivate = state.todoList.privateTodo
-    const targetRandom = state.todoList.randomTodo
-    for (let i = 0; i < targetWork.length; i++) {
-      if (targetWork[i].isFinished === 1) {
-        state.todoList.workTodo.splice(i, 1)
-      }
+    const {
+      workTodo: targetWork,
+      privateTodo: targetPrivate,
+      randomTodo: targetRandom,
+    } = state.todoList
+    const hideFinished = (array) => {
+      array.forEach((val, i) => {
+        if (val.isFinished) {
+          const category = val.category + 'Todo'
+          state.todoList[category].splice(i, 1)
+        }
+      })
     }
-    for (let i = 0; i < targetPrivate.length; i++) {
-      if (targetPrivate[i].isFinished === 1) {
-        state.todoList.privateTodo.splice(i, 1)
-      }
-    }
-    for (let i = 0; i < targetRandom.length; i++) {
-      if (targetRandom[i].isFinished === 1) {
-        state.todoList.randomTodo.splice(i, 1)
-      }
-    }
+    hideFinished(targetWork)
+    hideFinished(targetPrivate)
+    hideFinished(targetRandom)
     const newTodoList = state.todoList
     state.todoList = { ...newTodoList }
-    console.log('ミューテーション後のWorkTodo', state.todoList)
-  },
-  // addTodo(state, payload) {
-  //   const todoData = {
-  //     title: payload.title,
-  //     detail: payload.detail,
-  //     Finished: true,
-  //     category: payload.category,
-  //   }
-  //   state.todoList[payload.category].push(todoData)
-  // },
-  // updateTodo(state, payload) {
-  //   const updatedData = {
-  //     // index: payload.index,
-  //     title: payload.title,
-  //     detail: payload.detail,
-  //   }
-  //   const target = state.todoList[payload.category]
-  //   target[payload.index] = updatedData
-  // },
-  // finishedTodo(state, payload) {
-  //   const target = state.todoList[payload.category]
-  //   target[payload.index].isFinished = !target[payload.index].isFinished
-  // },
-  // deleteTodo(state, payload) {
-  //   const target = state.todoList[payload.category]
-  //   target.splice(payload.index, 1)
-  // },
-  updateDraggableList(state, payload) {
-    console.log(payload.value)
-    const targetTodoList = []
-    for (let i = 0; i < payload.value.length; i++) {
-      console.log('確認')
-      if (payload.value[i].category === payload.targetCategory) {
-        targetTodoList.push(payload.value[i])
-      } else {
-        payload.value[i].category = payload.targetCategory
-        targetTodoList.push(payload.value[i])
-      }
-    }
-    state.todoList[payload.targetCategory] = targetTodoList
-    // const target = state.todoList[payload.targetCategory]
-    // const workList = state.todoList.work
-    // const privateList = state.todoList.private
-    // const randomList = state.todoList.random
   },
 }
 
@@ -100,41 +54,39 @@ export const actions = {
     })
   },
   actionGetUnfinished({ commit }) {
-    console.log('ディスパッチ確認')
     commit('getUnfinished')
   },
   async actionAddTodo({ dispatch }, newTodo) {
-    // ここではcategoryもdetailもちゃんと入ってる。↑
-    const formedTodo = new URLSearchParams()
-    formedTodo.append('title', newTodo.title)
-    formedTodo.append('detail', newTodo.detail)
-    formedTodo.append('category', newTodo.category)
-    formedTodo.append('isFinished', newTodo.isFinished)
-    console.log(newTodo)
-    // これでもcategoryとdetail、nullになってる！
+    const formedTodo = {
+      title: newTodo.title,
+      category: newTodo.category,
+      detail: newTodo.detail,
+      isFinished: newTodo.isFinished,
+    }
     await axios
       .post('http://localhost:3000/api/v1/todo', formedTodo)
       .then(() => dispatch('actionGetAllTodo'))
-    // .then(commit('addTodo', newTodo))
-    // .then(commit('getAllTodo'))
   },
   async actionUpdateTodo({ dispatch }, updatedTodo) {
-    const formedTodo = new URLSearchParams()
-    formedTodo.append('id', updatedTodo.id)
-    formedTodo.append('title', updatedTodo.title)
-    formedTodo.append('detail', updatedTodo.detail)
-    formedTodo.append('category', updatedTodo.category)
+    const formedTodo = {
+      id: updatedTodo.id,
+      title: updatedTodo.title,
+      category: updatedTodo.category,
+      detail: updatedTodo.detail,
+      isFinished: updatedTodo.isFinished,
+    }
     await axios
       .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, formedTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionFinishedTodo({ dispatch }, payload) {
-    const formedTodo = new URLSearchParams()
-    formedTodo.append('id', payload.id)
-    formedTodo.append('title', payload.title)
-    formedTodo.append('detail', payload.detail)
-    formedTodo.append('category', payload.category)
-    formedTodo.append('isFinished', !payload.isFinished)
+    const formedTodo = {
+      id: payload.id,
+      title: payload.title,
+      category: payload.category,
+      detail: payload.detail,
+      isFinished: !payload.isFinished,
+    }
     await axios
       .put('http://localhost:3000/api/v1/todo/' + payload.id, formedTodo)
       .then(() => dispatch('actionGetAllTodo'))
@@ -143,5 +95,25 @@ export const actions = {
     await axios
       .delete('http://localhost:3000/api/v1/todo/' + payload.id)
       .then(() => dispatch('actionGetAllTodo'))
+  },
+  async actionUpdateDraggableList({ dispatch }, payload) {
+    for (let i = 0; i < payload.value.length; i++) {
+      const formedTodo = {
+        id: payload.value[i].id,
+        title: payload.value[i].title,
+        category: payload.targetCategory,
+        detail: payload.value[i].detail,
+        isFinished: payload.value[i].isFinished,
+      }
+      if (payload.value[i].category !== payload.targetCategory) {
+        await axios.put(
+          'http://localhost:3000/api/v1/todo/' + payload.value[i].id,
+          formedTodo
+        )
+      } else {
+        continue
+      }
+    }
+    dispatch('actionGetAllTodo')
   },
 }

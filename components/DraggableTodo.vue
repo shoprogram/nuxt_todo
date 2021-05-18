@@ -97,7 +97,6 @@ export default {
         // return wholeList
       },
       set(value) {
-        console.log(value)
         this.$store.commit(
           'todo/updateDraggableList',
           {

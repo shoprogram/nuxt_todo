@@ -225,6 +225,8 @@
   </main>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   // async asyncData({ app }) {
   //   const response = await app.$axios.$get('http://localhost:4000/api/v1/todo')
@@ -274,18 +276,16 @@ export default {
     }
   },
   computed: {
-    todoList() {
-      console.log('computed確認', this.$store.state.todo.todoList)
-      return this.$store.state.todo.todoList
-    },
+    ...mapGetters('todo', ['todoList']),
+    // todoList() {
+    //   return this.$store.state.todo.todoList
+    // },
     draggableListWork: {
       get() {
-        console.log('draggableリストのget', this.todoList.workTodo)
         return this.todoList.workTodo
       },
       set(value) {
-        console.log('draggableリストのSET')
-        this.$store.commit('todo/updateDraggableList', {
+        this.$store.dispatch('todo/actionUpdateDraggableList', {
           value,
           targetCategory: 'work',
         })
@@ -296,7 +296,7 @@ export default {
         return this.todoList.privateTodo
       },
       set(value) {
-        this.$store.commit('todo/updateDraggableList', {
+        this.$store.dispatch('todo/actionUpdateDraggableList', {
           value,
           targetCategory: 'private',
         })
@@ -307,28 +307,24 @@ export default {
         return this.todoList.randomTodo
       },
       set(value) {
-        this.$store.commit('todo/updateDraggableList', {
+        this.$store.dispatch('todo/actionUpdateDraggableList', {
           value,
           targetCategory: 'random',
         })
       },
     },
-    // finishedIconCheck({ id, category }) {
-    //   const todoCategory = category + 'Todo'
-    //   const target = this.todoList.todoCategory
-    //   // for文で扱ってるitemのisFinishedの値を調べる
-    //   if (target[id].isFinished === true) {
-    //     this.finished === true
-    //   } else {
-    //     this.finished === false
-    //   }
-    //   return this.finished
-    // },
   },
   created() {
     this.$store.dispatch('todo/actionGetAllTodo')
   },
   methods: {
+    ...mapActions('todo', [
+      'actionGetAllTodo',
+      'actionGetUnfinished',
+      'actionAddTodo',
+      'actionFinishedTodo',
+      'actionDeleteTodo',
+    ]),
     getAllByFilter() {
       // 操作してない方のチェックボックスがtrue(チェックされてた時のみ）falseに
       if (this.isFilterUnfinishedChecked) {
@@ -336,14 +332,14 @@ export default {
       }
       // もし他のチェックボックスがチェック（or検索barが使用）されていたら
       // その他のチェックボックス(or検索bar）をチェック(or検索）されていない状態にする
-      this.$store.dispatch('todo/actionGetAllTodo')
+      this.actionGetAllTodo()
+      // this.$store.dispatch('todo/actionGetAllTodo')
     },
     getUnfinished() {
-      console.log('メソッド確認')
       if (this.isFilterAllChecked) {
         this.isFilterAllChecked = !this.isFilterAllChecked
       }
-      this.$store.dispatch('todo/actionGetUnfinished')
+      this.actionGetUnfinished()
     },
     toggleModal(value) {
       this.selectedAddCategory = value
@@ -352,7 +348,7 @@ export default {
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
       // こういうところでMapActionsって呼べるの？？
-      this.$store.dispatch('todo/actionAddTodo', {
+      this.actionAddTodo({
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
@@ -364,17 +360,10 @@ export default {
     },
     showEditModal({ id, title, detail, category }) {
       this.isShowEditModal = !this.isShowEditModal
-      // const editCategory = this.todoList[category + 'Todo'][id]
       this.selectedTodo.id = id
       this.selectedTodo.category = category
       this.selectedTodo.title = title
       this.selectedTodo.detail = detail
-      // this.selectedTodo.id = id
-      // const editCategory = this.todoList[category]
-      // this.selectedTodo.category = category
-      // this.selectedTodo.title = editCategory[id].title
-      // this.selectedTodo.detail = editCategory[id].detail
-      // this.isShowEditModal = !this.isShowEditModal
     },
     closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
@@ -396,7 +385,7 @@ export default {
       return target.isFinished
     },
     finishedTodo(payload) {
-      this.$store.dispatch('todo/actionFinishedTodo', payload)
+      this.actionFinishedTodo(payload)
     },
     showDeleteModal({ id, category, title, detail }) {
       this.isShowDeleteModal = !this.isShowDeleteModal
@@ -415,7 +404,7 @@ export default {
     deleteTodo() {
       const targetId = this.selectedTodo.id
       const targetCategory = this.selectedTodo.category
-      this.$store.dispatch('todo/actionDeleteTodo', {
+      this.actionDeleteTodo({
         id: targetId,
         category: targetCategory,
       })
