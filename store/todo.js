@@ -13,29 +13,24 @@ export const mutations = {
     const targetWork = state.todoList.workTodo
     const targetPrivate = state.todoList.privateTodo
     const targetRandom = state.todoList.randomTodo
-    console.log(targetWork)
     for (let i = 0; i < targetWork.length; i++) {
-      if (targetWork[i].isFinished === true) {
-        state.todoList.workTodo.splice(targetWork[i].index, 1)
+      if (targetWork[i].isFinished === 1) {
+        state.todoList.workTodo.splice(i, 1)
       }
     }
     for (let i = 0; i < targetPrivate.length; i++) {
-      if (targetPrivate[i].isFinished === true) {
-        state.todoList.privateTodo.splice(targetPrivate[i].index, 1)
+      if (targetPrivate[i].isFinished === 1) {
+        state.todoList.privateTodo.splice(i, 1)
       }
     }
     for (let i = 0; i < targetRandom.length; i++) {
-      if (targetRandom[i].isFinished === true) {
-        state.todoList.randomTodo.splice(targetRandom[i].index, 1)
+      if (targetRandom[i].isFinished === 1) {
+        state.todoList.randomTodo.splice(i, 1)
       }
     }
     const newTodoList = state.todoList
     state.todoList = { ...newTodoList }
-    console.log(state.todoList)
-    // for (let i = 0; i < target.length; i++) {
-    //   const targetCategory = target[i]
-    // 入れこのfor文は処理めちゃ遅くなるからやらないほうがbetter
-    // }
+    console.log('ミューテーション後のWorkTodo', state.todoList)
   },
   // addTodo(state, payload) {
   //   const todoData = {
