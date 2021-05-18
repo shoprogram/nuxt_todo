@@ -10,6 +10,11 @@ export const mutations = {
   getAllTodo(state, payload) {
     state.todoList = payload
   },
+  updateDraggableList(state, payload) {
+    console.log('ミューテーション/targetTodoList', payload.targetTodoList)
+    state.todoList[payload.targetCategory] = payload.targetTodoList
+    // これがうまく行って、表示がされても、リロードしたらTodoの順番が変わってしまう
+  },
   getUnfinished(state) {
     const {
       workTodo: targetWork,
@@ -96,7 +101,10 @@ export const actions = {
       .delete('http://localhost:3000/api/v1/todo/' + payload.id)
       .then(() => dispatch('actionGetAllTodo'))
   },
-  async actionUpdateDraggableList({ dispatch }, payload) {
+  async actionUpdateDraggableList({ commit }, payload) {
+    const targetTodoList = []
+    const targetCategory = payload.targetCategory
+    console.log('アクション：渡ってきたvalue', payload.value)
     for (let i = 0; i < payload.value.length; i++) {
       const formedTodo = {
         id: payload.value[i].id,
@@ -106,14 +114,43 @@ export const actions = {
         isFinished: payload.value[i].isFinished,
       }
       if (payload.value[i].category !== payload.targetCategory) {
-        await axios.put(
-          'http://localhost:3000/api/v1/todo/' + payload.value[i].id,
-          formedTodo
-        )
+        await axios
+          .put(
+            'http://localhost:3000/api/v1/todo/' + payload.value[i].id,
+            formedTodo
+          )
+          .then((res) => {
+            console.log('axios-put確認')
+            console.log('axios-putの返り値', res)
+            // なんで返ってこないのか、putの時の返り値は違うのか？？確認
+            targetTodoList.push(res.data)
+          })
       } else {
-        continue
+        targetTodoList.push(payload.value[i])
       }
     }
-    dispatch('actionGetAllTodo')
+    commit('updateDraggableList', {
+      targetTodoList,
+      targetCategory,
+    })
   },
+  //   for (let i = 0; i < payload.value.length; i++) {
+  //     const formedTodo = {
+  //       id: payload.value[i].id,
+  //       title: payload.value[i].title,
+  //       category: payload.targetCategory,
+  //       detail: payload.value[i].detail,
+  //       isFinished: payload.value[i].isFinished,
+  //     }
+  //     if (payload.value[i].category !== payload.targetCategory) {
+  //       await axios.put(
+  //         'http://localhost:3000/api/v1/todo/' + payload.value[i].id,
+  //         formedTodo
+  //       )
+  //     } else {
+  //       continue
+  //     }
+  //   }
+  //   dispatch('actionGetAllTodo')
+  // },
 }
