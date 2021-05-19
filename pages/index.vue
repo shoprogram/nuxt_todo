@@ -277,9 +277,9 @@ export default {
   },
   computed: {
     ...mapGetters('todo', ['todoList']),
-    // todoList() {
-    //   return this.$store.state.todo.todoList
-    // },
+    /**
+     * @desc このコンピューテッド
+     */
     draggableListWork: {
       get() {
         return this.todoList.workTodo

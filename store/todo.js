@@ -11,9 +11,8 @@ export const mutations = {
     state.todoList = payload
   },
   updateDraggableList(state, payload) {
-    console.log('ミューテーション/targetTodoList', payload.targetTodoList)
-    state.todoList[payload.targetCategory] = payload.targetTodoList
-    // これがうまく行って、表示がされても、リロードしたらTodoの順番が変わってしまう
+    state.todoList[payload.targetCategory + 'Todo'] = payload.value
+    // これがうまく行って、表示がされても、リロードしたらTodoの順番が変わってしまう。改善余地あり。
   },
   getUnfinished(state) {
     const {
@@ -102,9 +101,7 @@ export const actions = {
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionUpdateDraggableList({ commit }, payload) {
-    const targetTodoList = []
-    const targetCategory = payload.targetCategory
-    console.log('アクション：渡ってきたvalue', payload.value)
+    commit('updateDraggableList', payload)
     for (let i = 0; i < payload.value.length; i++) {
       const formedTodo = {
         id: payload.value[i].id,
@@ -114,43 +111,11 @@ export const actions = {
         isFinished: payload.value[i].isFinished,
       }
       if (payload.value[i].category !== payload.targetCategory) {
-        await axios
-          .put(
-            'http://localhost:3000/api/v1/todo/' + payload.value[i].id,
-            formedTodo
-          )
-          .then((res) => {
-            console.log('axios-put確認')
-            console.log('axios-putの返り値', res)
-            // なんで返ってこないのか、putの時の返り値は違うのか？？確認
-            targetTodoList.push(res.data)
-          })
-      } else {
-        targetTodoList.push(payload.value[i])
+        await axios.put(
+          'http://localhost:3000/api/v1/todo/' + payload.value[i].id,
+          formedTodo
+        )
       }
     }
-    commit('updateDraggableList', {
-      targetTodoList,
-      targetCategory,
-    })
   },
-  //   for (let i = 0; i < payload.value.length; i++) {
-  //     const formedTodo = {
-  //       id: payload.value[i].id,
-  //       title: payload.value[i].title,
-  //       category: payload.targetCategory,
-  //       detail: payload.value[i].detail,
-  //       isFinished: payload.value[i].isFinished,
-  //     }
-  //     if (payload.value[i].category !== payload.targetCategory) {
-  //       await axios.put(
-  //         'http://localhost:3000/api/v1/todo/' + payload.value[i].id,
-  //         formedTodo
-  //       )
-  //     } else {
-  //       continue
-  //     }
-  //   }
-  //   dispatch('actionGetAllTodo')
-  // },
 }
