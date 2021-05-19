@@ -27,7 +27,8 @@
             icon="search"
             class="search__bar--icon"
           ></font-awesome-icon>
-          <input placeholder="検索でTodoを絞り込む" />
+          <input v-model="searchValue" placeholder="検索でTodoを絞り込む" />
+          <!-- @input="searchValue = $event.target.value" -->
           <font-awesome-icon
             icon="times"
             class="search__bar--icon"
@@ -274,6 +275,7 @@ export default {
       },
       isFilterAllChecked: true,
       isFilterUnfinishedChecked: false,
+      searchValue: '',
     }
   },
   computed: {
@@ -315,6 +317,11 @@ export default {
       },
     },
   },
+  watch: {
+    searchValue(val) {
+      this.$store.dispatch('todo/actionFilterTodo', val)
+    },
+  },
   created() {
     this.$store.dispatch('todo/actionGetAllTodo')
   },
@@ -326,6 +333,11 @@ export default {
       'actionFinishedTodo',
       'actionDeleteTodo',
     ]),
+    // searchTodo(val) {
+    //   console.log(val)
+    //   this.searchValue = val
+    //   this.actionFilterTodo(this.searchValue)
+    // },
     getAllByFilter() {
       // 操作してない方のチェックボックスがtrue(チェックされてた時のみ）falseに
       if (this.isFilterUnfinishedChecked) {
