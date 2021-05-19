@@ -119,6 +119,7 @@
             >
               <div class="todo__title">
                 <v-checkbox
+                  :input-value="item.isFinished"
                   class="checkbox mt-0 pt-0"
                   :off-icon="'mdi-checkbox-blank-circle-outline'"
                   :on-icon="'mdi-check-circle-outline'"
@@ -173,6 +174,7 @@
             >
               <div class="todo__title">
                 <v-checkbox
+                  :input-value="item.isFinished"
                   class="checkbox mt-0 pt-0"
                   :off-icon="'mdi-checkbox-blank-circle-outline'"
                   :on-icon="'mdi-check-circle-outline'"
@@ -272,7 +274,6 @@ export default {
       },
       isFilterAllChecked: true,
       isFilterUnfinishedChecked: false,
-      // finished: false,
     }
   },
   computed: {
