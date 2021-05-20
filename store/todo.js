@@ -3,6 +3,7 @@ import axios from 'axios'
 export const state = () => ({
   todoListData: {},
   todoList: {},
+  // todoListData is not supposed to be modified, but at some point, it is modified.
 })
 export const getters = {
   todoList: (state) => state.todoList,
@@ -18,35 +19,9 @@ export const mutations = {
     state.todoList[payload.targetCategory + 'Todo'] = payload.value
     // これがうまく行って、表示がされても、リロードしたらTodoの順番が変わってしまう。改善余地あり。
   },
-  getUnfinished(state) {
-    const {
-      workTodo: targetWork,
-      privateTodo: targetPrivate,
-      randomTodo: targetRandom,
-    } = state.todoList
-    const hideFinished = (array) => {
-      array.forEach((val, i) => {
-        if (val.isFinished) {
-          const category = val.category + 'Todo'
-          state.todoList[category].splice(i, 1)
-        }
-      })
-    }
-    hideFinished(targetWork)
-    hideFinished(targetPrivate)
-    hideFinished(targetRandom)
-    const newTodoList = state.todoList
-    state.todoList = { ...newTodoList }
-    // 原本が書き換わっちゃってる
-    console.log('未完了取得段階のtodoListData', state.todoListData)
-    console.log('未完了取得段階のtodoList', state.todoList)
-  },
-  // search barでchangeあるたびにfilterをかけてstateの中を書き換える
   filterTodo(state, val) {
     const allTodo = Object.assign({}, state.todoListData)
     state.todoList = allTodo
-    console.log('data原本', state.todoList)
-    console.log('data変える方', state.todoList)
     const filteredWorkTodo = []
     const filteredPrivateTodo = []
     const filteredRandomTodo = []
@@ -113,9 +88,9 @@ export const actions = {
       commit('getAllTodo', payload)
     })
   },
-  actionGetUnfinished({ commit }) {
-    commit('getUnfinished')
-  },
+  // actionGetUnfinished({ commit }) {
+  //   commit('getUnfinished')
+  // },
   actionFilterTodo({ dispatch, commit }, val) {
     if (val === '') {
       dispatch('actionGetAllTodo')

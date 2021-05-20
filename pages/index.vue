@@ -32,11 +32,12 @@
             class="search__bar--icon"
           ></font-awesome-icon>
           <input v-model="searchValue" placeholder="検索でTodoを絞り込む" />
-          <!-- @input="searchValue = $event.target.value" -->
-          <font-awesome-icon
-            icon="times"
-            class="search__bar--icon"
-          ></font-awesome-icon>
+          <div class="search__bar--cancel" @click="cancelSearch">
+            <font-awesome-icon
+              icon="times"
+              class="search__bar--icon"
+            ></font-awesome-icon>
+          </div>
         </div>
       </div>
     </div>
@@ -77,9 +78,9 @@
                 ></v-checkbox>
                 <!-- :false-value="!item.isFinished"
                   :true-value="item.isFinished" -->
-                <label :class="{ finished: checkFinished(item) }"
-                  >{{ item.title }}{{ '===' + item.isFinished }}</label
-                >
+                <label :class="{ finished: checkFinished(item) }">{{
+                  item.title
+                }}</label>
               </div>
 
               <div
@@ -132,9 +133,9 @@
                   dense
                   @click="finishedTodo(item)"
                 ></v-checkbox>
-                <label :class="{ finished: checkFinished(item) }"
-                  >{{ item.title }}{{ '===' + item.isFinished }}</label
-                >
+                <label :class="{ finished: checkFinished(item) }">{{
+                  item.title
+                }}</label>
               </div>
 
               <div
@@ -187,9 +188,9 @@
                   dense
                   @click="finishedTodo(item)"
                 ></v-checkbox>
-                <label :class="{ finished: checkFinished(item) }"
-                  >{{ item.title }}{{ '===' + item.isFinished }}</label
-                >
+                <label :class="{ finished: checkFinished(item) }">{{
+                  item.title
+                }}</label>
               </div>
 
               <div
@@ -291,6 +292,9 @@ export default {
      */
     draggableListWork: {
       get() {
+        if (this.isFilterUnfinishedChecked) {
+          return this.hideFinished(this.todoList.workTodo)
+        }
         return this.todoList.workTodo
       },
       set(value) {
@@ -302,6 +306,9 @@ export default {
     },
     draggableListPrivate: {
       get() {
+        if (this.isFilterUnfinishedChecked) {
+          return this.hideFinished(this.todoList.privateTodo)
+        }
         return this.todoList.privateTodo
       },
       set(value) {
@@ -313,6 +320,9 @@ export default {
     },
     draggableListRandom: {
       get() {
+        if (this.isFilterUnfinishedChecked) {
+          return this.hideFinished(this.todoList.randomTodo)
+        }
         return this.todoList.randomTodo
       },
       set(value) {
@@ -327,11 +337,14 @@ export default {
     searchValue(val) {
       if (val && this.isFilterAllChecked) {
         this.isFilterAllChecked = false
-      } else if (val && this.isFilterUnfinishedChecked) {
-        this.isFilterUnfinishedChecked = true
-      } else {
+      } else if (!val && !this.isFilterUnfinishedChecked) {
         this.isFilterAllChecked = true
       }
+      // } else if (!val && this.isFilterUnfinishedChecked) {
+      //   this.isFilterUnfinishedChecked = true
+      // } else {
+      //   this.isFilterAllChecked = true
+      // }
       this.$store.dispatch('todo/actionFilterTodo', val)
     },
   },
@@ -357,13 +370,27 @@ export default {
       }
       this.isFilterAllChecked = true
       this.actionGetAllTodo()
+      // ここは変えなくて良いのか確認
+    },
+    hideFinished(array) {
+      const filteredTodo = []
+      array.forEach((val, i) => {
+        if (!val.isFinished) {
+          filteredTodo.push(val)
+        }
+      })
+      return filteredTodo
     },
     getUnfinished() {
+      // 名前変えた方がいいはず
       if (this.isFilterAllChecked) {
         this.isFilterAllChecked = !this.isFilterAllChecked
       }
       this.isFilterUnfinishedChecked = true
-      this.actionGetUnfinished()
+      // this.actionGetUnfinished()
+    },
+    cancelSearch() {
+      this.searchValue = ''
     },
     toggleModal(value) {
       this.selectedAddCategory = value
