@@ -2,24 +2,27 @@
   <main>
     <div class="filter-bar">
       <div class="filter-bar__checkbox">
-        <v-checkbox
-          v-model="isFilterAllChecked"
-          :false-value="false"
-          :true-value="true"
-          class="filter"
-          color="#ea9c8a"
-          label="全てのTodoを表示"
-          @click="getAllByFilter"
-        ></v-checkbox>
-        <v-checkbox
-          v-model="isFilterUnfinishedChecked"
-          :false-value="false"
-          :true-value="true"
-          class="filter"
-          color="#ea9c8a"
-          label="未完了のTodoのみ表示"
-          @click="getUnfinished"
-        ></v-checkbox>
+        <sapn class="filter" @click="getAllByFilter">
+          <v-checkbox
+            v-model="isFilterAllChecked"
+            readonly
+            :false-value="false"
+            :true-value="true"
+            color="#ea9c8a"
+            label="全てのTodoを表示"
+          ></v-checkbox>
+        </sapn>
+        <sapn class="filter" @click="getUnfinished">
+          <v-checkbox
+            v-model="isFilterUnfinishedChecked"
+            readonly
+            :false-value="false"
+            :true-value="true"
+            color="#ea9c8a"
+            label="未完了のTodoのみ表示"
+          ></v-checkbox>
+        </sapn>
+        <!-- @change="getUnfinished" -->
       </div>
       <div class="search__bar filter">
         <div class="search__bar--box">
@@ -73,9 +76,9 @@
                 ></v-checkbox>
                 <!-- :false-value="!item.isFinished"
                   :true-value="item.isFinished" -->
-                <label :class="{ finished: checkFinished(item) }">{{
-                  item.title
-                }}</label>
+                <label :class="{ finished: checkFinished(item) }"
+                  >{{ item.title }}{{ '===' + item.isFinished }}</label
+                >
               </div>
 
               <div
@@ -128,9 +131,9 @@
                   dense
                   @click="finishedTodo(item)"
                 ></v-checkbox>
-                <label :class="{ finished: checkFinished(item) }">{{
-                  item.title
-                }}</label>
+                <label :class="{ finished: checkFinished(item) }"
+                  >{{ item.title }}{{ '===' + item.isFinished }}</label
+                >
               </div>
 
               <div
@@ -183,9 +186,9 @@
                   dense
                   @click="finishedTodo(item)"
                 ></v-checkbox>
-                <label :class="{ finished: checkFinished(item) }">{{
-                  item.title
-                }}</label>
+                <label :class="{ finished: checkFinished(item) }"
+                  >{{ item.title }}{{ '===' + item.isFinished }}</label
+                >
               </div>
 
               <div
@@ -275,6 +278,8 @@ export default {
       },
       isFilterAllChecked: true,
       isFilterUnfinishedChecked: false,
+      // vuexで管理してgetterで取ってくるように書き換える。
+      // Booleanの書き換えはcommitを飛ばしてmutationからやるようにする
       searchValue: '',
     }
   },
@@ -319,6 +324,13 @@ export default {
   },
   watch: {
     searchValue(val) {
+      if (val && this.isFilterAllChecked) {
+        this.isFilterAllChecked = false
+      } else if (val && this.isFilterUnfinishedChecked) {
+        this.isFilterUnfinishedChecked = true
+      } else {
+        this.isFilterAllChecked = true
+      }
       this.$store.dispatch('todo/actionFilterTodo', val)
     },
   },
@@ -339,19 +351,17 @@ export default {
     //   this.actionFilterTodo(this.searchValue)
     // },
     getAllByFilter() {
-      // 操作してない方のチェックボックスがtrue(チェックされてた時のみ）falseに
       if (this.isFilterUnfinishedChecked) {
         this.isFilterUnfinishedChecked = false
       }
-      // もし他のチェックボックスがチェック（or検索barが使用）されていたら
-      // その他のチェックボックス(or検索bar）をチェック(or検索）されていない状態にする
+      this.isFilterAllChecked = true
       this.actionGetAllTodo()
-      // this.$store.dispatch('todo/actionGetAllTodo')
     },
     getUnfinished() {
       if (this.isFilterAllChecked) {
         this.isFilterAllChecked = !this.isFilterAllChecked
       }
+      this.isFilterUnfinishedChecked = true
       this.actionGetUnfinished()
     },
     toggleModal(value) {
@@ -480,8 +490,13 @@ ol {
   // text-align: center;
   &__title {
     margin-top: 0;
+    max-width: 169px;
     display: flex;
     align-items: center;
+    text-align: left;
+    &label {
+      word-wrap: break-word;
+    }
   }
   &__edit-button {
     // padding-right: 10px;
@@ -489,7 +504,7 @@ ol {
   &:hover {
   }
   &__menu {
-    margin-right: 8px;
+    margin-right: 6px;
   }
 }
 .edit-button,
@@ -498,15 +513,22 @@ ol {
   margin-left: 0;
 }
 .finished {
-  position: relative;
-  &::before {
-    position: absolute;
-    top: 0.5em;
-    left: -0.3em;
-    content: '';
-    border: 2px solid #ad343e;
-    width: 200%;
-  }
+  background-image: linear-gradient(#c62828, #c62828);
+  background-position: 0 50%;
+  background-size: 100% 3px;
+  background-repeat: repeat-x;
+  // color: #888;
+  margin: 0 0.4em;
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.5);
+  // position: relative;
+  // &::before {
+  //   position: absolute;
+  //   top: 0.5em;
+  //   left: -0.3em;
+  //   content: '';
+  //   border: 2px solid #ad343e;
+  //   width: 200%;
   // text-decoration: line-through #ad343e;
 }
 // .notyet {
@@ -528,7 +550,7 @@ ol {
 .filter-bar {
   display: flex;
   justify-content: space-between;
-  margin-top: 25px;
+  margin-top: 15px;
   align-items: center;
   &__checkbox {
     display: flex;
@@ -543,6 +565,7 @@ ol {
 }
 .search__bar {
   display: flex;
+  align-self: flex-end;
   &--box {
     display: flex;
     align-items: center;
@@ -550,7 +573,6 @@ ol {
     height: 35px;
     width: 100%;
     background-color: #ddd;
-    margin-bottom: 8px;
     margin-left: 90px;
     & input {
       border: none;

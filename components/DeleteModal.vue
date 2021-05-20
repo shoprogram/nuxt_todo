@@ -73,7 +73,6 @@ export default {
   justify-content: center;
 }
 .delete-button {
-  margin-left: 20px;
-  //なんで効かないのかなーーーー
+  margin-left: 4px;
 }
 </style>

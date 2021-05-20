@@ -10,7 +10,8 @@ export const getters = {
 export const mutations = {
   getAllTodo(state, payload) {
     state.todoListData = payload
-    state.todoList = state.todoListData
+    state.todoList = { ...state.todoListData }
+    // state.todoList = state.todoListData.slice()
     console.log('全件取得の', state.todoListData)
   },
   updateDraggableList(state, payload) {
@@ -36,19 +37,20 @@ export const mutations = {
     hideFinished(targetRandom)
     const newTodoList = state.todoList
     state.todoList = { ...newTodoList }
+    // 原本が書き換わっちゃってる
+    console.log('未完了取得段階のtodoListData', state.todoListData)
+    console.log('未完了取得段階のtodoList', state.todoList)
   },
   // search barでchangeあるたびにfilterをかけてstateの中を書き換える
   filterTodo(state, val) {
     const allTodo = Object.assign({}, state.todoListData)
     state.todoList = allTodo
-    console.log('filterTodoのval', val)
     console.log('data原本', state.todoList)
     console.log('data変える方', state.todoList)
     const filteredWorkTodo = []
     const filteredPrivateTodo = []
     const filteredRandomTodo = []
     for (let i = 0; i < state.todoList.workTodo.length; i++) {
-      // state.todoList[i]のなかのオブジェクトの中を検索したい
       const targetTodo = state.todoList.workTodo[i]
       if (
         targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
@@ -67,7 +69,6 @@ export const mutations = {
       }
     }
     for (let i = 0; i < state.todoList.randomTodo.length; i++) {
-      // state.todoList[i]のなかのオブジェクトの中を検索したい
       const targetTodo = state.todoList.randomTodo[i]
       if (
         targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
@@ -118,6 +119,7 @@ export const actions = {
   actionFilterTodo({ dispatch, commit }, val) {
     if (val === '') {
       dispatch('actionGetAllTodo')
+      // 未完了Todo checkboxがtrueの場合は
     } else {
       commit('filterTodo', val)
     }
