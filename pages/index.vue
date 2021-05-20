@@ -2,6 +2,7 @@
   <main>
     <div class="filter-bar">
       <div class="filter-bar__checkbox">
+        <!-- readonlyオプションを置きつつ、イベントを発生させて、完全にチェックボックスをコントロールするために必要なspan -->
         <sapn class="filter" @click="getAllByFilter">
           <v-checkbox
             v-model="isFilterAllChecked"
