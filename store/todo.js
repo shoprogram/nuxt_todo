@@ -3,17 +3,17 @@ import axios from 'axios'
 export const state = () => ({
   todoListData: {},
   todoList: {},
+  searchValue: '',
   // todoListData is not supposed to be modified, but at some point, it is modified.
 })
 export const getters = {
   todoList: (state) => state.todoList,
+  // searchValue: (state) => state.searchValue,
 }
 export const mutations = {
   getAllTodo(state, payload) {
     state.todoListData = payload
     state.todoList = { ...state.todoListData }
-    // state.todoList = state.todoListData.slice()
-    console.log('全件取得の', state.todoListData)
   },
   updateDraggableList(state, payload) {
     state.todoList[payload.targetCategory + 'Todo'] = payload.value
@@ -55,15 +55,55 @@ export const mutations = {
     state.todoList.workTodo = filteredWorkTodo
     state.todoList.privateTodo = filteredPrivateTodo
     state.todoList.randomTodo = filteredRandomTodo
-
-    //   .filter(
-    //   (todo) => {
-    //     todo.title.toLowerCase().includes(payload.value.toLowerCase()) |
-    //       todo.detail.toLowerCase().includes(payload.value.toLowerCase())
-    //   }
-    // )
-    // 全件取得し直してから（完了todoからも検索したいため）、filteredTodoをcategoryごとにstateのtodoListに入れ直す。
-    // ×ボタンを押したら全件取得し直す
+  },
+  getAllAndFilter(state, payload) {
+    // getAllTodoのmutation実行してから、searchValueの値でfilteringしたかったけど、mutationの中からfilterTodoをcommitできなさそうだったので、無理やり二つのmutationをくっつけたmutationを作ったけど、うまくいかなかった！！
+    state.todoListData = payload
+    state.todoList = { ...state.todoListData }
+    // ↑これが全件取得のやつ
+    // const allTodo = Object.assign({}, state.todoListData)
+    // state.todoList = allTodo
+    const filteredWorkTodo = []
+    const filteredPrivateTodo = []
+    const filteredRandomTodo = []
+    const val = state.searchValue
+    for (let i = 0; i < state.todoList.workTodo.length; i++) {
+      const targetTodo = state.todoList.workTodo[i]
+      if (
+        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
+        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
+      ) {
+        filteredWorkTodo.push(targetTodo)
+      }
+    }
+    for (let i = 0; i < state.todoList.privateTodo.length; i++) {
+      const targetTodo = state.todoList.privateTodo[i]
+      if (
+        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
+        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
+      ) {
+        filteredPrivateTodo.push(targetTodo)
+      }
+    }
+    for (let i = 0; i < state.todoList.randomTodo.length; i++) {
+      const targetTodo = state.todoList.randomTodo[i]
+      if (
+        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
+        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
+      ) {
+        filteredRandomTodo.push(targetTodo)
+      }
+    }
+    state.todoList.workTodo = filteredWorkTodo
+    state.todoList.privateTodo = filteredPrivateTodo
+    state.todoList.randomTodo = filteredRandomTodo
+  },
+  reactiveSearchValue(state, payload) {
+    console.log(
+      'searchValueをリアクティブにするためのmutationに渡ってきたval',
+      payload
+    )
+    state.searchValue = payload
   },
 }
 
@@ -85,6 +125,13 @@ export const actions = {
         }
       }
       const payload = { workTodo, privateTodo, randomTodo }
+      if (this.state.searchValue) {
+        commit(
+          '全件取得のactionの中でif、searchValueがあった時',
+          this.state.searchValue
+        )
+        this.store.commit('getAllAndFilter', payload)
+      }
       commit('getAllTodo', payload)
     })
   },

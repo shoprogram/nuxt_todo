@@ -287,6 +287,9 @@ export default {
   },
   computed: {
     ...mapGetters('todo', ['todoList']),
+    // searchValue() {
+    //   return this.$store.getters.searchValue
+    // },
     /**
      * @desc このコンピューテッド
      */
@@ -345,6 +348,8 @@ export default {
       // } else {
       //   this.isFilterAllChecked = true
       // }
+      console.log('ウォッチャからcommitする前のval', val)
+      this.$store.commit('todo/reactiveSearchValue', val)
       this.$store.dispatch('todo/actionFilterTodo', val)
     },
   },
