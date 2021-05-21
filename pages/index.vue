@@ -3,7 +3,7 @@
     <div class="filter-bar">
       <div class="filter-bar__checkbox">
         <!-- readonlyオプションを置きつつ、イベントを発生させて、完全にチェックボックスをコントロールするために必要なspan -->
-        <sapn class="filter" @click="getAllByFilter">
+        <sapn class="filter" @click="checkAllByFilter">
           <v-checkbox
             v-model="isFilterAllChecked"
             readonly
@@ -13,17 +13,16 @@
             label="チェック済みも表示"
           ></v-checkbox>
         </sapn>
-        <sapn class="filter" @click="getUnfinished">
+        <sapn class="filter" @click="checkUnfinished">
           <v-checkbox
             v-model="isFilterUnfinishedChecked"
             readonly
             :false-value="false"
             :true-value="true"
             color="#ea9c8a"
-            label="未完了のみ表示"
+            label="未完了のTodoのみ表示"
           ></v-checkbox>
         </sapn>
-        <!-- @change="getUnfinished" -->
       </div>
       <div class="search__bar filter">
         <div class="search__bar--box">
@@ -277,6 +276,7 @@ export default {
         title: '',
         detail: '',
         category: '',
+        isFinished: '',
       },
       isFilterAllChecked: true,
       isFilterUnfinishedChecked: false,
@@ -338,17 +338,6 @@ export default {
   },
   watch: {
     searchValue(val) {
-      if (val && this.isFilterAllChecked) {
-        this.isFilterAllChecked = false
-      } else if (!val && !this.isFilterUnfinishedChecked) {
-        this.isFilterAllChecked = true
-      }
-      // } else if (!val && this.isFilterUnfinishedChecked) {
-      //   this.isFilterUnfinishedChecked = true
-      // } else {
-      //   this.isFilterAllChecked = true
-      // }
-      console.log('ウォッチャからcommitする前のval', val)
       this.$store.commit('todo/reactiveSearchValue', val)
       this.$store.dispatch('todo/actionFilterTodo', val)
     },
@@ -364,18 +353,12 @@ export default {
       'actionFinishedTodo',
       'actionDeleteTodo',
     ]),
-    // searchTodo(val) {
-    //   console.log(val)
-    //   this.searchValue = val
-    //   this.actionFilterTodo(this.searchValue)
-    // },
-    getAllByFilter() {
+    checkAllByFilter() {
       if (this.isFilterUnfinishedChecked) {
         this.isFilterUnfinishedChecked = false
       }
       this.isFilterAllChecked = true
-      this.actionGetAllTodo()
-      // ここは変えなくて良いのか確認
+      // this.actionGetAllTodo()
     },
     hideFinished(array) {
       const filteredTodo = []
@@ -386,13 +369,11 @@ export default {
       })
       return filteredTodo
     },
-    getUnfinished() {
-      // 名前変えた方がいいはず
+    checkUnfinished() {
       if (this.isFilterAllChecked) {
         this.isFilterAllChecked = !this.isFilterAllChecked
       }
       this.isFilterUnfinishedChecked = true
-      // this.actionGetUnfinished()
     },
     cancelSearch() {
       this.searchValue = ''
@@ -414,12 +395,13 @@ export default {
       this.inputValues.detail = ''
       this.selectedCategories = ''
     },
-    showEditModal({ id, title, detail, category }) {
+    showEditModal({ id, title, detail, category, isFinished }) {
       this.isShowEditModal = !this.isShowEditModal
       this.selectedTodo.id = id
       this.selectedTodo.category = category
       this.selectedTodo.title = title
       this.selectedTodo.detail = detail
+      this.selectedTodo.isFinished = isFinished
     },
     closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
@@ -435,6 +417,7 @@ export default {
       this.selectedTodo.title = ''
       this.selectedTodo.detail = ''
       this.selectedTodo.category = ''
+      this.selectedTodo.isFinished = ''
     },
     // Draggableから↓
     checkFinished(target) {

@@ -8,9 +8,11 @@ export const state = () => ({
 })
 export const getters = {
   todoList: (state) => state.todoList,
-  // searchValue: (state) => state.searchValue,
 }
 export const mutations = {
+  reactiveSearchValue(state, payload) {
+    state.searchValue = payload
+  },
   getAllTodo(state, payload) {
     state.todoListData = payload
     state.todoList = { ...state.todoListData }
@@ -20,105 +22,33 @@ export const mutations = {
     // これがうまく行って、表示がされても、リロードしたらTodoの順番が変わってしまう。改善余地あり。
   },
   filterTodo(state, val) {
-    console.log('filterTodoが動いた')
     const allTodo = Object.assign({}, state.todoListData)
     state.todoList = allTodo
     const filteredWorkTodo = []
     const filteredPrivateTodo = []
     const filteredRandomTodo = []
-    for (let i = 0; i < state.todoList.workTodo.length; i++) {
-      const targetTodo = state.todoList.workTodo[i]
-      if (
-        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
-        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
-      ) {
-        filteredWorkTodo.push(targetTodo)
+    function filtering(category, arrayName) {
+      for (let i = 0; i < state.todoList[category].length; i++) {
+        const targetTodo = state.todoList[category][i]
+        if (
+          targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
+          targetTodo.detail.toLowerCase().includes(val.toLowerCase())
+        ) {
+          arrayName.push(targetTodo)
+        }
       }
     }
-    for (let i = 0; i < state.todoList.privateTodo.length; i++) {
-      const targetTodo = state.todoList.privateTodo[i]
-      if (
-        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
-        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
-      ) {
-        filteredPrivateTodo.push(targetTodo)
-      }
-    }
-    for (let i = 0; i < state.todoList.randomTodo.length; i++) {
-      const targetTodo = state.todoList.randomTodo[i]
-      if (
-        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
-        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
-      ) {
-        filteredRandomTodo.push(targetTodo)
-      }
-    }
+    filtering('workTodo', filteredWorkTodo)
+    filtering('privateTodo', filteredPrivateTodo)
+    filtering('randomTodo', filteredRandomTodo)
     state.todoList.workTodo = filteredWorkTodo
     state.todoList.privateTodo = filteredPrivateTodo
     state.todoList.randomTodo = filteredRandomTodo
-  },
-  getAllAndFilter(state, payload) {
-    // getAllTodoのmutation実行してから、searchValueの値でfilteringしたかったけど、mutationの中からfilterTodoをcommitできなさそうだったので、無理やり二つのmutationをくっつけたmutationを作ったけど、うまくいかなかった！！
-    state.todoListData = payload
-    state.todoList = { ...state.todoListData }
-    // ↑これが全件取得のやつ
-    // const allTodo = Object.assign({}, state.todoListData)
-    // state.todoList = allTodo
-    const filteredWorkTodo = []
-    const filteredPrivateTodo = []
-    const filteredRandomTodo = []
-    const val = state.searchValue
-    for (let i = 0; i < state.todoList.workTodo.length; i++) {
-      const targetTodo = state.todoList.workTodo[i]
-      if (
-        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
-        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
-      ) {
-        filteredWorkTodo.push(targetTodo)
-      }
-    }
-    for (let i = 0; i < state.todoList.privateTodo.length; i++) {
-      const targetTodo = state.todoList.privateTodo[i]
-      if (
-        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
-        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
-      ) {
-        filteredPrivateTodo.push(targetTodo)
-      }
-    }
-    for (let i = 0; i < state.todoList.randomTodo.length; i++) {
-      const targetTodo = state.todoList.randomTodo[i]
-      if (
-        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
-        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
-      ) {
-        filteredRandomTodo.push(targetTodo)
-      }
-    }
-    state.todoList.workTodo = filteredWorkTodo
-    state.todoList.privateTodo = filteredPrivateTodo
-    state.todoList.randomTodo = filteredRandomTodo
-  },
-  reactiveSearchValue(state, payload) {
-    console.log(
-      'searchValueをリアクティブにするためのmutationに渡ってきたval',
-      payload
-    )
-    state.searchValue = payload
   },
 }
 
 export const actions = {
   async actionGetAllTodo({ commit, state }) {
-    console.log('全件取得action一番最初', state.searchValue)
-    if (state.searchValue) {
-      console.log(
-        '全件取得のactionの中でif、searchValueがあった時',
-        state.searchValue
-      )
-      commit('filterTodo', state.searchValue)
-      return
-    }
     await axios.get('http://localhost:3000/api/v1/todo').then((res) => {
       const workTodo = []
       const privateTodo = []
@@ -136,40 +66,28 @@ export const actions = {
       }
       const payload = { workTodo, privateTodo, randomTodo }
       commit('getAllTodo', payload)
+      // searchValueに値が入ってた時はfilterをかける
+      if (state.searchValue) {
+        commit('filterTodo', state.searchValue)
+      }
     })
   },
-  // actionGetUnfinished({ commit }) {
-  //   commit('getUnfinished')
-  // },
   actionFilterTodo({ dispatch, commit }, val) {
     if (val === '') {
       dispatch('actionGetAllTodo')
-      // 未完了Todo checkboxがtrueの場合は
     } else {
+      // 未完了Todo checkboxがtrueの場合は
       commit('filterTodo', val)
     }
   },
   async actionAddTodo({ dispatch }, newTodo) {
-    const formedTodo = {
-      title: newTodo.title,
-      category: newTodo.category,
-      detail: newTodo.detail,
-      isFinished: newTodo.isFinished,
-    }
     await axios
-      .post('http://localhost:3000/api/v1/todo', formedTodo)
+      .post('http://localhost:3000/api/v1/todo', newTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionUpdateTodo({ dispatch }, updatedTodo) {
-    const formedTodo = {
-      id: updatedTodo.id,
-      title: updatedTodo.title,
-      category: updatedTodo.category,
-      detail: updatedTodo.detail,
-      isFinished: updatedTodo.isFinished,
-    }
     await axios
-      .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, formedTodo)
+      .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, updatedTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionFinishedTodo({ dispatch }, payload) {
