@@ -66,15 +66,20 @@
               "
             >
               <div class="todo__title">
-                <v-checkbox
-                  :input-value="item.isFinished"
-                  class="checkbox mt-0 pt-0"
-                  :off-icon="'mdi-checkbox-blank-circle-outline'"
-                  :on-icon="'mdi-check-circle-outline'"
-                  color="red darken-3"
-                  dense
-                  @click="finishedTodo(item)"
-                ></v-checkbox>
+                <span @click="finishedTodo(item)">
+                  <v-checkbox
+                    :value="item.isFinished"
+                    readonly
+                    :false-value="0"
+                    :true-value="1"
+                    :input-value="item.isFinished"
+                    class="checkbox mt-0 pt-0"
+                    :off-icon="'mdi-checkbox-blank-circle-outline'"
+                    :on-icon="'mdi-check-circle-outline'"
+                    color="red darken-3"
+                    dense
+                  ></v-checkbox>
+                </span>
                 <!-- :false-value="!item.isFinished"
                   :true-value="item.isFinished" -->
                 <label :class="{ finished: checkFinished(item) }">{{
@@ -123,15 +128,20 @@
               "
             >
               <div class="todo__title">
-                <v-checkbox
-                  :input-value="item.isFinished"
-                  class="checkbox mt-0 pt-0"
-                  :off-icon="'mdi-checkbox-blank-circle-outline'"
-                  :on-icon="'mdi-check-circle-outline'"
-                  color="red darken-3"
-                  dense
-                  @click="finishedTodo(item)"
-                ></v-checkbox>
+                <span @click="finishedTodo(item)">
+                  <v-checkbox
+                    :value="item.isFinished"
+                    readonly
+                    :false-value="0"
+                    :true-value="1"
+                    :input-value="item.isFinished"
+                    class="checkbox mt-0 pt-0"
+                    :off-icon="'mdi-checkbox-blank-circle-outline'"
+                    :on-icon="'mdi-check-circle-outline'"
+                    color="red darken-3"
+                    dense
+                  ></v-checkbox>
+                </span>
                 <label :class="{ finished: checkFinished(item) }">{{
                   item.title
                 }}</label>
@@ -178,15 +188,20 @@
               "
             >
               <div class="todo__title">
-                <v-checkbox
-                  :input-value="item.isFinished"
-                  class="checkbox mt-0 pt-0"
-                  :off-icon="'mdi-checkbox-blank-circle-outline'"
-                  :on-icon="'mdi-check-circle-outline'"
-                  color="red darken-3"
-                  dense
-                  @click="finishedTodo(item)"
-                ></v-checkbox>
+                <span @click="finishedTodo(item)">
+                  <v-checkbox
+                    :value="item.isFinished"
+                    readonly
+                    :false-value="0"
+                    :true-value="1"
+                    :input-value="item.isFinished"
+                    class="checkbox mt-0 pt-0"
+                    :off-icon="'mdi-checkbox-blank-circle-outline'"
+                    :on-icon="'mdi-check-circle-outline'"
+                    color="red darken-3"
+                    dense
+                  ></v-checkbox>
+                </span>
                 <label :class="{ finished: checkFinished(item) }">{{
                   item.title
                 }}</label>
