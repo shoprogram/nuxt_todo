@@ -3,7 +3,7 @@
     <div class="filter-bar">
       <div class="filter-bar__checkbox">
         <!-- readonlyオプションを置きつつ、イベントを発生させて、完全にチェックボックスをコントロールするために必要なspan -->
-        <sapn class="filter" @click="checkAllByFilter">
+        <span class="filter" @click="checkAllByFilter">
           <v-checkbox
             v-model="isFilterAllChecked"
             readonly
@@ -12,8 +12,8 @@
             color="#ea9c8a"
             label="チェック済みも表示"
           ></v-checkbox>
-        </sapn>
-        <sapn class="filter" @click="checkUnfinished">
+        </span>
+        <span class="filter" @click="checkUnfinished">
           <v-checkbox
             v-model="isFilterUnfinishedChecked"
             readonly
@@ -22,7 +22,7 @@
             color="#ea9c8a"
             label="未完了のTodoのみ表示"
           ></v-checkbox>
-        </sapn>
+        </span>
       </div>
       <div class="search__bar filter">
         <div class="search__bar--box">
