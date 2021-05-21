@@ -3,17 +3,17 @@
     <div class="filter-bar">
       <div class="filter-bar__checkbox">
         <!-- readonlyオプションを置きつつ、イベントを発生させて、完全にチェックボックスをコントロールするために必要なspan -->
-        <sapn class="filter" @click="getAllByFilter">
+        <span class="filter" @click="checkAllByFilter">
           <v-checkbox
             v-model="isFilterAllChecked"
             readonly
             :false-value="false"
             :true-value="true"
             color="#ea9c8a"
-            label="全てのTodoを表示"
+            label="チェック済みも表示"
           ></v-checkbox>
-        </sapn>
-        <sapn class="filter" @click="getUnfinished">
+        </span>
+        <span class="filter" @click="checkUnfinished">
           <v-checkbox
             v-model="isFilterUnfinishedChecked"
             readonly
@@ -22,8 +22,7 @@
             color="#ea9c8a"
             label="未完了のTodoのみ表示"
           ></v-checkbox>
-        </sapn>
-        <!-- @change="getUnfinished" -->
+        </span>
       </div>
       <div class="search__bar filter">
         <div class="search__bar--box">
@@ -32,11 +31,12 @@
             class="search__bar--icon"
           ></font-awesome-icon>
           <input v-model="searchValue" placeholder="検索でTodoを絞り込む" />
-          <!-- @input="searchValue = $event.target.value" -->
-          <font-awesome-icon
-            icon="times"
-            class="search__bar--icon"
-          ></font-awesome-icon>
+          <div class="search__bar--cancel" @click="cancelSearch">
+            <font-awesome-icon
+              icon="times"
+              class="search__bar--icon"
+            ></font-awesome-icon>
+          </div>
         </div>
       </div>
     </div>
@@ -66,20 +66,25 @@
               "
             >
               <div class="todo__title">
-                <v-checkbox
-                  :input-value="item.isFinished"
-                  class="checkbox mt-0 pt-0"
-                  :off-icon="'mdi-checkbox-blank-circle-outline'"
-                  :on-icon="'mdi-check-circle-outline'"
-                  color="red darken-3"
-                  dense
-                  @click="finishedTodo(item)"
-                ></v-checkbox>
+                <span @click="finishedTodo(item)">
+                  <v-checkbox
+                    :value="item.isFinished"
+                    readonly
+                    :false-value="0"
+                    :true-value="1"
+                    :input-value="item.isFinished"
+                    class="checkbox mt-0 pt-0"
+                    :off-icon="'mdi-checkbox-blank-circle-outline'"
+                    :on-icon="'mdi-check-circle-outline'"
+                    color="red darken-3"
+                    dense
+                  ></v-checkbox>
+                </span>
                 <!-- :false-value="!item.isFinished"
                   :true-value="item.isFinished" -->
-                <label :class="{ finished: checkFinished(item) }"
-                  >{{ item.title }}{{ '===' + item.isFinished }}</label
-                >
+                <label :class="{ finished: checkFinished(item) }">{{
+                  item.title
+                }}</label>
               </div>
 
               <div
@@ -123,18 +128,23 @@
               "
             >
               <div class="todo__title">
-                <v-checkbox
-                  :input-value="item.isFinished"
-                  class="checkbox mt-0 pt-0"
-                  :off-icon="'mdi-checkbox-blank-circle-outline'"
-                  :on-icon="'mdi-check-circle-outline'"
-                  color="red darken-3"
-                  dense
-                  @click="finishedTodo(item)"
-                ></v-checkbox>
-                <label :class="{ finished: checkFinished(item) }"
-                  >{{ item.title }}{{ '===' + item.isFinished }}</label
-                >
+                <span @click="finishedTodo(item)">
+                  <v-checkbox
+                    :value="item.isFinished"
+                    readonly
+                    :false-value="0"
+                    :true-value="1"
+                    :input-value="item.isFinished"
+                    class="checkbox mt-0 pt-0"
+                    :off-icon="'mdi-checkbox-blank-circle-outline'"
+                    :on-icon="'mdi-check-circle-outline'"
+                    color="red darken-3"
+                    dense
+                  ></v-checkbox>
+                </span>
+                <label :class="{ finished: checkFinished(item) }">{{
+                  item.title
+                }}</label>
               </div>
 
               <div
@@ -178,18 +188,23 @@
               "
             >
               <div class="todo__title">
-                <v-checkbox
-                  :input-value="item.isFinished"
-                  class="checkbox mt-0 pt-0"
-                  :off-icon="'mdi-checkbox-blank-circle-outline'"
-                  :on-icon="'mdi-check-circle-outline'"
-                  color="red darken-3"
-                  dense
-                  @click="finishedTodo(item)"
-                ></v-checkbox>
-                <label :class="{ finished: checkFinished(item) }"
-                  >{{ item.title }}{{ '===' + item.isFinished }}</label
-                >
+                <span @click="finishedTodo(item)">
+                  <v-checkbox
+                    :value="item.isFinished"
+                    readonly
+                    :false-value="0"
+                    :true-value="1"
+                    :input-value="item.isFinished"
+                    class="checkbox mt-0 pt-0"
+                    :off-icon="'mdi-checkbox-blank-circle-outline'"
+                    :on-icon="'mdi-check-circle-outline'"
+                    color="red darken-3"
+                    dense
+                  ></v-checkbox>
+                </span>
+                <label :class="{ finished: checkFinished(item) }">{{
+                  item.title
+                }}</label>
               </div>
 
               <div
@@ -276,6 +291,7 @@ export default {
         title: '',
         detail: '',
         category: '',
+        isFinished: '',
       },
       isFilterAllChecked: true,
       isFilterUnfinishedChecked: false,
@@ -286,11 +302,17 @@ export default {
   },
   computed: {
     ...mapGetters('todo', ['todoList']),
+    // searchValue() {
+    //   return this.$store.getters.searchValue
+    // },
     /**
      * @desc このコンピューテッド
      */
     draggableListWork: {
       get() {
+        if (this.isFilterUnfinishedChecked) {
+          return this.hideFinished(this.todoList.workTodo)
+        }
         return this.todoList.workTodo
       },
       set(value) {
@@ -302,6 +324,9 @@ export default {
     },
     draggableListPrivate: {
       get() {
+        if (this.isFilterUnfinishedChecked) {
+          return this.hideFinished(this.todoList.privateTodo)
+        }
         return this.todoList.privateTodo
       },
       set(value) {
@@ -313,6 +338,9 @@ export default {
     },
     draggableListRandom: {
       get() {
+        if (this.isFilterUnfinishedChecked) {
+          return this.hideFinished(this.todoList.randomTodo)
+        }
         return this.todoList.randomTodo
       },
       set(value) {
@@ -325,13 +353,7 @@ export default {
   },
   watch: {
     searchValue(val) {
-      if (val && this.isFilterAllChecked) {
-        this.isFilterAllChecked = false
-      } else if (val && this.isFilterUnfinishedChecked) {
-        this.isFilterUnfinishedChecked = true
-      } else {
-        this.isFilterAllChecked = true
-      }
+      this.$store.commit('todo/reactiveSearchValue', val)
       this.$store.dispatch('todo/actionFilterTodo', val)
     },
   },
@@ -346,24 +368,30 @@ export default {
       'actionFinishedTodo',
       'actionDeleteTodo',
     ]),
-    // searchTodo(val) {
-    //   console.log(val)
-    //   this.searchValue = val
-    //   this.actionFilterTodo(this.searchValue)
-    // },
-    getAllByFilter() {
+    checkAllByFilter() {
       if (this.isFilterUnfinishedChecked) {
         this.isFilterUnfinishedChecked = false
       }
       this.isFilterAllChecked = true
-      this.actionGetAllTodo()
+      // this.actionGetAllTodo()
     },
-    getUnfinished() {
+    hideFinished(array) {
+      const filteredTodo = []
+      array.forEach((val, i) => {
+        if (!val.isFinished) {
+          filteredTodo.push(val)
+        }
+      })
+      return filteredTodo
+    },
+    checkUnfinished() {
       if (this.isFilterAllChecked) {
         this.isFilterAllChecked = !this.isFilterAllChecked
       }
       this.isFilterUnfinishedChecked = true
-      this.actionGetUnfinished()
+    },
+    cancelSearch() {
+      this.searchValue = ''
     },
     toggleModal(value) {
       this.selectedAddCategory = value
@@ -382,12 +410,13 @@ export default {
       this.inputValues.detail = ''
       this.selectedCategories = ''
     },
-    showEditModal({ id, title, detail, category }) {
+    showEditModal({ id, title, detail, category, isFinished }) {
       this.isShowEditModal = !this.isShowEditModal
       this.selectedTodo.id = id
       this.selectedTodo.category = category
       this.selectedTodo.title = title
       this.selectedTodo.detail = detail
+      this.selectedTodo.isFinished = isFinished
     },
     closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
@@ -403,6 +432,7 @@ export default {
       this.selectedTodo.title = ''
       this.selectedTodo.detail = ''
       this.selectedTodo.category = ''
+      this.selectedTodo.isFinished = ''
     },
     // Draggableから↓
     checkFinished(target) {

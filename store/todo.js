@@ -3,97 +3,52 @@ import axios from 'axios'
 export const state = () => ({
   todoListData: {},
   todoList: {},
+  searchValue: '',
+  // todoListData is not supposed to be modified, but at some point, it is modified.
 })
 export const getters = {
   todoList: (state) => state.todoList,
 }
 export const mutations = {
+  reactiveSearchValue(state, payload) {
+    state.searchValue = payload
+  },
   getAllTodo(state, payload) {
     state.todoListData = payload
     state.todoList = { ...state.todoListData }
-    // state.todoList = state.todoListData.slice()
-    console.log('全件取得の', state.todoListData)
   },
   updateDraggableList(state, payload) {
     state.todoList[payload.targetCategory + 'Todo'] = payload.value
     // これがうまく行って、表示がされても、リロードしたらTodoの順番が変わってしまう。改善余地あり。
   },
-  getUnfinished(state) {
-    const {
-      workTodo: targetWork,
-      privateTodo: targetPrivate,
-      randomTodo: targetRandom,
-    } = state.todoList
-    const hideFinished = (array) => {
-      array.forEach((val, i) => {
-        if (val.isFinished) {
-          const category = val.category + 'Todo'
-          state.todoList[category].splice(i, 1)
-        }
-      })
-    }
-    hideFinished(targetWork)
-    hideFinished(targetPrivate)
-    hideFinished(targetRandom)
-    const newTodoList = state.todoList
-    state.todoList = { ...newTodoList }
-    // 原本が書き換わっちゃってる
-    console.log('未完了取得段階のtodoListData', state.todoListData)
-    console.log('未完了取得段階のtodoList', state.todoList)
-  },
-  // search barでchangeあるたびにfilterをかけてstateの中を書き換える
   filterTodo(state, val) {
     const allTodo = Object.assign({}, state.todoListData)
     state.todoList = allTodo
-    console.log('data原本', state.todoList)
-    console.log('data変える方', state.todoList)
     const filteredWorkTodo = []
     const filteredPrivateTodo = []
     const filteredRandomTodo = []
-    for (let i = 0; i < state.todoList.workTodo.length; i++) {
-      const targetTodo = state.todoList.workTodo[i]
-      if (
-        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
-        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
-      ) {
-        filteredWorkTodo.push(targetTodo)
+    function filtering(category, arrayName) {
+      for (let i = 0; i < state.todoList[category].length; i++) {
+        const targetTodo = state.todoList[category][i]
+        if (
+          targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
+          targetTodo.detail.toLowerCase().includes(val.toLowerCase())
+        ) {
+          arrayName.push(targetTodo)
+        }
       }
     }
-    for (let i = 0; i < state.todoList.privateTodo.length; i++) {
-      const targetTodo = state.todoList.privateTodo[i]
-      if (
-        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
-        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
-      ) {
-        filteredPrivateTodo.push(targetTodo)
-      }
-    }
-    for (let i = 0; i < state.todoList.randomTodo.length; i++) {
-      const targetTodo = state.todoList.randomTodo[i]
-      if (
-        targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
-        targetTodo.detail.toLowerCase().includes(val.toLowerCase())
-      ) {
-        filteredRandomTodo.push(targetTodo)
-      }
-    }
+    filtering('workTodo', filteredWorkTodo)
+    filtering('privateTodo', filteredPrivateTodo)
+    filtering('randomTodo', filteredRandomTodo)
     state.todoList.workTodo = filteredWorkTodo
     state.todoList.privateTodo = filteredPrivateTodo
     state.todoList.randomTodo = filteredRandomTodo
-
-    //   .filter(
-    //   (todo) => {
-    //     todo.title.toLowerCase().includes(payload.value.toLowerCase()) |
-    //       todo.detail.toLowerCase().includes(payload.value.toLowerCase())
-    //   }
-    // )
-    // 全件取得し直してから（完了todoからも検索したいため）、filteredTodoをcategoryごとにstateのtodoListに入れ直す。
-    // ×ボタンを押したら全件取得し直す
   },
 }
 
 export const actions = {
-  async actionGetAllTodo({ commit }) {
+  async actionGetAllTodo({ commit, state }) {
     await axios.get('http://localhost:3000/api/v1/todo').then((res) => {
       const workTodo = []
       const privateTodo = []
@@ -111,40 +66,28 @@ export const actions = {
       }
       const payload = { workTodo, privateTodo, randomTodo }
       commit('getAllTodo', payload)
+      // searchValueに値が入ってた時はfilterをかける
+      if (state.searchValue) {
+        commit('filterTodo', state.searchValue)
+      }
     })
-  },
-  actionGetUnfinished({ commit }) {
-    commit('getUnfinished')
   },
   actionFilterTodo({ dispatch, commit }, val) {
     if (val === '') {
       dispatch('actionGetAllTodo')
-      // 未完了Todo checkboxがtrueの場合は
     } else {
+      // 未完了Todo checkboxがtrueの場合は
       commit('filterTodo', val)
     }
   },
   async actionAddTodo({ dispatch }, newTodo) {
-    const formedTodo = {
-      title: newTodo.title,
-      category: newTodo.category,
-      detail: newTodo.detail,
-      isFinished: newTodo.isFinished,
-    }
     await axios
-      .post('http://localhost:3000/api/v1/todo', formedTodo)
+      .post('http://localhost:3000/api/v1/todo', newTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionUpdateTodo({ dispatch }, updatedTodo) {
-    const formedTodo = {
-      id: updatedTodo.id,
-      title: updatedTodo.title,
-      category: updatedTodo.category,
-      detail: updatedTodo.detail,
-      isFinished: updatedTodo.isFinished,
-    }
     await axios
-      .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, formedTodo)
+      .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, updatedTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionFinishedTodo({ dispatch }, payload) {
