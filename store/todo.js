@@ -4,7 +4,7 @@ export const state = () => ({
   todoListData: {},
   todoList: {},
   searchValue: '',
-  // todoListData is not supposed to be modified, but at some point, it is modified.
+  // todoListDataとtodoList(変更加えていい方)に分ける意味あるのか
 })
 export const getters = {
   todoList: (state) => state.todoList,
