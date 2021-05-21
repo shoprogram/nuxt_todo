@@ -20,6 +20,7 @@ export const mutations = {
     // これがうまく行って、表示がされても、リロードしたらTodoの順番が変わってしまう。改善余地あり。
   },
   filterTodo(state, val) {
+    console.log('filterTodoが動いた')
     const allTodo = Object.assign({}, state.todoListData)
     state.todoList = allTodo
     const filteredWorkTodo = []
@@ -108,7 +109,16 @@ export const mutations = {
 }
 
 export const actions = {
-  async actionGetAllTodo({ commit }) {
+  async actionGetAllTodo({ commit, state }) {
+    console.log('全件取得action一番最初', state.searchValue)
+    if (state.searchValue) {
+      console.log(
+        '全件取得のactionの中でif、searchValueがあった時',
+        state.searchValue
+      )
+      commit('filterTodo', state.searchValue)
+      return
+    }
     await axios.get('http://localhost:3000/api/v1/todo').then((res) => {
       const workTodo = []
       const privateTodo = []
@@ -125,13 +135,6 @@ export const actions = {
         }
       }
       const payload = { workTodo, privateTodo, randomTodo }
-      if (this.state.searchValue) {
-        commit(
-          '全件取得のactionの中でif、searchValueがあった時',
-          this.state.searchValue
-        )
-        this.store.commit('getAllAndFilter', payload)
-      }
       commit('getAllTodo', payload)
     })
   },

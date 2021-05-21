@@ -10,7 +10,7 @@
             :false-value="false"
             :true-value="true"
             color="#ea9c8a"
-            label="全てのTodoを表示"
+            label="チェック済みも表示"
           ></v-checkbox>
         </sapn>
         <sapn class="filter" @click="getUnfinished">
@@ -20,7 +20,7 @@
             :false-value="false"
             :true-value="true"
             color="#ea9c8a"
-            label="未完了のTodoのみ表示"
+            label="未完了のみ表示"
           ></v-checkbox>
         </sapn>
         <!-- @change="getUnfinished" -->
