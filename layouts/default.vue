@@ -1,5 +1,9 @@
 <template>
-  <v-app light>
+  <v-app
+    :style="{
+      background: $vuetify.theme.themes.light.primary,
+    }"
+  >
     <!-- Navigator in the left side!! -->
     <v-navigation-drawer
       v-model="drawer"
