@@ -1,9 +1,10 @@
-import axios from 'axios'
+// import axios from 'axios'
 
 export const state = () => ({
   todoListData: {},
   todoList: {},
   searchValue: '',
+  errorAlert: false,
   // todoListDataとtodoList(変更加えていい方)に分ける意味あるのか
 })
 export const getters = {
@@ -49,7 +50,7 @@ export const mutations = {
 
 export const actions = {
   async actionGetAllTodo({ commit, state }) {
-    await axios.get('http://localhost:3000/api/v1/todo').then((res) => {
+    await this.$axios.get('http://localhost:3000/api/v1/todo').then((res) => {
       const workTodo = []
       const privateTodo = []
       const randomTodo = []
@@ -71,6 +72,11 @@ export const actions = {
         commit('filterTodo', state.searchValue)
       }
     })
+    // .catch((err) => {
+    //   console.log('store側のキャッチ')
+    // return Promise.reject(err)
+    // throw new Error(err)
+    // })
   },
   actionFilterTodo({ dispatch, commit }, val) {
     if (val === '') {
@@ -81,12 +87,20 @@ export const actions = {
     }
   },
   async actionAddTodo({ dispatch }, newTodo) {
-    await axios
+    console.log('post', this)
+    await this.$axios
+      // this.$axiosになるの詰まった
+      // https://axios.nuxtjs.org/usage/
       .post('http://localhost:3000/api/v1/todo', newTodo)
       .then(() => dispatch('actionGetAllTodo'))
+    // .catch((err) => {
+    //   console.log('store側のキャッチ')
+    //   return Promise.reject(err)
+    //   // throw new Error(err)
+    // })
   },
   async actionUpdateTodo({ dispatch }, updatedTodo) {
-    await axios
+    await this.$axios
       .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, updatedTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
@@ -98,12 +112,12 @@ export const actions = {
       detail: payload.detail,
       isFinished: !payload.isFinished,
     }
-    await axios
+    await this.$axios
       .put('http://localhost:3000/api/v1/todo/' + payload.id, formedTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionDeleteTodo({ dispatch }, payload) {
-    await axios
+    await this.$axios
       .delete('http://localhost:3000/api/v1/todo/' + payload.id)
       .then(() => dispatch('actionGetAllTodo'))
   },
@@ -118,7 +132,7 @@ export const actions = {
         isFinished: payload.value[i].isFinished,
       }
       if (payload.value[i].category !== payload.targetCategory) {
-        await axios.put(
+        await this.$axios.put(
           'http://localhost:3000/api/v1/todo/' + payload.value[i].id,
           formedTodo
         )
