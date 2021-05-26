@@ -15,11 +15,11 @@
 <style lang="scss">
 .button__add {
   font-weight: 500;
-  // align-items: flex-end;
   padding-bottom: 7px;
-  //↑なんで入らないの？
+  transition: all 300ms 0s ease;
   &:hover {
     background-color: rgba(255, 255, 255, 0.3) !important;
+    // transition: background-color 200ms 0s linear;
   }
   & span {
     margin-left: 4px;

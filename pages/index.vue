@@ -146,18 +146,19 @@
                   item.title
                 }}</label>
               </div>
-
-              <div
-                v-show="isShowEditIcon[item.category] && currentid === i"
-                class="todo__menu"
-              >
-                <div class="edit-button" @click="showEditModal(item)">
-                  <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
+              <transition name="fade">
+                <div
+                  v-show="isShowEditIcon[item.category] && currentid === i"
+                  class="todo__menu"
+                >
+                  <div class="edit-button" @click="showEditModal(item)">
+                    <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
+                  </div>
+                  <div class="delete-button" @click="showDeleteModal(item)">
+                    <v-icon class="todo__edit-button">mdi-delete</v-icon>
+                  </div>
                 </div>
-                <div class="delete-button" @click="showDeleteModal(item)">
-                  <v-icon class="todo__edit-button">mdi-delete</v-icon>
-                </div>
-              </div>
+              </transition>
             </li>
           </draggable>
           <AddButton @click="toggleModal('private')"></AddButton>
@@ -250,10 +251,6 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  // async asyncData({ app }) {
-  //   const response = await app.$axios.$get('http://localhost:4000/api/v1/todo')
-  //   return { host: response }
-  // },
   data() {
     return {
       // DraggableTodoより
@@ -298,6 +295,24 @@ export default {
       // vuexで管理してgetterで取ってくるように書き換える。
       // Booleanの書き換えはcommitを飛ばしてmutationからやるようにする
       searchValue: '',
+    }
+  },
+  // async asyncData({ app, error }) {
+  //   const response = await app.$axios.$get('http://localhost:4000/api/v1/todo')
+  //   return { host: response }
+  // },
+  async fetch({ store, error }) {
+    try {
+      // ココでdispatchはできない？？
+      // const response = await app.$axios.$get(
+      //   'http://localhost:4000/api/v1/todo'
+      // )
+      await store.dispatch('todo/actionGetAllTodo')
+    } catch (err) {
+      error({
+        statusCode: err.response.status,
+        message: err.response.data.message,
+      })
     }
   },
   computed: {
@@ -357,9 +372,15 @@ export default {
       this.$store.dispatch('todo/actionFilterTodo', val)
     },
   },
-  created() {
-    this.$store.dispatch('todo/actionGetAllTodo')
-  },
+  // created() {
+  //   try {
+  //     console.log('try走ってるか')
+  //     this.$store.dispatch('todo/actionGetAllTodo')
+  //   } catch (e) {
+  //     console.log('createdでのエラー', e)
+  //     this.$nuxt.error({ statusCode: 500, message: 'サーバーエラー' })
+  //   }
+  // },
   methods: {
     ...mapActions('todo', [
       'actionGetAllTodo',
@@ -399,7 +420,6 @@ export default {
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      // こういうところでMapActionsって呼べるの？？
       this.actionAddTodo({
         category: this.selectedAddCategory,
         title: this.inputValues.title,
@@ -474,6 +494,19 @@ ol {
   list-style: none;
   padding-left: 0 !important;
 }
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-to,
+.fade-leave {
+  opacity: 1;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s 0 ease;
+}
+// ココうまくアニメつけられてない
 .categories {
   display: flex;
   justify-content: space-between;
@@ -542,25 +575,20 @@ ol {
 .delete-button {
   display: inline-block;
   margin-left: 0;
+  cursor: pointer;
 }
 .finished {
-  background-image: linear-gradient(#c62828, #c62828);
-  background-position: 0 50%;
-  background-size: 100% 3px;
-  background-repeat: repeat-x;
-  // color: #888;
+  // background-image: linear-gradient(#c62828, #c62828);
+  // background-position: 0 50%;
+  // background-size: 100% 3px;
+  // background-repeat: repeat-x;
   margin: 0 0.4em;
   text-decoration: none;
   color: rgba(0, 0, 0, 0.5);
-  // position: relative;
-  // &::before {
-  //   position: absolute;
-  //   top: 0.5em;
-  //   left: -0.3em;
-  //   content: '';
-  //   border: 2px solid #ad343e;
-  //   width: 200%;
-  // text-decoration: line-through #ad343e;
+  text-decoration: line-through;
+  text-decoration-color: #c62828;
+  text-decoration-style: initial;
+  text-decoration-thickness: 15%;
 }
 // .notyet {
 //   text-decoration: none;
