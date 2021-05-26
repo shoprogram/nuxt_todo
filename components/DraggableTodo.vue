@@ -137,37 +137,43 @@ export default {
 <style lang="scss">
 .todo {
   background-color: white;
-  // opacity: 0.7;
   text-align: center;
   border-radius: 4px;
   width: 90%;
   display: flex;
-  // width: 100%;
   margin: 6px auto 0;
   padding: 5px 0 3px 5px;
   justify-content: space-between;
   align-items: baseline;
-  // text-align: center;
   &__title {
     margin-top: 0;
+    max-width: 169px;
     display: flex;
     align-items: center;
-  }
-  &__edit-button {
-    // padding-right: 10px;
-  }
-  &:hover {
+    text-align: left;
+    &label {
+      word-wrap: break-word;
+      margin: 0 0.4em;
+    }
   }
   &__menu {
-    margin-right: 8px;
+    margin-right: 6px;
   }
 }
 .edit-button,
 .delete-button {
   display: inline-block;
   margin-left: 0;
+  cursor: pointer;
 }
-
+.finished {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.5);
+  text-decoration: line-through;
+  text-decoration-color: #c62828;
+  text-decoration-style: initial;
+  text-decoration-thickness: 15%;
+}
 // .notyet {
 //   text-decoration: none;
 // }

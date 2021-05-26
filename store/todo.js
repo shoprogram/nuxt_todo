@@ -1,4 +1,4 @@
-// import axios from 'axios'
+const BASE_URL = 'http://localhost:3000/api/v1/todo'
 
 export const state = () => ({
   todoListData: {},
@@ -50,7 +50,7 @@ export const mutations = {
 
 export const actions = {
   async actionGetAllTodo({ commit, state }) {
-    await this.$axios.get('http://localhost:3000/api/v1/todo').then((res) => {
+    await this.$axios.get(BASE_URL).then((res) => {
       const workTodo = []
       const privateTodo = []
       const randomTodo = []
@@ -72,11 +72,6 @@ export const actions = {
         commit('filterTodo', state.searchValue)
       }
     })
-    // .catch((err) => {
-    //   console.log('store側のキャッチ')
-    // return Promise.reject(err)
-    // throw new Error(err)
-    // })
   },
   actionFilterTodo({ dispatch, commit }, val) {
     if (val === '') {
@@ -91,18 +86,13 @@ export const actions = {
     await this.$axios
       // this.$axiosになるの詰まった
       // https://axios.nuxtjs.org/usage/
-      .post('http://localhost:3000/api/v1/todo', newTodo)
+      .post(BASE_URL, newTodo)
       .then(() => dispatch('actionGetAllTodo'))
-    // .catch((err) => {
-    //   console.log('store側のキャッチ')
-    //   return Promise.reject(err)
-    //   // throw new Error(err)
-    // })
   },
   async actionUpdateTodo({ dispatch }, updatedTodo) {
     console.log('actionUpdateTodo動きました')
     await this.$axios
-      .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, updatedTodo)
+      .put(BASE_URL + '/' + updatedTodo.id, updatedTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionFinishedTodo({ dispatch }, payload) {
@@ -114,12 +104,12 @@ export const actions = {
       isFinished: !payload.isFinished,
     }
     await this.$axios
-      .put('http://localhost:3000/api/v1/todo/' + payload.id, formedTodo)
+      .put(BASE_URL + '/' + payload.id, formedTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionDeleteTodo({ dispatch }, payload) {
     await this.$axios
-      .delete('http://localhost:3000/api/v1/todo/' + payload.id)
+      .delete(BASE_URL + '/' + payload.id)
       .then(() => dispatch('actionGetAllTodo'))
   },
   async actionUpdateDraggableList({ commit }, payload) {
@@ -133,10 +123,7 @@ export const actions = {
         isFinished: payload.value[i].isFinished,
       }
       if (payload.value[i].category !== payload.targetCategory) {
-        await this.$axios.put(
-          'http://localhost:3000/api/v1/todo/' + payload.value[i].id,
-          formedTodo
-        )
+        await this.$axios.put(BASE_URL + '/' + payload.value[i].id, formedTodo)
       }
     }
   },

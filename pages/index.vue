@@ -52,8 +52,7 @@
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
             @finishedTodo="finishedTodo"
-          >
-          </DraggableTodo>
+          />
           <AddButton @click="toggleModal('work')"></AddButton>
         </div>
       </li>
@@ -69,8 +68,7 @@
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
             @finishedTodo="finishedTodo"
-          >
-          </DraggableTodo>
+          />
           <AddButton @click="toggleModal('private')"></AddButton>
         </div>
       </li>
@@ -86,12 +84,12 @@
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
             @finishedTodo="finishedTodo"
-          >
-          </DraggableTodo>
+          />
           <AddButton @click="toggleModal('random')"></AddButton>
         </div>
       </li>
     </ol>
+    <!-- ネストされたdirModalをまとめる -->
     <AddModal
       :dialog="isShowAddModal"
       v-bind.sync="inputValues"
@@ -115,7 +113,7 @@
   </main>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 
 export default {
   data() {
@@ -189,7 +187,8 @@ export default {
       },
       set(value) {
         console.log('親のsetter', value)
-        this.$store.dispatch('todo/actionUpdateDraggableList', {
+        // dispatch書かないようにする
+        this.actionUpdateDraggableList({
           value,
           targetCategory: 'work',
         })
@@ -200,7 +199,7 @@ export default {
         return this.todoList.privateTodo
       },
       set(value) {
-        this.$store.dispatch('todo/actionUpdateDraggableList', {
+        this.actionUpdateDraggableList({
           value,
           targetCategory: 'private',
         })
@@ -211,7 +210,7 @@ export default {
         return this.todoList.randomTodo
       },
       set(value) {
-        this.$store.dispatch('todo/actionUpdateDraggableList', {
+        this.actionUpdateDraggableList({
           value,
           targetCategory: 'random',
         })
@@ -220,33 +219,26 @@ export default {
   },
   watch: {
     searchValue(val) {
-      this.$store.commit('todo/reactiveSearchValue', val)
-      this.$store.dispatch('todo/actionFilterTodo', val)
+      this.reactiveSearchValue(val)
+      this.actionFilterTodo(val)
     },
   },
   methods: {
     ...mapActions('todo', [
       'actionGetAllTodo',
       'actionGetUnfinished',
+      'actionUpdateDraggableList',
       'actionAddTodo',
       'actionFinishedTodo',
+      'actionFilterTodo',
       'actionDeleteTodo',
     ]),
+    ...mapMutations('todo', ['reactiveSearchValue']),
     checkAllByFilter() {
       if (this.isFilterUnfinishedChecked) {
         this.isFilterUnfinishedChecked = false
       }
       this.isFilterAllChecked = true
-      // this.actionGetAllTodo()
-    },
-    hideFinished(array) {
-      const filteredTodo = []
-      array.forEach((val, i) => {
-        if (!val.isFinished) {
-          filteredTodo.push(val)
-        }
-      })
-      return filteredTodo
     },
     checkUnfinished() {
       if (this.isFilterAllChecked) {
@@ -276,27 +268,31 @@ export default {
     showEditModal({ id, title, detail, category, isFinished }) {
       console.log('親のshowEditModal', title)
       this.isShowEditModal = !this.isShowEditModal
-      this.selectedTodo.id = id
-      this.selectedTodo.category = category
-      this.selectedTodo.title = title
-      this.selectedTodo.detail = detail
-      this.selectedTodo.isFinished = isFinished
+      this.selectedTodo = {
+        id,
+        category,
+        title,
+        detail,
+        isFinished,
+      }
+    },
+    clearSelectedTodo() {
+      this.selectedTodo = {
+        id: null,
+        category: '',
+        title: '',
+        detail: '',
+        isFinished: '',
+      }
     },
     closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
-      this.selectedTodo.id = null
-      this.selectedTodo.title = ''
-      this.selectedTodo.detail = ''
-      this.selectedTodo.category = ''
+      this.clearSelectedTodo()
     },
     updateTodo() {
       this.isShowEditModal = !this.isShowEditModal
       this.$store.dispatch('todo/actionUpdateTodo', this.selectedTodo)
-      this.selectedTodo.id = null
-      this.selectedTodo.title = ''
-      this.selectedTodo.detail = ''
-      this.selectedTodo.category = ''
-      this.selectedTodo.isFinished = ''
+      this.clearSelectedTodo()
     },
     // Draggableから↓
     checkFinished(target) {
@@ -307,17 +303,16 @@ export default {
     },
     showDeleteModal({ id, category, title, detail }) {
       this.isShowDeleteModal = !this.isShowDeleteModal
-      this.selectedTodo.id = id
-      this.selectedTodo.category = category
-      this.selectedTodo.title = title
-      this.selectedTodo.detail = detail
+      this.selectedTodo = {
+        id,
+        category,
+        title,
+        detail,
+      }
     },
     closeDeleteModal() {
       this.isShowDeleteModal = !this.isShowDeleteModal
-      this.selectedTodo.id = null
-      this.selectedTodo.title = ''
-      this.selectedTodo.detail = ''
-      this.selectedTodo.category = ''
+      this.clearSelectedTodo()
     },
     deleteTodo() {
       const targetId = this.selectedTodo.id
@@ -381,72 +376,6 @@ ol {
     font-size: 20px;
     letter-spacing: 3px;
   }
-}
-//以下DraggableTodo.vueより
-.todo {
-  background-color: white;
-  // opacity: 0.7;
-  text-align: center;
-  border-radius: 4px;
-  width: 90%;
-  display: flex;
-  // width: 100%;
-  margin: 6px auto 0;
-  padding: 5px 0 3px 5px;
-  justify-content: space-between;
-  align-items: baseline;
-  // text-align: center;
-  &__title {
-    margin-top: 0;
-    max-width: 169px;
-    display: flex;
-    align-items: center;
-    text-align: left;
-    &label {
-      word-wrap: break-word;
-      margin: 0 0.4em;
-    }
-  }
-  &__edit-button {
-    // padding-right: 10px;
-  }
-  &:hover {
-  }
-  &__menu {
-    margin-right: 6px;
-  }
-}
-.edit-button,
-.delete-button {
-  display: inline-block;
-  margin-left: 0;
-  cursor: pointer;
-}
-.finished {
-  // background-image: linear-gradient(#c62828, #c62828);
-  // background-position: 0 50%;
-  // background-size: 100% 3px;
-  // background-repeat: repeat-x;
-  text-decoration: none;
-  color: rgba(0, 0, 0, 0.5);
-  text-decoration: line-through;
-  text-decoration-color: #c62828;
-  text-decoration-style: initial;
-  text-decoration-thickness: 15%;
-}
-// .notyet {
-//   text-decoration: none;
-// }
-.checkbox {
-  display: inline-block;
-  margin-top: 0;
-  // height: 20px;
-}
-.v-messages {
-  display: none;
-}
-.input-slot {
-  margin-bottom: 0;
 }
 
 //上部絞り込み部分
