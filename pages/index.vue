@@ -2,7 +2,6 @@
   <main>
     <div class="filter-bar">
       <div class="filter-bar__checkbox">
-        <!-- readonlyオプションを置きつつ、イベントを発生させて、完全にチェックボックスをコントロールするために必要なspan -->
         <span class="filter" @click="checkAllByFilter">
           <v-checkbox
             v-model="isFilterAllChecked"
@@ -46,60 +45,15 @@
           <div class="category-title">
             <label>Work</label>
           </div>
-          <draggable
-            v-model="draggableListWork"
-            element="ul"
-            draggable=".todo"
-            group="todos"
+          <DraggableTodo
+            :list-work.sync="listWork"
+            :is-filter-all-checked="isFilterAllChecked"
+            :is-filter-unfinished-checked="isFilterUnfinishedChecked"
+            @showEditModal="showEditModal"
+            @showDeleteModal="showDeleteModal"
+            @finishedTodo="finishedTodo"
           >
-            <li
-              v-for="(item, i) in draggableListWork"
-              :key="i"
-              class="todo"
-              @mouseover="
-                isShowEditIcon.work = true
-                currentid = i
-              "
-              @mouseleave="
-                isShowEditIcon.work = false
-                currentid = -1
-              "
-            >
-              <div class="todo__title">
-                <span @click="finishedTodo(item)">
-                  <v-checkbox
-                    :value="item.isFinished"
-                    readonly
-                    :false-value="0"
-                    :true-value="1"
-                    :input-value="item.isFinished"
-                    class="checkbox mt-0 pt-0"
-                    :off-icon="'mdi-checkbox-blank-circle-outline'"
-                    :on-icon="'mdi-check-circle-outline'"
-                    color="red darken-3"
-                    dense
-                  ></v-checkbox>
-                </span>
-                <!-- :false-value="!item.isFinished"
-                  :true-value="item.isFinished" -->
-                <label :class="{ finished: checkFinished(item) }">{{
-                  item.title
-                }}</label>
-              </div>
-
-              <div
-                v-show="isShowEditIcon[item.category] && currentid === i"
-                class="todo__menu"
-              >
-                <div class="edit-button" @click="showEditModal(item)">
-                  <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
-                </div>
-                <div class="delete-button" @click="showDeleteModal(item)">
-                  <v-icon class="todo__edit-button">mdi-delete</v-icon>
-                </div>
-              </div>
-            </li>
-          </draggable>
+          </DraggableTodo>
           <AddButton @click="toggleModal('work')"></AddButton>
         </div>
       </li>
@@ -108,59 +62,15 @@
           <div class="category-title">
             <label>Private</label>
           </div>
-          <draggable
-            v-model="draggableListPrivate"
-            element="ul"
-            draggable=".todo"
-            group="todos"
+          <DraggableTodo
+            :list-work.sync="listPrivate"
+            :is-filter-all-checked="isFilterAllChecked"
+            :is-filter-unfinished-checked="isFilterUnfinishedChecked"
+            @showEditModal="showEditModal"
+            @showDeleteModal="showDeleteModal"
+            @finishedTodo="finishedTodo"
           >
-            <li
-              v-for="(item, i) in draggableListPrivate"
-              :key="i"
-              class="todo"
-              @mouseover="
-                isShowEditIcon[item.category] = true
-                currentid = i
-              "
-              @mouseleave="
-                isShowEditIcon[item.category] = false
-                currentid = -1
-              "
-            >
-              <div class="todo__title">
-                <span @click="finishedTodo(item)">
-                  <v-checkbox
-                    :value="item.isFinished"
-                    readonly
-                    :false-value="0"
-                    :true-value="1"
-                    :input-value="item.isFinished"
-                    class="checkbox mt-0 pt-0"
-                    :off-icon="'mdi-checkbox-blank-circle-outline'"
-                    :on-icon="'mdi-check-circle-outline'"
-                    color="red darken-3"
-                    dense
-                  ></v-checkbox>
-                </span>
-                <label :class="{ finished: checkFinished(item) }">{{
-                  item.title
-                }}</label>
-              </div>
-              <transition name="fade">
-                <div
-                  v-show="isShowEditIcon[item.category] && currentid === i"
-                  class="todo__menu"
-                >
-                  <div class="edit-button" @click="showEditModal(item)">
-                    <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
-                  </div>
-                  <div class="delete-button" @click="showDeleteModal(item)">
-                    <v-icon class="todo__edit-button">mdi-delete</v-icon>
-                  </div>
-                </div>
-              </transition>
-            </li>
-          </draggable>
+          </DraggableTodo>
           <AddButton @click="toggleModal('private')"></AddButton>
         </div>
       </li>
@@ -169,58 +79,15 @@
           <div class="category-title">
             <label>Random</label>
           </div>
-          <draggable
-            v-model="draggableListRandom"
-            element="ul"
-            draggable=".todo"
-            group="todos"
+          <DraggableTodo
+            :list-work.sync="listRandom"
+            :is-filter-all-checked="isFilterAllChecked"
+            :is-filter-unfinished-checked="isFilterUnfinishedChecked"
+            @showEditModal="showEditModal"
+            @showDeleteModal="showDeleteModal"
+            @finishedTodo="finishedTodo"
           >
-            <li
-              v-for="(item, i) in draggableListRandom"
-              :key="i"
-              class="todo"
-              @mouseover="
-                isShowEditIcon[item.category] = true
-                currentid = i
-              "
-              @mouseleave="
-                isShowEditIcon[item.category] = false
-                currentid = -1
-              "
-            >
-              <div class="todo__title">
-                <span @click="finishedTodo(item)">
-                  <v-checkbox
-                    :value="item.isFinished"
-                    readonly
-                    :false-value="0"
-                    :true-value="1"
-                    :input-value="item.isFinished"
-                    class="checkbox mt-0 pt-0"
-                    :off-icon="'mdi-checkbox-blank-circle-outline'"
-                    :on-icon="'mdi-check-circle-outline'"
-                    color="red darken-3"
-                    dense
-                  ></v-checkbox>
-                </span>
-                <label :class="{ finished: checkFinished(item) }">{{
-                  item.title
-                }}</label>
-              </div>
-
-              <div
-                v-show="isShowEditIcon[item.category] && currentid === i"
-                class="todo__menu"
-              >
-                <div class="edit-button" @click="showEditModal(item)">
-                  <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
-                </div>
-                <div class="delete-button" @click="showDeleteModal(item)">
-                  <v-icon class="todo__edit-button">mdi-delete</v-icon>
-                </div>
-              </div>
-            </li>
-          </draggable>
+          </DraggableTodo>
           <AddButton @click="toggleModal('random')"></AddButton>
         </div>
       </li>
@@ -297,10 +164,6 @@ export default {
       searchValue: '',
     }
   },
-  // async asyncData({ app, error }) {
-  //   const response = await app.$axios.$get('http://localhost:4000/api/v1/todo')
-  //   return { host: response }
-  // },
   async fetch({ store, error }) {
     try {
       // ココでdispatchはできない？？
@@ -317,31 +180,23 @@ export default {
   },
   computed: {
     ...mapGetters('todo', ['todoList']),
-    // searchValue() {
-    //   return this.$store.getters.searchValue
-    // },
     /**
      * @desc このコンピューテッド
      */
-    draggableListWork: {
+    listWork: {
       get() {
-        if (this.isFilterUnfinishedChecked) {
-          return this.hideFinished(this.todoList.workTodo)
-        }
         return this.todoList.workTodo
       },
       set(value) {
+        console.log('親のsetter', value)
         this.$store.dispatch('todo/actionUpdateDraggableList', {
           value,
           targetCategory: 'work',
         })
       },
     },
-    draggableListPrivate: {
+    listPrivate: {
       get() {
-        if (this.isFilterUnfinishedChecked) {
-          return this.hideFinished(this.todoList.privateTodo)
-        }
         return this.todoList.privateTodo
       },
       set(value) {
@@ -351,11 +206,8 @@ export default {
         })
       },
     },
-    draggableListRandom: {
+    listRandom: {
       get() {
-        if (this.isFilterUnfinishedChecked) {
-          return this.hideFinished(this.todoList.randomTodo)
-        }
         return this.todoList.randomTodo
       },
       set(value) {
@@ -372,15 +224,6 @@ export default {
       this.$store.dispatch('todo/actionFilterTodo', val)
     },
   },
-  // created() {
-  //   try {
-  //     console.log('try走ってるか')
-  //     this.$store.dispatch('todo/actionGetAllTodo')
-  //   } catch (e) {
-  //     console.log('createdでのエラー', e)
-  //     this.$nuxt.error({ statusCode: 500, message: 'サーバーエラー' })
-  //   }
-  // },
   methods: {
     ...mapActions('todo', [
       'actionGetAllTodo',
@@ -431,6 +274,7 @@ export default {
       this.selectedCategories = ''
     },
     showEditModal({ id, title, detail, category, isFinished }) {
+      console.log('親のshowEditModal', title)
       this.isShowEditModal = !this.isShowEditModal
       this.selectedTodo.id = id
       this.selectedTodo.category = category
@@ -560,6 +404,7 @@ ol {
     text-align: left;
     &label {
       word-wrap: break-word;
+      margin: 0 0.4em;
     }
   }
   &__edit-button {
@@ -582,7 +427,6 @@ ol {
   // background-position: 0 50%;
   // background-size: 100% 3px;
   // background-repeat: repeat-x;
-  margin: 0 0.4em;
   text-decoration: none;
   color: rgba(0, 0, 0, 0.5);
   text-decoration: line-through;

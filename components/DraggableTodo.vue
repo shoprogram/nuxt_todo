@@ -1,61 +1,51 @@
 <template>
-  <draggable v-model="draggableTodoList" element="ul" draggable=".todo">
+  <draggable
+    v-model="draggableTodoList"
+    element="ul"
+    draggable=".todo"
+    group="todos"
+  >
     <li
       v-for="(item, i) in draggableTodoList"
       :key="i"
       class="todo"
       @mouseover="
-        isShowEditIcon[target.category] = true
-        currentIndex = i
+        isShowEditIcon.work = true
+        currentid = i
       "
       @mouseleave="
-        isShowEditIcon[target.category] = false
-        currentIndex = -1
+        isShowEditIcon.work = false
+        currentid = -1
       "
     >
       <div class="todo__title">
-        <v-checkbox
-          class="checkbox mt-0 pt-0"
-          :off-icon="'mdi-checkbox-blank-circle-outline'"
-          :on-icon="'mdi-check-circle-outline'"
-          color="red darken-3"
-          dense
-          @click="
-            $emit('finishedTodo', {
-              index: i,
-              category: target.category,
-            })
-          "
-        ></v-checkbox>
+        <span @click="$emit('finishedTodo', item)">
+          <v-checkbox
+            :value="item.isFinished"
+            readonly
+            :false-value="0"
+            :true-value="1"
+            :input-value="item.isFinished"
+            class="checkbox mt-0 pt-0"
+            :off-icon="'mdi-checkbox-blank-circle-outline'"
+            :on-icon="'mdi-check-circle-outline'"
+            color="red darken-3"
+            dense
+          ></v-checkbox>
+        </span>
         <label :class="{ finished: checkFinished(item) }">{{
           item.title
         }}</label>
       </div>
 
       <div
-        v-show="isShowEditIcon[target.category] && currentIndex === i"
+        v-show="isShowEditIcon[item.category] && currentid === i"
         class="todo__menu"
       >
-        <div
-          class="edit-button"
-          @click="
-            $emit('showEditModal', {
-              index: i,
-              category: target.category,
-            })
-          "
-        >
+        <div class="edit-button" @click="$emit('showEditModal', item)">
           <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
         </div>
-        <div
-          class="delete-button"
-          @click="
-            $emit('showDeleteModal', {
-              index: i,
-              category: target.category,
-            })
-          "
-        >
+        <div class="delete-button" @click="$emit('showDeleteModal', item)">
           <v-icon class="todo__edit-button">mdi-delete</v-icon>
         </div>
       </div>
@@ -66,8 +56,20 @@
 <script>
 export default {
   props: {
-    target: {
-      type: Object,
+    listWork: {
+      type: Array,
+    },
+    listPrivate: {
+      type: Array,
+    },
+    listRandom: {
+      type: Array,
+    },
+    isFilterUnfinishedChecked: {
+      type: Boolean,
+    },
+    isFilterAllChecked: {
+      type: Boolean,
     },
   },
   data() {
@@ -85,33 +87,48 @@ export default {
     todoList() {
       return this.$store.state.todo.todoList
     },
-
     draggableTodoList: {
       get() {
-        return this.todoList[this.target.category]
-        // return [this.todoList.work, this.todoList.private, this.todoList.random]
-        // const workList = this.todoList.work
-        // const privateList = this.todoList.private
-        // const randomList = this.todoList.random
-        // const wholeList = workList.concat(privateList, randomList)
-        // return wholeList
+        const listPassed = []
+        if (this.listWork) {
+          this.listWork.forEach((todo, i) => {
+            listPassed.push(todo)
+          })
+        } else if (this.listPrivate) {
+          this.listPrivate.forEach((todo, i) => {
+            listPassed.push(todo)
+          })
+        } else if (this.listRandom) {
+          this.listRandom.forEach((todo, i) => {
+            listPassed.push(todo)
+          })
+        }
+        if (this.isFilterUnfinishedChecked) {
+          return this.hideFinished(listPassed)
+        }
+        console.log('リスト', listPassed)
+        return listPassed
       },
       set(value) {
-        this.$store.commit(
-          'todo/updateDraggableList',
-          {
-            value,
-            targetCategory: this.target.category,
-          }
-          // { root: true }
-        )
-        // this.$store.commit('todo/updateDraggableList', value)
+        this.$emit('update:listWork', value)
+        console.log('子draggableのsetter', value)
       },
     },
   },
   methods: {
     checkFinished(target) {
       return target.isFinished
+    },
+    hideFinished(array) {
+      console.log('子供のhideFinished動いた')
+      const filteredTodo = []
+      array.forEach((val, i) => {
+        if (!val.isFinished) {
+          filteredTodo.push(val)
+        }
+      })
+      console.log('filteredTodo', filteredTodo)
+      return filteredTodo
     },
   },
 }
@@ -150,18 +167,7 @@ export default {
   display: inline-block;
   margin-left: 0;
 }
-.finished {
-  position: relative;
-  &::before {
-    position: absolute;
-    top: 0.5em;
-    left: -0.3em;
-    content: '';
-    border: 2px solid #ad343e;
-    width: 200%;
-  }
-  // text-decoration: line-through #ad343e;
-}
+
 // .notyet {
 //   text-decoration: none;
 // }

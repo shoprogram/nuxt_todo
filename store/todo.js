@@ -100,6 +100,7 @@ export const actions = {
     // })
   },
   async actionUpdateTodo({ dispatch }, updatedTodo) {
+    console.log('actionUpdateTodo動きました')
     await this.$axios
       .put('http://localhost:3000/api/v1/todo/' + updatedTodo.id, updatedTodo)
       .then(() => dispatch('actionGetAllTodo'))
