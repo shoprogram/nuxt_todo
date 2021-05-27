@@ -62,7 +62,7 @@
             <label>Private</label>
           </div>
           <DraggableTodo
-            :list-work.sync="listPrivate"
+            :list-private.sync="listPrivate"
             :is-filter-all-checked="isFilterAllChecked"
             :is-filter-unfinished-checked="isFilterUnfinishedChecked"
             @showEditModal="showEditModal"
@@ -78,7 +78,7 @@
             <label>Random</label>
           </div>
           <DraggableTodo
-            :list-work.sync="listRandom"
+            :list-random.sync="listRandom"
             :is-filter-all-checked="isFilterAllChecked"
             :is-filter-unfinished-checked="isFilterUnfinishedChecked"
             @showEditModal="showEditModal"

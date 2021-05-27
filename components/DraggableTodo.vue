@@ -10,11 +10,11 @@
       :key="i"
       class="todo"
       @mouseover="
-        isShowEditIcon.work = true
+        isShowEditIcon[targetCategory] = true
         currentid = i
       "
       @mouseleave="
-        isShowEditIcon.work = false
+        isShowEditIcon[targetCategory] = false
         currentid = -1
       "
     >
@@ -80,7 +80,7 @@ export default {
         private: false,
         random: false,
       },
-      targetTodo: '',
+      targetCategory: '',
     }
   },
   computed: {
@@ -93,14 +93,20 @@ export default {
         if (this.listWork) {
           this.listWork.forEach((todo, i) => {
             listPassed.push(todo)
+            this.targetCategory = 'work'
+            console.log('draggableのwork', this.listWork)
           })
         } else if (this.listPrivate) {
           this.listPrivate.forEach((todo, i) => {
             listPassed.push(todo)
+            this.targetCategory = 'private'
+            console.log('draggableのprivate')
           })
         } else if (this.listRandom) {
           this.listRandom.forEach((todo, i) => {
             listPassed.push(todo)
+            this.targetCategory = 'random'
+            console.log('draggableのrandom')
           })
         }
         if (this.isFilterUnfinishedChecked) {
