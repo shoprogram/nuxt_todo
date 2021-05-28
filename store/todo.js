@@ -5,7 +5,6 @@ export const state = () => ({
   todoList: {},
   searchValue: '',
   errorAlert: false,
-  // todoListDataとtodoList(変更加えていい方)に分ける意味あるのか
 })
 export const getters = {
   todoList: (state) => state.todoList,
@@ -19,8 +18,13 @@ export const mutations = {
     state.todoList = { ...state.todoListData }
   },
   updateDraggableList(state, payload) {
-    state.todoList[payload.targetCategory + 'Todo'] = payload.value
-    // これがうまく行って、表示がされても、リロードしたらTodoの順番が変わってしまう。改善余地あり。
+    console.log('updateDraggableのmutation動いた', payload.updatedTodo)
+    state.todoList[payload.target + 'Todo'] = payload.updatedTodo
+    // 今現在の表示をdrag&dropした通りに変えるため
+    state.todoListData[payload.target + 'Todo'] = payload.updatedTodo
+    // 文字検索する時に、毎回todoListDataをtodoListにコピーして使うため、todoListDataも変更しておかないとdrag & dropしたあと１回目の表示が
+    // drag & dropする前の位置で表示されてしまう。
+    // リロード、検索文字消去で全件取得するため順番はdatabaseのid順になってしまう。
   },
   filterTodo(state, val) {
     const allTodo = Object.assign({}, state.todoListData)
@@ -76,8 +80,9 @@ export const actions = {
   actionFilterTodo({ dispatch, commit }, val) {
     if (val === '') {
       dispatch('actionGetAllTodo')
+      // ココのfilterの値をなしにした時も全件取得するのでTodoの順番が入れ替わってしまう。
+      // データの表示順に関して改善余地あり
     } else {
-      // 未完了Todo checkboxがtrueの場合は
       commit('filterTodo', val)
     }
   },
@@ -112,8 +117,9 @@ export const actions = {
       .delete(BASE_URL + '/' + payload.id)
       .then(() => dispatch('actionGetAllTodo'))
   },
-  async actionUpdateDraggableList({ commit }, payload) {
-    commit('updateDraggableList', payload)
+  actionUpdateDraggableList({ commit }, payload) {
+    const updatedTodo = []
+    const target = payload.targetCategory
     for (let i = 0; i < payload.value.length; i++) {
       const formedTodo = {
         id: payload.value[i].id,
@@ -122,9 +128,22 @@ export const actions = {
         detail: payload.value[i].detail,
         isFinished: payload.value[i].isFinished,
       }
+      updatedTodo.push(formedTodo)
       if (payload.value[i].category !== payload.targetCategory) {
-        await this.$axios.put(BASE_URL + '/' + payload.value[i].id, formedTodo)
+        console.log('カテゴリーが違うものは更新する。if内')
+        this.$axios.put(BASE_URL + '/' + payload.value[i].id, formedTodo)
       }
+      // async awaitあえてやめた。
+      // 通信を待たないでcommitをすることで、Todoカードが入れ替えの時にパチパチならないようにした。
     }
+    console.log('draggableのアクションのupdatedTodo', updatedTodo)
+    commit('updateDraggableList', {
+      updatedTodo,
+      target,
+    })
+    // dispatch('actionGetAllTodo')
+    // await this.$axios.get(BASE_URL).then((res) => {
+    //   console.log('更新されたデータを再度取得')
+    // })
   },
 }

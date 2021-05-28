@@ -94,29 +94,27 @@ export default {
           this.listWork.forEach((todo, i) => {
             listPassed.push(todo)
             this.targetCategory = 'work'
-            console.log('draggableのwork', this.listWork)
           })
         } else if (this.listPrivate) {
           this.listPrivate.forEach((todo, i) => {
             listPassed.push(todo)
             this.targetCategory = 'private'
-            console.log('draggableのprivate')
           })
         } else if (this.listRandom) {
           this.listRandom.forEach((todo, i) => {
             listPassed.push(todo)
             this.targetCategory = 'random'
-            console.log('draggableのrandom')
           })
         }
         if (this.isFilterUnfinishedChecked) {
           return this.hideFinished(listPassed)
         }
-        console.log('リスト', listPassed)
         return listPassed
       },
       set(value) {
         this.$emit('update:listWork', value)
+        this.$emit('update:listPrivate', value)
+        this.$emit('update:listRandom', value)
         console.log('子draggableのsetter', value)
       },
     },

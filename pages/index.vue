@@ -187,7 +187,6 @@ export default {
       },
       set(value) {
         console.log('親のsetter', value)
-        // dispatch書かないようにする
         this.actionUpdateDraggableList({
           value,
           targetCategory: 'work',
@@ -199,6 +198,7 @@ export default {
         return this.todoList.privateTodo
       },
       set(value) {
+        console.log('親のsetter', value)
         this.actionUpdateDraggableList({
           value,
           targetCategory: 'private',
@@ -210,6 +210,7 @@ export default {
         return this.todoList.randomTodo
       },
       set(value) {
+        console.log('親のsetter', value)
         this.actionUpdateDraggableList({
           value,
           targetCategory: 'random',
