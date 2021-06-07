@@ -1,6 +1,8 @@
 import colors from 'vuetify/es5/util/colors'
 
+// route dirを自分で設定して、切り替えられるようにする
 export default {
+  srcDir: 'initial/',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - nuxt_todo',
@@ -26,7 +28,9 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [{ src: '~plugins/vuedraggable.js' }, { src: '~plugins/axios.js' }],
+  
+  // draggableを使うときにコメントアウト外す↓
+  // plugins: [{ src: '~plugins/vuedraggable.js' }, { src: '~plugins/axios.js' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
