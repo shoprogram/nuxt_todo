@@ -1,5 +1,6 @@
 <template>
   <main>
+    <!-- Lesson7の終了状態にするように作りつつカリキュラムをかく -->
     <ol class="categories">
       <li class="category category__work">
         <div>
