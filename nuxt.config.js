@@ -1,6 +1,6 @@
 export default {
   // 表示ディレクトリの切り替え
-  srcDir: 'todo_sample/',
+  srcDir: 'todo_initial/',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - nuxt_todo',
@@ -28,7 +28,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
 
   // draggableを使うときにコメントアウト外す↓
-  plugins: [{ src: '~plugins/vuedraggable.js' }, { src: '~plugins/axios.js' }],
+  // plugins: [{ src: '~plugins/vuedraggable.js' }, { src: '~plugins/axios.js' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
