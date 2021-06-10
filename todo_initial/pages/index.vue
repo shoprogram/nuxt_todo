@@ -1,13 +1,25 @@
 <template>
   <main>
-    <!-- Lesson7の終了状態にするように作りつつカリキュラムをかく -->
     <ol class="categories">
       <li class="category category__work">
         <div>
           <div class="category-title">
             <label>Work</label>
           </div>
-          <li v-for="(item, i) in listWork" :key="i" class="todo">
+          <!-- listタグ内編集 -->
+          <li
+            v-for="(item, i) in listWork"
+            :key="i"
+            class="todo"
+            @mouseover="
+              isShowEditIcon.work = true
+              currentid = i
+            "
+            @mouseleave="
+              isShowEditIcon.work = false
+              currentid = -1
+            "
+          >
             <div class="todo__title">
               <v-checkbox
                 class="checkbox mt-0 pt-0"
@@ -17,6 +29,15 @@
                 dense
               ></v-checkbox>
               <label class="checkbox">{{ item.title }}</label>
+            </div>
+            <!-- 以下追加 -->
+            <div
+              v-show="isShowEditIcon.work && currentid === i"
+              class="todo__menu"
+            >
+              <div class="edit-button" @click="showEditModal(item)">
+                <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
+              </div>
             </div>
           </li>
           <AddButton @click="toggleModal('work')"></AddButton>
@@ -27,7 +48,19 @@
           <div class="category-title">
             <label>Private</label>
           </div>
-          <li v-for="(item, i) in listPrivate" :key="i" class="todo">
+          <li
+            v-for="(item, i) in listPrivate"
+            :key="i"
+            class="todo"
+            @mouseover="
+              isShowEditIcon.private = true
+              currentid = i
+            "
+            @mouseleave="
+              isShowEditIcon.private = false
+              currentid = -1
+            "
+          >
             <div class="todo__title">
               <v-checkbox
                 class="checkbox mt-0 pt-0"
@@ -38,6 +71,14 @@
               ></v-checkbox>
               <label class="checkbox">{{ item.title }}</label>
             </div>
+            <div
+              v-show="isShowEditIcon.private && currentid === i"
+              class="todo__menu"
+            >
+              <div class="edit-button" @click="showEditModal(item)">
+                <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
+              </div>
+            </div>
           </li>
           <AddButton @click="toggleModal('private')"></AddButton>
         </div>
@@ -47,7 +88,19 @@
           <div class="category-title">
             <label>Random</label>
           </div>
-          <li v-for="(item, i) in listRandom" :key="i" class="todo">
+          <li
+            v-for="(item, i) in listRandom"
+            :key="i"
+            class="todo"
+            @mouseover="
+              isShowEditIcon.random = true
+              currentid = i
+            "
+            @mouseleave="
+              isShowEditIcon.random = false
+              currentid = -1
+            "
+          >
             <div class="todo__title">
               <v-checkbox
                 class="checkbox mt-0 pt-0"
@@ -57,6 +110,14 @@
                 dense
               ></v-checkbox>
               <label class="checkbox">{{ item.title }}</label>
+            </div>
+            <div
+              v-show="isShowEditIcon.random && currentid === i"
+              class="todo__menu"
+            >
+              <div class="edit-button" @click="showEditModal(item)">
+                <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
+              </div>
             </div>
           </li>
           <AddButton @click="toggleModal('random')"></AddButton>
@@ -69,6 +130,12 @@
       @closeModal="toggleModal"
       @addTodo="addTodo"
     />
+    <EditModal
+      :dialog="isShowEditModal"
+      v-bind.sync="selectedTodo"
+      @closeEditModal="closeEditModal"
+      @updateTodo="updateTodo"
+    ></EditModal>
   </main>
 </template>
 <script>
@@ -83,6 +150,14 @@ export default {
         detail: '',
       },
       selectedAddCategory: '',
+      currentIndex: -1,
+      isShowEditIcon: {
+        work: false,
+        private: false,
+        random: false,
+      },
+      targetCategory: '',
+      isShowEditModal: '', // 追加
     }
   },
   computed: {
@@ -122,6 +197,22 @@ export default {
         detail: '',
         isFinished: '',
       }
+    },
+    // 追加
+    showEditModal({ id, title, detail, category, isFinished }) {
+      this.isShowEditModal = !this.isShowEditModal
+      this.selectedTodo = {
+        id,
+        category,
+        title,
+        detail,
+        isFinished,
+      }
+    },
+    // 追加
+    closeEditModal() {
+      this.isShowEditModal = !this.isShowEditModal
+      this.clearSelectedTodo()
     },
   },
 }
