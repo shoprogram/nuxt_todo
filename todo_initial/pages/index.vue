@@ -7,7 +7,19 @@
           <div class="category-title">
             <label>Work</label>
           </div>
-          <!-- <AddButton @click="toggleModal('work')"></AddButton> -->
+          <li v-for="(item, i) in listWork" :key="i" class="todo">
+            <div class="todo__title">
+              <v-checkbox
+                class="checkbox mt-0 pt-0"
+                :off-icon="'mdi-checkbox-blank-circle-outline'"
+                :on-icon="'mdi-check-circle-outline'"
+                color="red darken-3"
+                dense
+              ></v-checkbox>
+              <label class="checkbox">{{ item.title }}</label>
+            </div>
+          </li>
+          <AddButton @click="toggleModal('work')"></AddButton>
         </div>
       </li>
       <li class="category category__private">
@@ -15,7 +27,19 @@
           <div class="category-title">
             <label>Private</label>
           </div>
-          <!-- <AddButton @click="toggleModal('private')"></AddButton> -->
+          <li v-for="(item, i) in listPrivate" :key="i" class="todo">
+            <div class="todo__title">
+              <v-checkbox
+                class="checkbox mt-0 pt-0"
+                :off-icon="'mdi-checkbox-blank-circle-outline'"
+                :on-icon="'mdi-check-circle-outline'"
+                color="red darken-3"
+                dense
+              ></v-checkbox>
+              <label class="checkbox">{{ item.title }}</label>
+            </div>
+          </li>
+          <AddButton @click="toggleModal('private')"></AddButton>
         </div>
       </li>
       <li class="category category__random">
@@ -23,118 +47,68 @@
           <div class="category-title">
             <label>Random</label>
           </div>
-          <!-- <AddButton @click="toggleModal('random')"></AddButton> -->
+          <li v-for="(item, i) in listRandom" :key="i" class="todo">
+            <div class="todo__title">
+              <v-checkbox
+                class="checkbox mt-0 pt-0"
+                :off-icon="'mdi-checkbox-blank-circle-outline'"
+                :on-icon="'mdi-check-circle-outline'"
+                color="red darken-3"
+                dense
+              ></v-checkbox>
+              <label class="checkbox">{{ item.title }}</label>
+            </div>
+          </li>
+          <AddButton @click="toggleModal('random')"></AddButton>
         </div>
       </li>
     </ol>
+    <AddModal
+      :dialog="isShowAddModal"
+      v-bind.sync="inputValues"
+      @closeModal="toggleModal"
+      @addTodo="addTodo"
+    />
   </main>
 </template>
 <script>
-// import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   data() {
     return {
-      // 元々このvueファイル
       isShowAddModal: false,
-      // isShowEditModal: false,
-      // isShowDeleteModal: false,
-      // inputValues: {
-      //   title: '',
-      //   detail: '',
-      // },
-      categoryList: {
-        work: {
-          category: 'work',
-          displayName: 'Work',
-        },
-        private: {
-          category: 'private',
-          displayName: 'Private',
-        },
-        random: {
-          category: 'random',
-          displayName: 'Random',
-        },
-      },
-      selectedAddCategory: '',
-      selectedTodo: {
-        id: null,
+      inputValues: {
         title: '',
         detail: '',
-        category: '',
-        isFinished: '',
       },
-      isFilterAllChecked: true,
-      isFilterUnfinishedChecked: false,
-      searchValue: '',
+      selectedAddCategory: '',
     }
   },
-
   computed: {
-    // ...mapGetters('todo', ['todoList']),
-    listWork: {
-      // get() {
-      //   return this.todoList.workTodo
-      // },
-      // set(value) {
-      //   this.actionUpdateDraggableList({
-      //     value,
-      //     targetCategory: 'work',
-      //   })
-      // },
+    ...mapGetters('todo', ['todoList']),
+    listWork() {
+      return this.todoList.workTodo
     },
-    listPrivate: {
-      // get() {
-      //   return this.todoList.privateTodo
-      // },
-      // set(value) {
-      //   this.actionUpdateDraggableList({
-      //     value,
-      //     targetCategory: 'private',
-      //   })
-      // },
+    listPrivate() {
+      return this.todoList.privateTodo
     },
-    listRandom: {
-      // get() {
-      //   return this.todoList.randomTodo
-      // },
-      // set(value) {
-      //   this.actionUpdateDraggableList({
-      //     value,
-      //     targetCategory: 'random',
-      //   })
-      // },
+    listRandom() {
+      return this.todoList.randomTodo
     },
   },
   methods: {
-    // ...mapActions('todo', [
-    //   'actionGetAllTodo',
-    //   'actionGetUnfinished',
-    //   'actionUpdateDraggableList',
-    //   'actionAddTodo',
-    //   'actionFinishedTodo',
-    //   'actionFilterTodo',
-    //   'actionDeleteTodo',
-    // ]),
-    // ...mapMutations('todo', ['reactiveSearchValue']),
-    checkAllByFilter() {
-      if (this.isFilterUnfinishedChecked) {
-        this.isFilterUnfinishedChecked = false
-      }
-      this.isFilterAllChecked = true
-    },
+    ...mapMutations('todo', ['mutateAddTodo']),
     toggleModal(value) {
       this.selectedAddCategory = value
       this.isShowAddModal = !this.isShowAddModal
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      this.actionAddTodo({
+      this.mutateAddTodo({
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
-        isFinished: false,
       })
       this.inputValues.title = ''
       this.inputValues.detail = ''
@@ -149,19 +123,65 @@ export default {
         isFinished: '',
       }
     },
-    // Draggableから↓
-    finishedTodo(payload) {
-      this.actionFinishedTodo(payload)
-    },
-    closeDeleteModal() {
-      this.isShowDeleteModal = !this.isShowDeleteModal
-      this.clearSelectedTodo()
-    },
   },
 }
 </script>
 
 <style lang="scss">
+// draggablelコンポーネントに入っていたもの追加
+.todo {
+  background-color: white;
+  text-align: center;
+  border-radius: 4px;
+  width: 90%;
+  display: flex;
+  margin: 6px auto 0;
+  padding: 5px 0 3px 5px;
+  justify-content: space-between;
+  align-items: baseline;
+  &__title {
+    margin-top: 0;
+    max-width: 169px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    &label {
+      word-wrap: break-word;
+      margin: 0 0.4em;
+    }
+  }
+  &__menu {
+    margin-right: 6px;
+  }
+}
+.edit-button,
+.delete-button {
+  display: inline-block;
+  margin-left: 0;
+  cursor: pointer;
+}
+.finished {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.5);
+  text-decoration: line-through;
+  text-decoration-color: #c62828;
+  text-decoration-style: initial;
+  text-decoration-thickness: 15%;
+}
+// .notyet {
+//   text-decoration: none;
+// }
+.checkbox {
+  display: inline-block;
+  margin-top: 0;
+  // height: 20px;
+}
+.v-messages {
+  display: none;
+}
+.input-slot {
+  margin-bottom: 0;
+}
 ul,
 ol {
   list-style: none;
