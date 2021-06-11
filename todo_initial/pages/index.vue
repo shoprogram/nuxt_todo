@@ -35,7 +35,10 @@
               v-show="isShowEditIcon.work && currentid === i"
               class="todo__menu"
             >
-              <div class="edit-button" @click="showEditModal(item)">
+              <div
+                class="edit-button"
+                @click="showEditModal({item, i, 'work'})"
+              >
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
             </div>
@@ -157,7 +160,14 @@ export default {
         random: false,
       },
       targetCategory: '',
-      isShowEditModal: '', // 追加
+      isShowEditModal: false, // 追加
+      selectedTodo: {
+        id: null,
+        title: '',
+        detail: '',
+        category: '',
+        isFinished: '',
+      },
     }
   },
   computed: {
@@ -173,14 +183,14 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('todo', ['mutateAddTodo']),
+    ...mapMutations('todo', ['addTodo', 'updateTodo']),
     toggleModal(value) {
       this.selectedAddCategory = value
       this.isShowAddModal = !this.isShowAddModal
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      this.mutateAddTodo({
+      this.addTodo({
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
@@ -189,30 +199,37 @@ export default {
       this.inputValues.detail = ''
       this.selectedCategories = ''
     },
+    // 追加
+    showEditModal(item) {
+      // { id, title, detail, category }
+      this.isShowEditModal = !this.isShowEditModal
+      // this.selectedTodo = {
+      //   id,
+      //   category,
+      //   title,
+      //   detail,
+      // }
+      console.log(item)
+    },
+    // 追加
+    closeEditModal() {
+      this.isShowEditModal = !this.isShowEditModal
+      this.clearSelectedTodo()
+    },
+    // 追加
+    updateTodo() {
+      this.isShowEditModal = !this.isShowEditModal
+      this.updateTodo(this.selectedTodo)
+      this.clearSelectedTodo()
+    },
+    // 追加
     clearSelectedTodo() {
       this.selectedTodo = {
         id: null,
         category: '',
         title: '',
         detail: '',
-        isFinished: '',
       }
-    },
-    // 追加
-    showEditModal({ id, title, detail, category, isFinished }) {
-      this.isShowEditModal = !this.isShowEditModal
-      this.selectedTodo = {
-        id,
-        category,
-        title,
-        detail,
-        isFinished,
-      }
-    },
-    // 追加
-    closeEditModal() {
-      this.isShowEditModal = !this.isShowEditModal
-      this.clearSelectedTodo()
     },
   },
 }

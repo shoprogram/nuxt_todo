@@ -37,7 +37,7 @@ export const getters = {
 
 export const mutations = {
   // ここ、データうまく渡ってきてない（payload)
-  mutateAddTodo(payload) {
+  addTodo(payload) {
     // const selectedCategory = payload.category
     console.log(payload)
     // const targetList = state.todoList[`${selectedCategory} + Todo`]
@@ -47,4 +47,5 @@ export const mutations = {
     // }
     // targetList.push(newTodo)
   },
+  updateTodo(payload) {},
 }
