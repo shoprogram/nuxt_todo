@@ -6,7 +6,6 @@
           <div class="category-title">
             <label>Work</label>
           </div>
-          <!-- listタグ内編集 -->
           <li
             v-for="(item, i) in listWork"
             :key="i"
@@ -21,7 +20,6 @@
             "
           >
             <div class="todo__title">
-              <!-- ここを編集 -->
               <span @click="finishTodo({ item, i })">
                 <v-checkbox
                   :value="item.isFinished"
@@ -36,7 +34,6 @@
                   dense
                 ></v-checkbox>
               </span>
-              <!-- label編集 -->
               <label :class="{ finished: checkFinished(item) }">{{
                 item.title
               }}</label>
@@ -47,6 +44,10 @@
             >
               <div class="edit-button" @click="showEditModal({ item, i })">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
+              </div>
+              <!-- 追加 -->
+              <div class="delete-button" @click="showDeleteModal({ item, i })">
+                <v-icon class="todo__edit-button">mdi-delete</v-icon>
               </div>
             </div>
           </li>
@@ -95,6 +96,9 @@
               <div class="edit-button" @click="showEditModal({ item, i })">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
+              <div class="delete-button" @click="showDeleteModal({ item, i })">
+                <v-icon class="todo__edit-button">mdi-delete</v-icon>
+              </div>
             </div>
           </li>
           <AddButton @click="toggleModal('private')"></AddButton>
@@ -142,6 +146,9 @@
               <div class="edit-button" @click="showEditModal({ item, i })">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
+              <div class="delete-button" @click="showDeleteModal({ item, i })">
+                <v-icon class="todo__edit-button">mdi-delete</v-icon>
+              </div>
             </div>
           </li>
           <AddButton @click="toggleModal('random')"></AddButton>
@@ -160,6 +167,13 @@
       @closeEditModal="closeEditModal"
       @updateTodo="updateTodo"
     ></EditModal>
+    <!-- 追加 -->
+    <DeleteModal
+      :dialog="isShowDeleteModal"
+      v-bind.sync="selectedTodo"
+      @closeDeleteModal="closeDeleteModal"
+      @deleteTodo="deleteTodo"
+    ></DeleteModal>
   </main>
 </template>
 <script>
@@ -169,6 +183,8 @@ export default {
   data() {
     return {
       isShowAddModal: false,
+      isShowEditModal: false,
+      isShowDeleteModal: false,
       inputValues: {
         title: '',
         detail: '',
@@ -181,20 +197,18 @@ export default {
         random: false,
       },
       targetCategory: '',
-      isShowEditModal: false, // 追加
       selectedTodo: {
         index: null,
         title: '',
         detail: '',
         category: '',
-        isFinished: '', // 追加
+        isFinished: '',
       },
     }
   },
   computed: {
     ...mapGetters('todo', ['todoList']),
     listWork() {
-      console.log('listWork', '反応した')
       return this.todoList.workTodo
     },
     listPrivate() {
@@ -209,6 +223,7 @@ export default {
       'mutationAddTodo',
       'mutationUpdateTodo',
       'mutationFinishTodo',
+      'mutationDeleteTodo',
     ]),
     toggleModal(value) {
       this.selectedAddCategory = value
@@ -220,7 +235,7 @@ export default {
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
-        isFinished: 0, // 追加
+        isFinished: 0,
       })
       this.inputValues.title = ''
       this.inputValues.detail = ''
@@ -233,7 +248,7 @@ export default {
         category: payload.item.category,
         title: payload.item.title,
         detail: payload.item.detail,
-        isFinished: payload.item.isFinished, // 追加
+        isFinished: payload.item.isFinished,
       }
     },
     closeEditModal() {
@@ -261,6 +276,30 @@ export default {
     },
     checkFinished(target) {
       return target.isFinished
+    },
+    // 追加
+    showDeleteModal(payload) {
+      this.isShowDeleteModal = !this.isShowDeleteModal
+      this.selectedTodo = {
+        index: payload.i,
+        category: payload.item.category,
+        title: payload.item.title,
+        detail: payload.item.detail,
+        isFinished: payload.item.isFinished,
+      }
+    },
+    closeDeleteModal() {
+      this.isShowDeleteModal = !this.isShowDeleteModal
+      this.clearSelectedTodo()
+    },
+    deleteTodo() {
+      const targetIndex = this.selectedTodo.index
+      const targetCategory = this.selectedTodo.category
+      this.mutationDeleteTodo({
+        index: targetIndex,
+        category: targetCategory,
+      })
+      this.closeDeleteModal()
     },
   },
 }

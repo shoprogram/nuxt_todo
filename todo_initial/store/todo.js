@@ -43,7 +43,6 @@ export const state = () => ({
 // 追記
 export const getters = {
   todoList(state) {
-    console.log('getters動いた')
     return state.todoList
   },
 }
@@ -74,15 +73,15 @@ export const mutations = {
     const selectedCategory = payload.category
     const newTodoList = { ...state.todoList }
     const targetList = newTodoList[selectedCategory + 'Todo']
-    console.log('ターゲットリスト', targetList)
     const targetTodo = targetList[payload.index]
-    console.log('mutationFinishTodo', targetTodo.isFinished)
     if (targetTodo.isFinished === 0) {
       targetTodo.isFinished = 1
     } else {
       targetTodo.isFinished = 0
     }
     state.todoList = newTodoList
-    console.log('mutationFinishTodo', state.todoList)
+  },
+  mutationDeleteTodo(state, payload) {
+    state.todoList[payload.category + 'Todo'].splice(payload.index, 1)
   },
 }
