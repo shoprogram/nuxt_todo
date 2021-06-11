@@ -170,7 +170,6 @@
     <!-- 追加 -->
     <DeleteModal
       :dialog="isShowDeleteModal"
-      v-bind.sync="selectedTodo"
       @closeDeleteModal="closeDeleteModal"
       @deleteTodo="deleteTodo"
     ></DeleteModal>
