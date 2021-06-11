@@ -21,16 +21,26 @@
             "
           >
             <div class="todo__title">
-              <v-checkbox
-                class="checkbox mt-0 pt-0"
-                :off-icon="'mdi-checkbox-blank-circle-outline'"
-                :on-icon="'mdi-check-circle-outline'"
-                color="red darken-3"
-                dense
-              ></v-checkbox>
-              <label class="checkbox">{{ item.title }}</label>
+              <!-- ここを編集 -->
+              <span @click="finishTodo({ item, i })">
+                <v-checkbox
+                  :value="item.isFinished"
+                  :false-value="0"
+                  :true-value="1"
+                  :input-value="item.isFinished"
+                  readonly
+                  class="checkbox mt-0 pt-0"
+                  :off-icon="'mdi-checkbox-blank-circle-outline'"
+                  :on-icon="'mdi-check-circle-outline'"
+                  color="red darken-3"
+                  dense
+                ></v-checkbox>
+              </span>
+              <!-- label編集 -->
+              <label :class="{ finished: checkFinished(item) }">{{
+                item.title
+              }}</label>
             </div>
-            <!-- 以下追加 -->
             <div
               v-show="isShowEditIcon.work && currentid === i"
               class="todo__menu"
@@ -62,13 +72,20 @@
             "
           >
             <div class="todo__title">
-              <v-checkbox
-                class="checkbox mt-0 pt-0"
-                :off-icon="'mdi-checkbox-blank-circle-outline'"
-                :on-icon="'mdi-check-circle-outline'"
-                color="red darken-3"
-                dense
-              ></v-checkbox>
+              <span @click="finishTodo({ item, i })">
+                <v-checkbox
+                  :value="item.isFinished"
+                  readonly
+                  :false-value="0"
+                  :true-value="1"
+                  :input-value="item.isFinished"
+                  class="checkbox mt-0 pt-0"
+                  :off-icon="'mdi-checkbox-blank-circle-outline'"
+                  :on-icon="'mdi-check-circle-outline'"
+                  color="red darken-3"
+                  dense
+                ></v-checkbox>
+              </span>
               <label class="checkbox">{{ item.title }}</label>
             </div>
             <div
@@ -102,13 +119,20 @@
             "
           >
             <div class="todo__title">
-              <v-checkbox
-                class="checkbox mt-0 pt-0"
-                :off-icon="'mdi-checkbox-blank-circle-outline'"
-                :on-icon="'mdi-check-circle-outline'"
-                color="red darken-3"
-                dense
-              ></v-checkbox>
+              <span @click="finishTodo({ item, i })">
+                <v-checkbox
+                  :value="item.isFinished"
+                  readonly
+                  :false-value="0"
+                  :true-value="1"
+                  :input-value="item.isFinished"
+                  class="checkbox mt-0 pt-0"
+                  :off-icon="'mdi-checkbox-blank-circle-outline'"
+                  :on-icon="'mdi-check-circle-outline'"
+                  color="red darken-3"
+                  dense
+                ></v-checkbox>
+              </span>
               <label class="checkbox">{{ item.title }}</label>
             </div>
             <div
@@ -163,12 +187,14 @@ export default {
         title: '',
         detail: '',
         category: '',
+        isFinished: '', // 追加
       },
     }
   },
   computed: {
     ...mapGetters('todo', ['todoList']),
     listWork() {
+      console.log('listWork', '反応した')
       return this.todoList.workTodo
     },
     listPrivate() {
@@ -179,7 +205,11 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('todo', ['mutationAddTodo', 'mutationUpdateTodo']),
+    ...mapMutations('todo', [
+      'mutationAddTodo',
+      'mutationUpdateTodo',
+      'mutationFinishTodo',
+    ]),
     toggleModal(value) {
       this.selectedAddCategory = value
       this.isShowAddModal = !this.isShowAddModal
@@ -190,12 +220,12 @@ export default {
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
+        isFinished: 0, // 追加
       })
       this.inputValues.title = ''
       this.inputValues.detail = ''
       this.selectedCategories = ''
     },
-    // 追加
     showEditModal(payload) {
       this.isShowEditModal = !this.isShowEditModal
       this.selectedTodo = {
@@ -203,20 +233,18 @@ export default {
         category: payload.item.category,
         title: payload.item.title,
         detail: payload.item.detail,
+        isFinished: payload.item.isFinished, // 追加
       }
     },
-    // 追加
     closeEditModal() {
       this.isShowEditModal = !this.isShowEditModal
       this.clearSelectedTodo()
     },
-    // 追加
     updateTodo() {
       this.isShowEditModal = !this.isShowEditModal
       this.mutationUpdateTodo(this.selectedTodo)
       this.clearSelectedTodo()
     },
-    // 追加
     clearSelectedTodo() {
       this.selectedTodo = {
         index: null,
@@ -224,6 +252,15 @@ export default {
         title: '',
         detail: '',
       }
+    },
+    finishTodo(payload) {
+      this.mutationFinishTodo({
+        index: payload.i,
+        category: payload.item.category,
+      })
+    },
+    checkFinished(target) {
+      return target.isFinished
     },
   },
 }
