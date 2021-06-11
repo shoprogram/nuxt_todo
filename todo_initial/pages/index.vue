@@ -35,10 +35,7 @@
               v-show="isShowEditIcon.work && currentid === i"
               class="todo__menu"
             >
-              <div
-                class="edit-button"
-                @click="showEditModal({item, i, 'work'})"
-              >
+              <div class="edit-button" @click="showEditModal({ item, i })">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
             </div>
@@ -78,7 +75,7 @@
               v-show="isShowEditIcon.private && currentid === i"
               class="todo__menu"
             >
-              <div class="edit-button" @click="showEditModal(item)">
+              <div class="edit-button" @click="showEditModal({ item, i })">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
             </div>
@@ -118,7 +115,7 @@
               v-show="isShowEditIcon.random && currentid === i"
               class="todo__menu"
             >
-              <div class="edit-button" @click="showEditModal(item)">
+              <div class="edit-button" @click="showEditModal({ item, i })">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
             </div>
@@ -162,11 +159,10 @@ export default {
       targetCategory: '',
       isShowEditModal: false, // 追加
       selectedTodo: {
-        id: null,
+        index: null,
         title: '',
         detail: '',
         category: '',
-        isFinished: '',
       },
     }
   },
@@ -183,14 +179,14 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('todo', ['addTodo', 'updateTodo']),
+    ...mapMutations('todo', ['mutationAddTodo', 'mutationUpdateTodo']),
     toggleModal(value) {
       this.selectedAddCategory = value
       this.isShowAddModal = !this.isShowAddModal
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      this.addTodo({
+      this.mutationAddTodo({
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
@@ -200,16 +196,14 @@ export default {
       this.selectedCategories = ''
     },
     // 追加
-    showEditModal(item) {
-      // { id, title, detail, category }
+    showEditModal(payload) {
       this.isShowEditModal = !this.isShowEditModal
-      // this.selectedTodo = {
-      //   id,
-      //   category,
-      //   title,
-      //   detail,
-      // }
-      console.log(item)
+      this.selectedTodo = {
+        index: payload.i,
+        category: payload.item.category,
+        title: payload.item.title,
+        detail: payload.item.detail,
+      }
     },
     // 追加
     closeEditModal() {
@@ -219,13 +213,13 @@ export default {
     // 追加
     updateTodo() {
       this.isShowEditModal = !this.isShowEditModal
-      this.updateTodo(this.selectedTodo)
+      this.mutationUpdateTodo(this.selectedTodo)
       this.clearSelectedTodo()
     },
     // 追加
     clearSelectedTodo() {
       this.selectedTodo = {
-        id: null,
+        index: null,
         category: '',
         title: '',
         detail: '',

@@ -6,26 +6,31 @@ export const state = () => ({
       {
         title: 'タスク１',
         detail: '説明１',
+        category: 'work',
       },
       {
         title: 'タスク２',
         detail: '説明２',
+        category: 'work',
       },
     ],
     privateTodo: [
       {
         title: '予定１',
         detail: '説明１',
+        category: 'private',
       },
       {
         title: '予定２',
         detail: '説明２',
+        category: 'private',
       },
     ],
     randomTodo: [
       {
         title: 'なんでも１',
         detail: '説明１',
+        category: 'random',
       },
     ],
   },
@@ -36,16 +41,24 @@ export const getters = {
 }
 
 export const mutations = {
-  // ここ、データうまく渡ってきてない（payload)
-  addTodo(payload) {
-    // const selectedCategory = payload.category
-    console.log(payload)
-    // const targetList = state.todoList[`${selectedCategory} + Todo`]
-    // const newTodo = {
-    //   title: payload.title,
-    //   detail: payload.detail,
-    // }
-    // targetList.push(newTodo)
+  mutationAddTodo(state, payload) {
+    const selectedCategory = payload.category
+    const targetList = state.todoList[selectedCategory + 'Todo']
+    const newTodo = {
+      title: payload.title,
+      detail: payload.detail,
+      category: payload.category,
+    }
+    targetList.push(newTodo)
   },
-  updateTodo(payload) {},
+  mutationUpdateTodo(state, payload) {
+    const selectedCategory = payload.category
+    const updatedTodo = {
+      title: payload.title,
+      detail: payload.detail,
+      category: payload.category,
+    }
+    const targetTodo = state.todoList[selectedCategory + 'Todo']
+    targetTodo.splice([payload.index], 1, updatedTodo)
+  },
 }
