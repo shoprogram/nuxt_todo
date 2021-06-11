@@ -98,14 +98,14 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('todo', ['mutateAddTodo']),
+    ...mapMutations('todo', ['mutationAddTodo']),
     toggleModal(value) {
       this.selectedAddCategory = value
       this.isShowAddModal = !this.isShowAddModal
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      this.mutateAddTodo({
+      this.mutationAddTodo({
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
