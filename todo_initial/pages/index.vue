@@ -45,7 +45,6 @@
               <div class="edit-button" @click="showEditModal({ item, i })">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
-              <!-- 追加 -->
               <div class="delete-button" @click="showDeleteModal({ item, i })">
                 <v-icon class="todo__edit-button">mdi-delete</v-icon>
               </div>
@@ -276,7 +275,6 @@ export default {
     checkFinished(target) {
       return target.isFinished
     },
-    // 追加
     showDeleteModal(payload) {
       this.isShowDeleteModal = !this.isShowDeleteModal
       this.selectedTodo = {
