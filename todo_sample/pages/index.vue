@@ -166,7 +166,10 @@ export default {
     try {
       await this.$store.dispatch('todo/actionGetAllTodo')
     } catch (err) {
-      this.$nuxt.error({ statusCode: 504, message: 'Data not found' })
+      this.$nuxt.error({
+        statusCode: err.response.status,
+        message: err.response.data.message,
+      })
     }
   },
   // async fetch({ store, error }) {

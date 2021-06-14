@@ -44,7 +44,8 @@ export default {
   },
   data() {
     return {
-      index: {
+      // idに変更
+      id: {
         type: Number,
       },
       category: {

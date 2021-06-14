@@ -19,8 +19,9 @@
               currentid = -1
             "
           >
+            <!-- finisheTodoの引数を編集 -->
             <div class="todo__title">
-              <span @click="finishTodo({ item, i })">
+              <span @click="finishTodo(item)">
                 <v-checkbox
                   :value="item.isFinished"
                   :false-value="0"
@@ -42,10 +43,11 @@
               v-show="isShowEditIcon.work && currentid === i"
               class="todo__menu"
             >
-              <div class="edit-button" @click="showEditModal({ item, i })">
+              <!-- showEditModalとshowDeleteModalの引数を変更 -->
+              <div class="edit-button" @click="showEditModal(item)">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
-              <div class="delete-button" @click="showDeleteModal({ item, i })">
+              <div class="delete-button" @click="showDeleteModal(item)">
                 <v-icon class="todo__edit-button">mdi-delete</v-icon>
               </div>
             </div>
@@ -72,7 +74,7 @@
             "
           >
             <div class="todo__title">
-              <span @click="finishTodo({ item, i })">
+              <span @click="finishTodo(item)">
                 <v-checkbox
                   :value="item.isFinished"
                   readonly
@@ -86,16 +88,18 @@
                   dense
                 ></v-checkbox>
               </span>
-              <label class="checkbox">{{ item.title }}</label>
+              <label :class="{ finished: checkFinished(item) }">{{
+                item.title
+              }}</label>
             </div>
             <div
               v-show="isShowEditIcon.private && currentid === i"
               class="todo__menu"
             >
-              <div class="edit-button" @click="showEditModal({ item, i })">
+              <div class="edit-button" @click="showEditModal(item)">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
-              <div class="delete-button" @click="showDeleteModal({ item, i })">
+              <div class="delete-button" @click="showDeleteModal(item)">
                 <v-icon class="todo__edit-button">mdi-delete</v-icon>
               </div>
             </div>
@@ -122,7 +126,7 @@
             "
           >
             <div class="todo__title">
-              <span @click="finishTodo({ item, i })">
+              <span @click="finishTodo(item)">
                 <v-checkbox
                   :value="item.isFinished"
                   readonly
@@ -136,16 +140,18 @@
                   dense
                 ></v-checkbox>
               </span>
-              <label class="checkbox">{{ item.title }}</label>
+              <label :class="{ finished: checkFinished(item) }">{{
+                item.title
+              }}</label>
             </div>
             <div
               v-show="isShowEditIcon.random && currentid === i"
               class="todo__menu"
             >
-              <div class="edit-button" @click="showEditModal({ item, i })">
+              <div class="edit-button" @click="showEditModal(item)">
                 <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
               </div>
-              <div class="delete-button" @click="showDeleteModal({ item, i })">
+              <div class="delete-button" @click="showDeleteModal(item)">
                 <v-icon class="todo__edit-button">mdi-delete</v-icon>
               </div>
             </div>
@@ -166,7 +172,6 @@
       @closeEditModal="closeEditModal"
       @updateTodo="updateTodo"
     ></EditModal>
-    <!-- 追加 -->
     <DeleteModal
       :dialog="isShowDeleteModal"
       @closeDeleteModal="closeDeleteModal"
@@ -175,7 +180,7 @@
   </main>
 </template>
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -196,12 +201,24 @@ export default {
       },
       targetCategory: '',
       selectedTodo: {
-        index: null,
+        // idに変更
+        id: null,
         title: '',
         detail: '',
         category: '',
         isFinished: '',
       },
+    }
+  },
+  // 追加
+  async fetch() {
+    try {
+      await this.$store.dispatch('todo/actionGetAllTodo')
+    } catch (err) {
+      this.$nuxt.error({
+        statusCode: err.response.status,
+        message: err.response.data.message,
+      })
     }
   },
   computed: {
@@ -218,10 +235,20 @@ export default {
   },
   methods: {
     ...mapMutations('todo', [
-      'mutationAddTodo',
-      'mutationUpdateTodo',
-      'mutationFinishTodo',
-      'mutationDeleteTodo',
+      // 'mutationAddTodo',
+      // 'mutationUpdateTodo',
+      // 'mutationFinishTodo',
+      // 'mutationDeleteTodo',
+    ]),
+    ...mapActions('todo', [
+      'actionGetAllTodo',
+      // 'actionGetUnfinished',
+      // 'actionUpdateDraggableList',
+      'actionUpdateTodo',
+      'actionAddTodo',
+      'actionFinishedTodo',
+      // 'actionFilterTodo',
+      'actionDeleteTodo',
     ]),
     toggleModal(value) {
       this.selectedAddCategory = value
@@ -229,11 +256,11 @@ export default {
     },
     addTodo() {
       this.isShowAddModal = !this.isShowAddModal
-      this.mutationAddTodo({
+      this.actionAddTodo({
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
-        isFinished: 0,
+        isFinished: false, // APIが0, 1に書き換えるのでtrue, falseでOK
       })
       this.inputValues.title = ''
       this.inputValues.detail = ''
@@ -242,11 +269,12 @@ export default {
     showEditModal(payload) {
       this.isShowEditModal = !this.isShowEditModal
       this.selectedTodo = {
-        index: payload.i,
-        category: payload.item.category,
-        title: payload.item.title,
-        detail: payload.item.detail,
-        isFinished: payload.item.isFinished,
+        // idのところ変更, payload.itemだったところ変更
+        id: payload.id,
+        category: payload.category,
+        title: payload.title,
+        detail: payload.detail,
+        isFinished: payload.isFinished,
       }
     },
     closeEditModal() {
@@ -255,22 +283,24 @@ export default {
     },
     updateTodo() {
       this.isShowEditModal = !this.isShowEditModal
-      this.mutationUpdateTodo(this.selectedTodo)
+      this.actionUpdateTodo(this.selectedTodo)
       this.clearSelectedTodo()
     },
     clearSelectedTodo() {
       this.selectedTodo = {
-        index: null,
+        id: null,
         category: '',
         title: '',
         detail: '',
       }
     },
+    // 編集
     finishTodo(payload) {
-      this.mutationFinishTodo({
-        index: payload.i,
-        category: payload.item.category,
-      })
+      console.log('finishedTodo動いた')
+      this.actionFinishedTodo(
+        // 編集
+        payload
+      )
     },
     checkFinished(target) {
       return target.isFinished
@@ -278,11 +308,12 @@ export default {
     showDeleteModal(payload) {
       this.isShowDeleteModal = !this.isShowDeleteModal
       this.selectedTodo = {
-        index: payload.i,
-        category: payload.item.category,
-        title: payload.item.title,
-        detail: payload.item.detail,
-        isFinished: payload.item.isFinished,
+        // index->id, payload.item.id->payload.id
+        id: payload.id,
+        category: payload.category,
+        title: payload.title,
+        detail: payload.detail,
+        isFinished: payload.isFinished,
       }
     },
     closeDeleteModal() {
@@ -290,10 +321,13 @@ export default {
       this.clearSelectedTodo()
     },
     deleteTodo() {
-      const targetIndex = this.selectedTodo.index
+      // targetIndex->trgetTodoにし、this.selected.Indexでなくidに
+      const targetTodo = this.selectedTodo.id
       const targetCategory = this.selectedTodo.category
-      this.mutationDeleteTodo({
-        index: targetIndex,
+      // 編集
+      this.actionDeleteTodo({
+        // id: targetTodoに変更
+        id: targetTodo,
         category: targetCategory,
       })
       this.closeDeleteModal()

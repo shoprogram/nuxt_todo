@@ -46,7 +46,8 @@ export default {
     dialog: {
       type: Boolean,
     },
-    index: {
+    // idに変更
+    id: {
       type: Number,
     },
     title: {
