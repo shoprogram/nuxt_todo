@@ -19,7 +19,6 @@
               currentid = -1
             "
           >
-            <!-- finisheTodoの引数を編集 -->
             <div class="todo__title">
               <span @click="finishTodo(item)">
                 <v-checkbox
@@ -180,7 +179,7 @@
   </main>
 </template>
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -201,7 +200,6 @@ export default {
       },
       targetCategory: '',
       selectedTodo: {
-        // idに変更
         id: null,
         title: '',
         detail: '',
@@ -210,7 +208,6 @@ export default {
       },
     }
   },
-  // 追加
   async fetch() {
     try {
       await this.$store.dispatch('todo/actionGetAllTodo')
@@ -234,12 +231,6 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('todo', [
-      // 'mutationAddTodo',
-      // 'mutationUpdateTodo',
-      // 'mutationFinishTodo',
-      // 'mutationDeleteTodo',
-    ]),
     ...mapActions('todo', [
       'actionGetAllTodo',
       // 'actionGetUnfinished',
@@ -260,7 +251,7 @@ export default {
         category: this.selectedAddCategory,
         title: this.inputValues.title,
         detail: this.inputValues.detail,
-        isFinished: false, // APIが0, 1に書き換えるのでtrue, falseでOK
+        isFinished: false,
       })
       this.inputValues.title = ''
       this.inputValues.detail = ''
@@ -269,7 +260,6 @@ export default {
     showEditModal(payload) {
       this.isShowEditModal = !this.isShowEditModal
       this.selectedTodo = {
-        // idのところ変更, payload.itemだったところ変更
         id: payload.id,
         category: payload.category,
         title: payload.title,
@@ -294,12 +284,8 @@ export default {
         detail: '',
       }
     },
-    // 編集
     finishTodo(payload) {
-      this.actionFinishedTodo(
-        // 編集
-        payload
-      )
+      this.actionFinishedTodo(payload)
     },
     checkFinished(target) {
       return target.isFinished
@@ -307,7 +293,6 @@ export default {
     showDeleteModal(payload) {
       this.isShowDeleteModal = !this.isShowDeleteModal
       this.selectedTodo = {
-        // index->id, payload.item.id->payload.id
         id: payload.id,
         category: payload.category,
         title: payload.title,
@@ -320,12 +305,9 @@ export default {
       this.clearSelectedTodo()
     },
     deleteTodo() {
-      // targetIndex->trgetTodoにし、this.selected.Indexでなくidに
       const targetTodo = this.selectedTodo.id
       const targetCategory = this.selectedTodo.category
-      // 編集
       this.actionDeleteTodo({
-        // id: targetTodoに変更
         id: targetTodo,
         category: targetCategory,
       })
