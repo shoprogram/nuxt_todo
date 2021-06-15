@@ -1,5 +1,5 @@
 <template>
-  <draggable v-model="draggableTodoList" element="ul">
+  <draggable v-model="draggableTodoList" element="ul" group="todos">
     <li
       v-for="(item, i) in draggableTodoList"
       :key="i"
@@ -14,7 +14,7 @@
       "
     >
       <div class="todo__title">
-        <span @click="finishTodo(item)">
+        <span @click="$emit('finishTodo', item)">
           <v-checkbox
             :value="item.isFinished"
             :false-value="0"
@@ -34,10 +34,10 @@
       </div>
       <div v-show="isShowEditIcon.work && currentid === i" class="todo__menu">
         <!-- showEditModalとshowDeleteModalの引数を変更 -->
-        <div class="edit-button" @click="showEditModal(item)">
+        <div class="edit-button" @click="$emit('showEditModal', item)">
           <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
         </div>
-        <div class="delete-button" @click="showDeleteModal(item)">
+        <div class="delete-button" @click="$emit('showDeleteModal', item)">
           <v-icon class="todo__edit-button">mdi-delete</v-icon>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default {
         private: false,
         random: false,
       },
-      targetCategory: '',
+      // targetCategory: '',
     }
   },
   computed: {
@@ -75,22 +75,22 @@ export default {
         if (this.listWork) {
           this.listWork.forEach((todo, i) => {
             listPassed.push(todo)
-            this.targetCategory = 'work'
+            // this.targetCategory = 'work'
           })
         } else if (this.listPrivate) {
           this.listPrivate.forEach((todo, i) => {
             listPassed.push(todo)
-            this.targetCategory = 'private'
+            // this.targetCategory = 'private'
           })
         } else if (this.listRandom) {
           this.listRandom.forEach((todo, i) => {
             listPassed.push(todo)
-            this.targetCategory = 'random'
+            // this.targetCategory = 'random'
           })
         }
-        if (this.isFilterUnfinishedChecked) {
-          return this.hideFinished(listPassed)
-        }
+        // if (this.isFilterUnfinishedChecked) {
+        //   return this.hideFinished(listPassed)
+        // }
         return listPassed
       },
       set(value) {

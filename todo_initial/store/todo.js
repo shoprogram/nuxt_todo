@@ -15,6 +15,14 @@ export const mutations = {
     state.todoListData = payload
     state.todoList = { ...state.todoListData }
   },
+  updateDraggableList(state, payload) {
+    state.todoList[payload.target + 'Todo'] = payload.updatedTodo
+    // 今現在の表示をdrag&dropした通りに変えるため
+    state.todoListData[payload.target + 'Todo'] = payload.updatedTodo
+    // 文字検索する時に、毎回todoListDataをtodoListにコピーして使うため、todoListDataも変更しておかないとdrag & dropしたあと１回目の表示が
+    // drag & dropする前の位置で表示されてしまう。
+    // リロード、検索文字消去で全件取得するため順番はdatabaseのid順になってしまう。
+  },
   mutationUpdateTodo(state, payload) {
     const selectedCategory = payload.category
     const updatedTodo = {
@@ -93,5 +101,28 @@ export const actions = {
     await this.$axios
       .put(BASE_URL + '/' + payload.id, formedTodo)
       .then(() => dispatch('actionGetAllTodo'))
+  },
+  actionUpdateDraggableList({ commit }, payload) {
+    const updatedTodo = []
+    const target = payload.targetCategory
+    for (let i = 0; i < payload.value.length; i++) {
+      const formedTodo = {
+        id: payload.value[i].id,
+        title: payload.value[i].title,
+        category: payload.targetCategory,
+        detail: payload.value[i].detail,
+        isFinished: payload.value[i].isFinished,
+      }
+      updatedTodo.push(formedTodo)
+      if (payload.value[i].category !== payload.targetCategory) {
+        this.$axios.put(BASE_URL + '/' + payload.value[i].id, formedTodo)
+      }
+      // async awaitあえてやめた。
+      // 通信を待たないでcommitをすることで、Todoカードが入れ替えの時にパチパチならないようにした。
+    }
+    commit('updateDraggableList', {
+      updatedTodo,
+      target,
+    })
   },
 }

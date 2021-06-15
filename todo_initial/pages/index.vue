@@ -10,7 +10,7 @@
             :list-work.sync="listWork"
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
-            @finishedTodo="finishedTodo"
+            @finishTodo="finishTodo"
           />
           <AddButton @click="toggleModal('work')"></AddButton>
         </div>
@@ -24,7 +24,7 @@
             :list-private.sync="listPrivate"
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
-            @finishedTodo="finishedTodo"
+            @finishTodo="finishTodo"
           />
           <AddButton @click="toggleModal('private')"></AddButton>
         </div>
@@ -38,7 +38,7 @@
             :list-random.sync="listRandom"
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
-            @finishedTodo="finishedTodo"
+            @finishTodo="finishTodo"
           />
           <AddButton @click="toggleModal('random')"></AddButton>
         </div>
@@ -143,7 +143,7 @@ export default {
     ...mapActions('todo', [
       'actionGetAllTodo',
       // 'actionGetUnfinished',
-      // 'actionUpdateDraggableList',
+      'actionUpdateDraggableList',
       'actionUpdateTodo',
       'actionAddTodo',
       'actionFinishedTodo',
