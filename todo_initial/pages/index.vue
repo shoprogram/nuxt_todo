@@ -6,51 +6,12 @@
           <div class="category-title">
             <label>Work</label>
           </div>
-          <li
-            v-for="(item, i) in listWork"
-            :key="i"
-            class="todo"
-            @mouseover="
-              isShowEditIcon.work = true
-              currentid = i
-            "
-            @mouseleave="
-              isShowEditIcon.work = false
-              currentid = -1
-            "
-          >
-            <div class="todo__title">
-              <span @click="finishTodo(item)">
-                <v-checkbox
-                  :value="item.isFinished"
-                  :false-value="0"
-                  :true-value="1"
-                  :input-value="item.isFinished"
-                  readonly
-                  class="checkbox mt-0 pt-0"
-                  :off-icon="'mdi-checkbox-blank-circle-outline'"
-                  :on-icon="'mdi-check-circle-outline'"
-                  color="red darken-3"
-                  dense
-                ></v-checkbox>
-              </span>
-              <label :class="{ finished: checkFinished(item) }">{{
-                item.title
-              }}</label>
-            </div>
-            <div
-              v-show="isShowEditIcon.work && currentid === i"
-              class="todo__menu"
-            >
-              <!-- showEditModalとshowDeleteModalの引数を変更 -->
-              <div class="edit-button" @click="showEditModal(item)">
-                <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
-              </div>
-              <div class="delete-button" @click="showDeleteModal(item)">
-                <v-icon class="todo__edit-button">mdi-delete</v-icon>
-              </div>
-            </div>
-          </li>
+          <DraggableTodo
+            :list-work.sync="listWork"
+            @showEditModal="showEditModal"
+            @showDeleteModal="showDeleteModal"
+            @finishedTodo="finishedTodo"
+          />
           <AddButton @click="toggleModal('work')"></AddButton>
         </div>
       </li>
@@ -59,50 +20,12 @@
           <div class="category-title">
             <label>Private</label>
           </div>
-          <li
-            v-for="(item, i) in listPrivate"
-            :key="i"
-            class="todo"
-            @mouseover="
-              isShowEditIcon.private = true
-              currentid = i
-            "
-            @mouseleave="
-              isShowEditIcon.private = false
-              currentid = -1
-            "
-          >
-            <div class="todo__title">
-              <span @click="finishTodo(item)">
-                <v-checkbox
-                  :value="item.isFinished"
-                  readonly
-                  :false-value="0"
-                  :true-value="1"
-                  :input-value="item.isFinished"
-                  class="checkbox mt-0 pt-0"
-                  :off-icon="'mdi-checkbox-blank-circle-outline'"
-                  :on-icon="'mdi-check-circle-outline'"
-                  color="red darken-3"
-                  dense
-                ></v-checkbox>
-              </span>
-              <label :class="{ finished: checkFinished(item) }">{{
-                item.title
-              }}</label>
-            </div>
-            <div
-              v-show="isShowEditIcon.private && currentid === i"
-              class="todo__menu"
-            >
-              <div class="edit-button" @click="showEditModal(item)">
-                <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
-              </div>
-              <div class="delete-button" @click="showDeleteModal(item)">
-                <v-icon class="todo__edit-button">mdi-delete</v-icon>
-              </div>
-            </div>
-          </li>
+          <DraggableTodo
+            :list-private.sync="listPrivate"
+            @showEditModal="showEditModal"
+            @showDeleteModal="showDeleteModal"
+            @finishedTodo="finishedTodo"
+          />
           <AddButton @click="toggleModal('private')"></AddButton>
         </div>
       </li>
@@ -111,50 +34,12 @@
           <div class="category-title">
             <label>Random</label>
           </div>
-          <li
-            v-for="(item, i) in listRandom"
-            :key="i"
-            class="todo"
-            @mouseover="
-              isShowEditIcon.random = true
-              currentid = i
-            "
-            @mouseleave="
-              isShowEditIcon.random = false
-              currentid = -1
-            "
-          >
-            <div class="todo__title">
-              <span @click="finishTodo(item)">
-                <v-checkbox
-                  :value="item.isFinished"
-                  readonly
-                  :false-value="0"
-                  :true-value="1"
-                  :input-value="item.isFinished"
-                  class="checkbox mt-0 pt-0"
-                  :off-icon="'mdi-checkbox-blank-circle-outline'"
-                  :on-icon="'mdi-check-circle-outline'"
-                  color="red darken-3"
-                  dense
-                ></v-checkbox>
-              </span>
-              <label :class="{ finished: checkFinished(item) }">{{
-                item.title
-              }}</label>
-            </div>
-            <div
-              v-show="isShowEditIcon.random && currentid === i"
-              class="todo__menu"
-            >
-              <div class="edit-button" @click="showEditModal(item)">
-                <v-icon class="todo__edit-button">mdi-lead-pencil</v-icon>
-              </div>
-              <div class="delete-button" @click="showDeleteModal(item)">
-                <v-icon class="todo__edit-button">mdi-delete</v-icon>
-              </div>
-            </div>
-          </li>
+          <DraggableTodo
+            :list-random.sync="listRandom"
+            @showEditModal="showEditModal"
+            @showDeleteModal="showDeleteModal"
+            @finishedTodo="finishedTodo"
+          />
           <AddButton @click="toggleModal('random')"></AddButton>
         </div>
       </li>
@@ -220,14 +105,38 @@ export default {
   },
   computed: {
     ...mapGetters('todo', ['todoList']),
-    listWork() {
-      return this.todoList.workTodo
+    listWork: {
+      get() {
+        return this.todoList.workTodo
+      },
+      set(value) {
+        this.actionUpdateDraggableList({
+          value,
+          targetCategory: 'work',
+        })
+      },
     },
-    listPrivate() {
-      return this.todoList.privateTodo
+    listPrivate: {
+      get() {
+        return this.todoList.privateTodo
+      },
+      set(value) {
+        this.actionUpdateDraggableList({
+          value,
+          targetCategory: 'private',
+        })
+      },
     },
-    listRandom() {
-      return this.todoList.randomTodo
+    listRandom: {
+      get() {
+        return this.todoList.randomTodo
+      },
+      set(value) {
+        this.actionUpdateDraggableList({
+          value,
+          targetCategory: 'random',
+        })
+      },
     },
   },
   methods: {

@@ -1,5 +1,4 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
-// Vue.component('draggable', Draggable)
-Vue.use(Draggable)
+Vue.component('draggable', Draggable)
