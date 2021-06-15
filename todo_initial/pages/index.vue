@@ -296,7 +296,6 @@ export default {
     },
     // 編集
     finishTodo(payload) {
-      console.log('finishedTodo動いた')
       this.actionFinishedTodo(
         // 編集
         payload
