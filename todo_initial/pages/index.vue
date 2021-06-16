@@ -1,5 +1,45 @@
 <template>
   <main>
+    <div class="filter-bar">
+      <div class="filter-bar__checkbox">
+        <span class="filter" @click="checkAllByFilter">
+          <v-checkbox
+            v-model="isFilterAllChecked"
+            readonly
+            :false-value="false"
+            :true-value="true"
+            color="#ea9c8a"
+            label="チェック済みも表示"
+          ></v-checkbox>
+        </span>
+        <span class="filter" @click="checkUnfinished">
+          <v-checkbox
+            v-model="isFilterUnfinishedChecked"
+            readonly
+            :false-value="false"
+            :true-value="true"
+            color="#ea9c8a"
+            label="未完了のTodoのみ表示"
+          ></v-checkbox>
+        </span>
+      </div>
+      <div class="search__bar filter">
+        <div class="search__bar--box">
+          <font-awesome-icon
+            icon="search"
+            class="search__bar--icon"
+          ></font-awesome-icon>
+          <!-- 編集 -->
+          <input v-model="searchValue" placeholder="検索でTodoを絞り込む" />
+          <div class="search__bar--cancel" @click="cancelSearch">
+            <font-awesome-icon
+              icon="times"
+              class="search__bar--icon"
+            ></font-awesome-icon>
+          </div>
+        </div>
+      </div>
+    </div>
     <ol class="categories">
       <li class="category category__work">
         <div>
@@ -8,6 +48,7 @@
           </div>
           <DraggableTodo
             :list-work.sync="listWork"
+            :is-filter-unfinished-checked="isFilterUnfinishedChecked"
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
             @finishTodo="finishTodo"
@@ -22,6 +63,7 @@
           </div>
           <DraggableTodo
             :list-private.sync="listPrivate"
+            :is-filter-unfinished-checked="isFilterUnfinishedChecked"
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
             @finishTodo="finishTodo"
@@ -36,6 +78,7 @@
           </div>
           <DraggableTodo
             :list-random.sync="listRandom"
+            :is-filter-unfinished-checked="isFilterUnfinishedChecked"
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
             @finishTodo="finishTodo"
@@ -64,7 +107,7 @@
   </main>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
   data() {
@@ -91,6 +134,9 @@ export default {
         category: '',
         isFinished: '',
       },
+      isFilterAllChecked: true, // 追加
+      isFilterUnfinishedChecked: false, // 追加
+      searchValue: '',
     }
   },
   async fetch() {
@@ -139,17 +185,40 @@ export default {
       },
     },
   },
+  watch: {
+    searchValue(val) {
+      this.reactiveSearchValue(val)
+      this.actionFilterTodo(val)
+    },
+  },
   methods: {
     ...mapActions('todo', [
       'actionGetAllTodo',
-      // 'actionGetUnfinished',
       'actionUpdateDraggableList',
       'actionUpdateTodo',
       'actionAddTodo',
       'actionFinishedTodo',
-      // 'actionFilterTodo',
+      'actionFilterTodo', // 追加
       'actionDeleteTodo',
     ]),
+    ...mapMutations('todo', ['reactiveSearchValue']),
+    // 全て表示するチェックボタンをチェックで発火
+    cancelSearch() {
+      this.searchValue = ''
+    },
+    checkAllByFilter() {
+      if (this.isFilterUnfinishedChecked) {
+        // 未完了のみ表示のチェックがされていたら、チェックを外す
+        this.isFilterUnfinishedChecked = false
+      }
+      this.isFilterAllChecked = true
+    },
+    checkUnfinished() {
+      if (this.isFilterAllChecked) {
+        this.isFilterAllChecked = !this.isFilterAllChecked
+      }
+      this.isFilterUnfinishedChecked = true
+    },
     toggleModal(value) {
       this.selectedAddCategory = value
       this.isShowAddModal = !this.isShowAddModal

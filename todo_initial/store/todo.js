@@ -3,6 +3,7 @@ const BASE_URL = 'http://localhost:3000/api/v1/todo'
 export const state = () => ({
   todoListData: {},
   todoList: {},
+  searchValue: '',
 })
 export const getters = {
   todoList(state) {
@@ -23,31 +24,32 @@ export const mutations = {
     // drag & dropする前の位置で表示されてしまう。
     // リロード、検索文字消去で全件取得するため順番はdatabaseのid順になってしまう。
   },
-  mutationUpdateTodo(state, payload) {
-    const selectedCategory = payload.category
-    const updatedTodo = {
-      title: payload.title,
-      detail: payload.detail,
-      category: payload.category,
-      isFinished: payload.isFinished,
-    }
-    const targetTodo = state.todoList[selectedCategory + 'Todo']
-    targetTodo.splice([payload.index], 1, updatedTodo)
+  reactiveSearchValue(state, payload) {
+    state.searchValue = payload
   },
-  mutationFinishTodo(state, payload) {
-    const selectedCategory = payload.category
-    const newTodoList = { ...state.todoList }
-    const targetList = newTodoList[selectedCategory + 'Todo']
-    const targetTodo = targetList[payload.index]
-    if (targetTodo.isFinished === 0) {
-      targetTodo.isFinished = 1
-    } else {
-      targetTodo.isFinished = 0
+  filterTodo(state, val) {
+    const allTodo = Object.assign({}, state.todoListData)
+    state.todoList = allTodo
+    const filteredWorkTodo = []
+    const filteredPrivateTodo = []
+    const filteredRandomTodo = []
+    function filtering(category, arrayName) {
+      for (let i = 0; i < state.todoList[category].length; i++) {
+        const targetTodo = state.todoList[category][i]
+        if (
+          targetTodo.title.toLowerCase().includes(val.toLowerCase()) |
+          targetTodo.detail.toLowerCase().includes(val.toLowerCase())
+        ) {
+          arrayName.push(targetTodo)
+        }
+      }
     }
-    state.todoList = newTodoList
-  },
-  mutationDeleteTodo(state, payload) {
-    state.todoList[payload.category + 'Todo'].splice(payload.index, 1)
+    filtering('workTodo', filteredWorkTodo)
+    filtering('privateTodo', filteredPrivateTodo)
+    filtering('randomTodo', filteredRandomTodo)
+    state.todoList.workTodo = filteredWorkTodo
+    state.todoList.privateTodo = filteredPrivateTodo
+    state.todoList.randomTodo = filteredRandomTodo
   },
 }
 export const actions = {
@@ -70,6 +72,13 @@ export const actions = {
       const payload = { workTodo, privateTodo, randomTodo }
       commit('getAllTodo', payload)
     })
+  },
+  actionFilterTodo({ dispatch, commit }, val) {
+    if (val === '') {
+      dispatch('actionGetAllTodo')
+    } else {
+      commit('filterTodo', val)
+    }
   },
   async actionAddTodo({ dispatch }, newTodo) {
     await this.$axios

@@ -56,6 +56,10 @@ export default {
     listRandom: {
       type: Array,
     },
+    // 追加
+    isFilterUnfinishedChecked: {
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -88,9 +92,10 @@ export default {
             // this.targetCategory = 'random'
           })
         }
-        // if (this.isFilterUnfinishedChecked) {
-        //   return this.hideFinished(listPassed)
-        // }
+        // 追加
+        if (this.isFilterUnfinishedChecked) {
+          return this.hideFinished(listPassed)
+        }
         return listPassed
       },
       set(value) {
