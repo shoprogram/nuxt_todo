@@ -48,12 +48,15 @@ export default {
     },
     index: {
       type: Number,
+      default: null,
     },
     title: {
       type: String,
+      default: '',
     },
     detail: {
       type: String,
+      default: '',
     },
   },
 }

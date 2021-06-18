@@ -24,7 +24,7 @@
           <v-btn icon>
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-          <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+          <v-toolbar-title></v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn icon>
             <v-icon>mdi-heart</v-icon>
@@ -34,7 +34,7 @@
           </v-btn>
         </v-toolbar>
         <v-card-text>
-          <span v-html="selectedEvent.details"></span>
+          <span></span>
         </v-card-text>
         <v-card-actions>
           <v-btn text color="secondary" @click="selectedOpen = false">
