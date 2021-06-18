@@ -58,15 +58,15 @@ export default {
   props: {
     listWork: {
       type: Array,
-      default: () => [{ title: 'todo0' }],
+      default: () => [],
     },
     listPrivate: {
       type: Array,
-      default: () => [{ title: 'todo0' }],
+      default: () => [],
     },
     listRandom: {
       type: Array,
-      default: () => [{ title: 'todo0' }],
+      default: () => [],
     },
     isFilterUnfinishedChecked: {
       type: Boolean,
