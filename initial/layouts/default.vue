@@ -1,10 +1,5 @@
 <template>
-  <v-app
-    :style="{
-      background: $vuetify.theme.themes.light.primary,
-    }"
-  >
-    <!-- Navigator in the left side!! -->
+  <v-app dark>
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -29,7 +24,6 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <!-- headerになるところ -->
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-btn icon @click.stop="miniVariant = !miniVariant">
@@ -47,7 +41,6 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <!-- メインです！！ -->
     <v-main>
       <v-container>
         <nuxt />
@@ -78,20 +71,20 @@ export default {
       fixed: false,
       items: [
         {
-          icon: 'mdi-format-list-checks',
-          title: 'My Todo Board',
+          icon: 'mdi-apps',
+          title: 'Welcome',
           to: '/',
         },
         {
-          icon: 'mdi-calendar-month',
-          title: 'Calendar',
-          to: '/calendar',
+          icon: 'mdi-chart-bubble',
+          title: 'Inspire',
+          to: '/inspire',
         },
       ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'My List',
+      title: 'Vuetify.js',
     }
   },
 }
