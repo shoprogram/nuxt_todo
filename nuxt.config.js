@@ -1,6 +1,6 @@
 export default {
   // 表示ディレクトリの切り替え
-  srcDir: 'todo_sample/',
+  srcDir: 'init/',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - nuxt_todo',
