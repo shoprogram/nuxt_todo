@@ -6,7 +6,6 @@
           <div class="category-title">
             <label>Work</label>
           </div>
-          <!-- <AddButton @click="toggleModal('work')"></AddButton> -->
         </div>
       </li>
       <li class="category category__private">
@@ -14,7 +13,6 @@
           <div class="category-title">
             <label>Private</label>
           </div>
-          <!-- <AddButton @click="toggleModal('private')"></AddButton> -->
         </div>
       </li>
       <li class="category category__random">
@@ -22,143 +20,11 @@
           <div class="category-title">
             <label>Random</label>
           </div>
-          <!-- <AddButton @click="toggleModal('random')"></AddButton> -->
         </div>
       </li>
     </ol>
   </main>
 </template>
-<script>
-// import { mapActions, mapGetters, mapMutations } from 'vuex'
-
-export default {
-  data() {
-    return {
-      // 元々このvueファイル
-      isShowAddModal: false,
-      // isShowEditModal: false,
-      // isShowDeleteModal: false,
-      // inputValues: {
-      //   title: '',
-      //   detail: '',
-      // },
-      categoryList: {
-        work: {
-          category: 'work',
-          displayName: 'Work',
-        },
-        private: {
-          category: 'private',
-          displayName: 'Private',
-        },
-        random: {
-          category: 'random',
-          displayName: 'Random',
-        },
-      },
-      selectedAddCategory: '',
-      selectedTodo: {
-        id: null,
-        title: '',
-        detail: '',
-        category: '',
-        isFinished: '',
-      },
-      isFilterAllChecked: true,
-      isFilterUnfinishedChecked: false,
-      searchValue: '',
-    }
-  },
-
-  computed: {
-    // ...mapGetters('todo', ['todoList']),
-    listWork: {
-      // get() {
-      //   return this.todoList.workTodo
-      // },
-      // set(value) {
-      //   this.actionUpdateDraggableList({
-      //     value,
-      //     targetCategory: 'work',
-      //   })
-      // },
-    },
-    listPrivate: {
-      // get() {
-      //   return this.todoList.privateTodo
-      // },
-      // set(value) {
-      //   this.actionUpdateDraggableList({
-      //     value,
-      //     targetCategory: 'private',
-      //   })
-      // },
-    },
-    listRandom: {
-      // get() {
-      //   return this.todoList.randomTodo
-      // },
-      // set(value) {
-      //   this.actionUpdateDraggableList({
-      //     value,
-      //     targetCategory: 'random',
-      //   })
-      // },
-    },
-  },
-  methods: {
-    // ...mapActions('todo', [
-    //   'actionGetAllTodo',
-    //   'actionGetUnfinished',
-    //   'actionUpdateDraggableList',
-    //   'actionAddTodo',
-    //   'actionFinishedTodo',
-    //   'actionFilterTodo',
-    //   'actionDeleteTodo',
-    // ]),
-    // ...mapMutations('todo', ['reactiveSearchValue']),
-    checkAllByFilter() {
-      if (this.isFilterUnfinishedChecked) {
-        this.isFilterUnfinishedChecked = false
-      }
-      this.isFilterAllChecked = true
-    },
-    toggleModal(value) {
-      this.selectedAddCategory = value
-      this.isShowAddModal = !this.isShowAddModal
-    },
-    addTodo() {
-      this.isShowAddModal = !this.isShowAddModal
-      this.actionAddTodo({
-        category: this.selectedAddCategory,
-        title: this.inputValues.title,
-        detail: this.inputValues.detail,
-        isFinished: false,
-      })
-      this.inputValues.title = ''
-      this.inputValues.detail = ''
-      this.selectedCategories = ''
-    },
-    clearSelectedTodo() {
-      this.selectedTodo = {
-        id: null,
-        category: '',
-        title: '',
-        detail: '',
-        isFinished: '',
-      }
-    },
-    // Draggableから↓
-    finishedTodo(payload) {
-      this.actionFinishedTodo(payload)
-    },
-    closeDeleteModal() {
-      this.isShowDeleteModal = !this.isShowDeleteModal
-      this.clearSelectedTodo()
-    },
-  },
-}
-</script>
 
 <style lang="scss">
 ul,
