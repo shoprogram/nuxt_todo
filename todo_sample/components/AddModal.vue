@@ -17,7 +17,6 @@
           class="px-5"
           @input="$emit('update:title', $event)"
         >
-          <!-- @change="$emit('passTitle', $event)" -->
         </v-text-field>
         <v-textarea
           :value="detail"

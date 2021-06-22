@@ -68,9 +68,6 @@ export default {
     isFilterUnfinishedChecked: {
       type: Boolean,
     },
-    isFilterAllChecked: {
-      type: Boolean,
-    },
   },
   data() {
     return {
@@ -80,7 +77,6 @@ export default {
         private: false,
         random: false,
       },
-      targetCategory: '',
     }
   },
   computed: {
@@ -175,13 +171,10 @@ export default {
   text-decoration-style: initial;
   text-decoration-thickness: 15%;
 }
-// .notyet {
-//   text-decoration: none;
-// }
+
 .checkbox {
   display: inline-block;
   margin-top: 0;
-  // height: 20px;
 }
 .v-messages {
   display: none;
