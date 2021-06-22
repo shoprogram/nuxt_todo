@@ -17,7 +17,7 @@ export default ({ $axios, error }) => {
       })
     }
   })
-  // Q)ココの書き方いまいちわからん。分割代入はどこの配列？を引っ張ってきてるの？
+  // Q)ココの書き方いまいちわからない。分割代入はどこの配列？を引っ張ってきてるの？
   // Q)$のつくaxiosは何？
   // A)pluginのexport default(context)<-第一引数context。
   // A)その中の$axiosやerrorを使う

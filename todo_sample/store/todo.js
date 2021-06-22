@@ -19,11 +19,7 @@ export const mutations = {
   },
   updateDraggableList(state, payload) {
     state.todoList[payload.target + 'Todo'] = payload.updatedTodo
-    // 今現在の表示をdrag&dropした通りに変えるため
     state.todoListData[payload.target + 'Todo'] = payload.updatedTodo
-    // 文字検索する時に、毎回todoListDataをtodoListにコピーして使うため、todoListDataも変更しておかないとdrag & dropしたあと１回目の表示が
-    // drag & dropする前の位置で表示されてしまう。
-    // リロード、検索文字消去で全件取得するため順番はdatabaseのid順になってしまう。
   },
   filterTodo(state, val) {
     const allTodo = Object.assign({}, state.todoListData)
@@ -70,7 +66,6 @@ export const actions = {
       }
       const payload = { workTodo, privateTodo, randomTodo }
       commit('getAllTodo', payload)
-      // searchValueに値が入ってた時はfilterをかける
       if (state.searchValue) {
         commit('filterTodo', state.searchValue)
       }
@@ -79,16 +74,12 @@ export const actions = {
   actionFilterTodo({ dispatch, commit }, val) {
     if (val === '') {
       dispatch('actionGetAllTodo')
-      // ココのfilterの値をなしにした時も全件取得するのでTodoの順番が入れ替わってしまう。
-      // データの表示順に関して改善余地あり
     } else {
       commit('filterTodo', val)
     }
   },
   async actionAddTodo({ dispatch }, newTodo) {
     await this.$axios
-      // this.$axiosになるの詰まった
-      // https://axios.nuxtjs.org/usage/
       .post(BASE_URL, newTodo)
       .then(() => dispatch('actionGetAllTodo'))
   },
@@ -129,8 +120,6 @@ export const actions = {
       if (payload.value[i].category !== payload.targetCategory) {
         this.$axios.put(BASE_URL + '/' + payload.value[i].id, formedTodo)
       }
-      // async awaitあえてやめた。
-      // 通信を待たないでcommitをすることで、Todoカードが入れ替えの時にパチパチならないようにした。
     }
     commit('updateDraggableList', {
       updatedTodo,

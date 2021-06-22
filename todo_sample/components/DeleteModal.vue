@@ -6,7 +6,6 @@
     height="800px"
     @click:outside="$emit('closeDeleteModal')"
   >
-    <!-- transition="dialog-top-transition" -->
     <v-card class="container">
       <v-progress-linear
         color="red darken-2"
