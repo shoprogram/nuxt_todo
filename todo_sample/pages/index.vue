@@ -47,7 +47,6 @@
           </div>
           <DraggableTodo
             :list-work.sync="listWork"
-            :is-filter-all-checked="isFilterAllChecked"
             :is-filter-unfinished-checked="isFilterUnfinishedChecked"
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
@@ -63,7 +62,6 @@
           </div>
           <DraggableTodo
             :list-private.sync="listPrivate"
-            :is-filter-all-checked="isFilterAllChecked"
             :is-filter-unfinished-checked="isFilterUnfinishedChecked"
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
@@ -79,7 +77,6 @@
           </div>
           <DraggableTodo
             :list-random.sync="listRandom"
-            :is-filter-all-checked="isFilterAllChecked"
             :is-filter-unfinished-checked="isFilterUnfinishedChecked"
             @showEditModal="showEditModal"
             @showDeleteModal="showDeleteModal"
@@ -89,7 +86,6 @@
         </div>
       </li>
     </ol>
-    <!-- ネストされたdirModalをまとめる -->
     <AddModal
       :dialog="isShowAddModal"
       v-bind.sync="inputValues"
@@ -118,14 +114,6 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      // DraggableTodoより
-      currentid: -1,
-      isShowEditIcon: {
-        work: false,
-        private: false,
-        random: false,
-      },
-      // 元々このvueファイル
       isShowAddModal: false,
       isShowEditModal: false,
       isShowDeleteModal: false,
@@ -166,7 +154,10 @@ export default {
     try {
       await this.$store.dispatch('todo/actionGetAllTodo')
     } catch (err) {
-      this.$nuxt.error({ statusCode: 504, message: 'Data not found' })
+      this.$nuxt.error({
+        statusCode: err.response.status,
+        message: err.response.data.message,
+      })
     }
   },
   // async fetch({ store, error }) {
@@ -294,10 +285,6 @@ export default {
       this.$store.dispatch('todo/actionUpdateTodo', this.selectedTodo)
       this.clearSelectedTodo()
     },
-    // Draggableから↓
-    checkFinished(target) {
-      return target.isFinished
-    },
     finishedTodo(payload) {
       this.actionFinishedTodo(payload)
     },
@@ -345,7 +332,6 @@ ol {
 .fade-leave-active {
   transition: opacity 1s 0 ease;
 }
-// ココうまくアニメつけられてない
 .categories {
   display: flex;
   justify-content: space-between;
@@ -367,7 +353,6 @@ ol {
     background-color: hsl(351, 50%, 77%);
   }
 }
-//以下TodoCategory.vueより
 .category-title {
   font-weight: 600;
   & label {
@@ -377,8 +362,6 @@ ol {
     letter-spacing: 3px;
   }
 }
-
-//上部絞り込み部分
 .filter-bar {
   display: flex;
   justify-content: space-between;

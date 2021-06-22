@@ -46,7 +46,7 @@ export default {
     dialog: {
       type: Boolean,
     },
-    index: {
+    id: {
       type: Number,
       default: null,
     },
