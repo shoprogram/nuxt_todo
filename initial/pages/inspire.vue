@@ -13,9 +13,3 @@
     </v-col>
   </v-row>
 </template>
-<script>
-// scriptは消しておく
-export default {
-  layout: 'custom',
-}
-</script>
