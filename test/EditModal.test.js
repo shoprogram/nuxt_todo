@@ -9,4 +9,5 @@ const wrapper = mount(EditModal)
 // wrapper.vmを介して実際のVueインスタンスにアクセスできる。
 const vm = wrapper.vm
 
+
 console.log(wrapper)
