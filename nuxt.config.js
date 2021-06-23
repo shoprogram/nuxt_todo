@@ -1,6 +1,6 @@
 export default {
   // 表示ディレクトリの切り替え
-  srcDir: 'initial/',
+  srcDir: 'todo_sample/',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - nuxt_todo',
@@ -27,7 +27,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
 
   // draggableを使うときにコメントアウト外す↓
-  // plugins: [{ src: '~plugins/vuedraggable.js' }],
+  plugins: [{ src: '~plugins/vuedraggable.js' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -45,18 +45,18 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     'nuxt-fontawesome',
-    // '@nuxtjs/proxy',
+    '@nuxtjs/proxy',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
 
-  // proxy: {
-  //   '/api/': {
-  //     target: 'http://localhost:4000',
-  //     changeOrigin: true,
-  //   },
-  // },
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:4000',
+      changeOrigin: true,
+    },
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
